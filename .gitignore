@@ -1,0 +1,14 @@
+# python environment
+.flaskenv
+flask/
+flask*
+*.pyc
+*.pyo
+__pycache__/
+
+# Project directories of IDEs
+.idea/
+.vscode/
+
+# Index files of Mac OS
+.DS_Store
