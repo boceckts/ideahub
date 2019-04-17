@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, AddIdeaForm
+from app.models import User, Idea
 from app import app, db
 
 @app.route('/')
@@ -45,3 +45,29 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/leaderboard')
+def leaderboard():
+    return redirect(url_for('index'))
+    # return render_template('leaderboard.html', title='Leaderboard')
+
+@app.route('/addIdea', methods=['GET', 'POST'])
+def addIdea():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    form = AddIdeaForm()
+    if form.validate_on_submit():
+        print(current_user.id)
+        idea = Idea(description=form.description.data, user_id=current_user.id) #not sure if i have to initialise votes here
+        db.session.add(idea)
+        db.session.commit()
+        flash('Your idea has been saved!')
+        return redirect(url_for('index'))
+    return render_template('addIdea.html', title='Add Idea', form=form)
+
+@app.route('/account', methods=['GET', 'POST'])
+def account():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    ideas = Idea.query.filter_by(user_id=current_user.id)
+    return render_template("account.html", title='Account', ideas=ideas)

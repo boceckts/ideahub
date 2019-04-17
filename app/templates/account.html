@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+        {{ current_user.username }}s Account
+    </h1>
+    {% for idea in ideas %}
+        <div>
+            <p><b>Idea:</b> {{ idea.description }}</p>
+        </div>
+    {% endfor %}
+
+{% endblock %}
