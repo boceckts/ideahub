@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Welcome from the IdeaHub</h1>
+    <h1>
+        {% if current_user.username %}
+            Hi, {{ current_user.username }}! Welcome to IdeaHub
+        {% else %}
+            Hi! Welcome to IdeaHub
+        {% endif %}
+    </h1>
 {% endblock %}
