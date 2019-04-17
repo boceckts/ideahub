@@ -1,10 +1,10 @@
 # IdeaHub
 Practical project for the agile web development lecture [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes)
 
-## Main Idea:
+### Main Idea:
 Ideas can be submitted by any registered user and other logged in users can then voted on them
 
-## Concept
+### Concept
 Users login and will be presented by a dashboard showing them their submitted ideas and their scores.
 They have the option to submit new ideas, edit the idea to a new revision or delete their idea.
 Users can also change their view to a stack of submitted ideas and vote on them.
@@ -71,12 +71,28 @@ Inside the project folder create a virtual environment for the flask project and
 
     on **Windows**
     ```
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     ```
     or else on **Linux/Mac**
     ```
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     ```
+
+### Initialize and Migrate new Database Schema
+from within your virtual environment run the following scripts to init, migrate and upgrade your database.
+1. Create a database
+    ```
+    flask db init
+    ```
+2. Migrate the database
+    ```
+    flask db migrate
+    ```
+3. Upgrade the database to use the latest table definitions
+    ```
+    flask db upgrade
+    ```
+
 
 ### Start the Web Application
 run the flask web application on your localhost by either using the **Windows** command prompt or the terminal on **Linux/Mac**.
@@ -101,9 +117,9 @@ You can omit the path to the python executable when your virtual environment is 
 
 on **Windows**
 ```
-flask\Scripts\pip3 freeze > requirements.txt
+flask\Scripts\pip freeze > requirements.txt
 ```
 or else on **Linux/Mac**
 ```
-flask/bin/pip3 freeze > requirements.txt
+flask/bin/pip freeze > requirements.txt
 ```
