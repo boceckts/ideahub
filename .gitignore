@@ -5,6 +5,8 @@ flask*
 *.pyc
 *.pyo
 __pycache__/
+db_repository/
+app.db
 
 # Project directories of IDEs
 .idea/
