@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User, Idea
 
@@ -27,11 +27,18 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
-class AddIdeaForm(FlaskForm):
-    description = StringField('Description', validators=[DataRequired()])
+class NewIdeaForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = StringField('Description')
+    # picture =
     submit = SubmitField('Submit')
 
-    def validate_description(self, description):
-        idea = Idea.query.filter_by(description=description.data).first()
+    def validate_title(self, title):
+        idea = Idea.query.filter_by(title=title.data).first()
         if idea is not None:
             raise ValidationError('This idea already exists!')
+
+class EditIdeaForm(FlaskForm):
+    description = StringField('Description')
+    categories = SelectField('Categories', choices = [('Test1','Test1'),('Test2','Test2'),('Other','Other')], validators = [DataRequired()])
+    submit = SubmitField('Submit')

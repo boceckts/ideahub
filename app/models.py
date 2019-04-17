@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from datetime import datetime
 from app import db, login
 
 class User(UserMixin, db.Model):
@@ -23,14 +24,19 @@ class User(UserMixin, db.Model):
 
 class Idea(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    description = db.Column(db.String(140), unique=True)
-    created = db.Column(db.DateTime)
+    title = db.Column(db.String(64), index=True, unique=True)
+    description = db.Column(db.String(128))
+    picture = db.Column(db.BLOB)
+    attachments = db.Column(db.BLOB)
+    categories = db.Column(db.String(64))
+    tags = db.Column(db.String(128))
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     modified = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     votes = db.relationship('Vote', backref='target', lazy='dynamic')
 
     def __repr__(self):
-        return '<Idea %r>' % (self.description)
+        return '<Idea %r>' % (self.title)
 
 class Vote(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
