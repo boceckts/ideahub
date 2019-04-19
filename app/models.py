@@ -1,6 +1,9 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 from datetime import datetime
+
+from flask_login import UserMixin
+from sqlalchemy import UniqueConstraint
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import db, login
 
 
@@ -48,9 +51,10 @@ class Idea(db.Model):
 
 
 class Vote(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    idea_id = db.Column(db.Integer, db.ForeignKey('idea.id'), primary_key=True)
-    id = db.Column(db.Integer, index=True, autoincrement=True)
+    id = db.Column(db.Integer, index=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    idea_id = db.Column(db.Integer, db.ForeignKey('idea.id'))
+    UniqueConstraint('user_id', 'idea_id', name='unique_vote')
     value = db.Column(db.Integer)
     created = db.Column(db.DateTime)
     modified = db.Column(db.DateTime)
@@ -60,6 +64,7 @@ class Vote(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 @login.user_loader
 def load_user(id):
