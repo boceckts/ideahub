@@ -15,7 +15,7 @@ user = user_ns.model('User', {
     'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address')
 })
 
-register_user = user_ns.inherit('Registering User', user, {
+new_user = user_ns.inherit('New User', user, {
     'password': fields.String(readOnly=True, required=True, description='The user\'s password')
 })
 
@@ -30,11 +30,11 @@ class UsersResource(Resource):
         users = User.query.all()
         return list(map(lambda user: user.as_dict(), users)), 200
 
-    @user_ns.expect(register_user, 201, 'User created', validate=True)
+    @user_ns.expect(new_user, 201, 'User created', validate=True)
     @user_ns.response(400, 'Bad request')
     @user_ns.response(409, 'User already exists')
     def post(self):
-        """Create a new users"""
+        """Create a new user"""
         json_data = request.get_json(force=True)
         new_user = User()
         new_user.username = json_data['username']
@@ -70,8 +70,7 @@ class UserResource(Resource):
             user_ns.abort(404, 'User not found')
         return queried_user.as_dict(), 200
 
-    @user_ns.doc('edit_user')
-    @user_ns.expect(register_user, 204, 'User was successfully modified', validate=True)
+    @user_ns.expect(new_user, 204, 'User was successfully modified', validate=True)
     @user_ns.response(409, "Username already exists")
     @user_ns.response(400, 'Bad request')
     def put(self, user_id):
@@ -93,7 +92,6 @@ class UserResource(Resource):
             user_ns.abort(409, "Username already exists")
         return '', 204
 
-    @user_ns.doc('delete_user')
     @user_ns.response(204, 'User was successfully deleted')
     def delete(self, user_id):
         """Delete the user with the selected user_id"""
