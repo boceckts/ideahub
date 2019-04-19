@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import User, Idea, Vote
-from app.utils.db_utils import expand_users, expand_user, expand_idea, expand_votes, expand_ideas
+from app.utils.db_utils import expand_users, expand_user, expand_idea, expand_votes, expand_ideas, expand_vote
 
 user_ns = Namespace('users', description='User operations')
 
@@ -36,6 +36,10 @@ idea = user_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
     'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author')
+})
+
+modify_vote = user_ns.model('New Vote', {
+    'value': fields.Integer(readOnly=True, description='The value of the vote')
 })
 
 new_vote = user_ns.model('New Vote', {
@@ -254,7 +258,7 @@ class UserVotesResource(Resource):
         new_vote.value = json_data['value']
         queried_idea = Idea.query.get(json_data['target'])
         if queried_idea is None:
-            user_ns.abort(404, 'Idea not found')
+            user_ns.abort(409, 'Target not found')
         new_vote.target = queried_idea
         new_vote.owner = queried_user
         try:
@@ -271,5 +275,52 @@ class UserVotesResource(Resource):
         if queried_user is None:
             user_ns.abort(404, 'User not found')
         queried_user.votes.delete(synchronize_session='fetch')
+        db.session.commit()
+        return '', 204
+
+
+@user_ns.route('/<int:user_id>/votes/<int:vote_id>', strict_slashes=False)
+@user_ns.response(404, 'Resource not found')
+@user_ns.response(500, 'Internal Server Error')
+class UserVoteResource(Resource):
+
+    @user_ns.marshal_with(vote, code=200, description='Show the selected vote')
+    def get(self, user_id, vote_id):
+        """Show the vote with the selected vote_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        queried_vote = Vote.query.get(vote_id)
+        if queried_vote is None:
+            user_ns.abort(404, 'Vote not found')
+        return expand_vote(queried_vote), 200
+
+    @user_ns.expect(modify_vote, 204, 'Vote was successfully modified', validate=True)
+    @user_ns.response(409, "Vote already exists")
+    @user_ns.response(400, 'Bad request')
+    def put(self, user_id, vote_id):
+        """Update the vote with the selected vote_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        if Vote.query.get(vote_id) is None:
+            user_ns.abort(404, 'Vote not found')
+        json_data = request.get_json(force=True)
+        try:
+            db.session.query(Vote).filter_by(id=vote_id).update({
+                Vote.value: json_data['value'],
+                Vote.modified: datetime.utcnow()
+            })
+            db.session.commit()
+        except IntegrityError:
+            user_ns.abort(409, "Vote already exists")
+        return '', 204
+
+    @user_ns.response(204, 'Vote was successfully deleted')
+    def delete(self, user_id, vote_id):
+        """Delete the vote with the selected vote_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        if Vote.query.get(vote_id) is None:
+            user_ns.abort(404, 'Vote not found')
+        db.session.query(Vote).filter_by(id=vote_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
