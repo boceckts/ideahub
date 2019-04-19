@@ -5,8 +5,8 @@ from flask_restplus import Resource, Namespace, fields
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.models import User, Idea
-from app.utils.db_utils import expand_users, expand_user, expand_idea
+from app.models import User, Idea, Vote
+from app.utils.db_utils import expand_users, expand_user, expand_idea, expand_votes, expand_ideas
 
 user_ns = Namespace('users', description='User operations')
 
@@ -39,14 +39,14 @@ idea = user_ns.inherit('Idea', new_idea, {
 })
 
 new_vote = user_ns.model('New Vote', {
-    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote'),
-    'idea_id': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
+    'target': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
     'value': fields.Integer(readOnly=True, description='The value of the vote')
 })
 
 vote = user_ns.inherit('Vote', new_vote, {
     'created': fields.DateTime(readOnly=True, description='The vote\'s creation date'),
-    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date')
+    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date'),
+    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote')
 })
 
 
@@ -77,12 +77,12 @@ class UsersResource(Resource):
             db.session.commit()
         except IntegrityError:
             user_ns.abort(409, "User already exists")
-        return "{}/{}".format(request.url, new_user.id), 201
+        return "{}/{}".format(request.url, future_user.id), 201
 
     @user_ns.response(204, 'Users successfully deleted')
     def delete(self):
         """Delete all users"""
-        db.session.query(User).delete()
+        db.session.query(User).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
 
@@ -127,7 +127,7 @@ class UserResource(Resource):
         """Delete the user with the selected user_id"""
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
-        db.session.query(User).filter_by(id=user_id).delete()
+        db.session.query(User).filter_by(id=user_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
 
@@ -143,8 +143,7 @@ class UserIdeasResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        ideas = queried_user.ideas.all()
-        return list(map(lambda idea: idea.as_dict(), ideas)), 200
+        return expand_ideas(queried_user.ideas.all()), 200
 
     @user_ns.expect(new_idea, 201, 'Idea created', validate=True)
     @user_ns.response(400, 'Bad request')
@@ -174,7 +173,7 @@ class UserIdeasResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        queried_user.ideas.delete()
+        queried_user.ideas.delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
 
@@ -224,6 +223,53 @@ class UserIdeaResource(Resource):
             user_ns.abort(404, 'User not found')
         if Idea.query.get(idea_id) is None:
             user_ns.abort(404, 'Idea not found')
-        db.session.query(Idea).filter_by(id=idea_id).delete()
+        db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
+        db.session.commit()
+        return '', 204
+
+
+@user_ns.route('/<int:user_id>/votes', strict_slashes=False)
+@user_ns.response(404, 'Resource not found')
+@user_ns.response(500, 'Internal Server Error')
+class UserVotesResource(Resource):
+
+    @user_ns.marshal_with(vote, code=200, description='Show the votes for the user with the selected user id')
+    def get(self, user_id):
+        """Show all votes for the user with the selected id"""
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
+        return expand_votes(queried_user.votes), 200
+
+    @user_ns.expect(new_vote, 201, 'Vote created', validate=True)
+    @user_ns.response(400, 'Bad request')
+    @user_ns.response(409, 'Vote already exists')
+    def post(self, user_id):
+        """Create a new idea for the user with the selected id"""
+        json_data = request.get_json(force=True)
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
+        new_vote = Vote()
+        new_vote.value = json_data['value']
+        queried_idea = Idea.query.get(json_data['target'])
+        if queried_idea is None:
+            user_ns.abort(404, 'Idea not found')
+        new_vote.target = queried_idea
+        new_vote.owner = queried_user
+        try:
+            db.session.add(new_vote)
+            db.session.commit()
+        except IntegrityError:
+            user_ns.abort(409, "Vote already exists")
+        return "{}/{}".format(request.url, new_vote.id), 201
+
+    @user_ns.response(204, 'Votes successfully deleted')
+    def delete(self, user_id):
+        """Delete all votes for the user with the selected user"""
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
+        queried_user.votes.delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204

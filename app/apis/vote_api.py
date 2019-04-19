@@ -29,7 +29,7 @@ class VotesResource(Resource):
     @vote_ns.response(204, 'Votes successfully deleted')
     def delete(self):
         """Delete all votes"""
-        db.session.query(Vote).delete()
+        db.session.query(Vote).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
 
@@ -52,6 +52,6 @@ class IdeaResource(Resource):
         """Delete the vote with the selected vote_id"""
         if Vote.query.get(vote_id) is None:
             vote_ns.abort(404, 'Vote not found')
-        db.session.query(Vote).filter_by(id=vote_id).delete()
+        db.session.query(Vote).filter_by(id=vote_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204

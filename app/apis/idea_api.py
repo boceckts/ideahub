@@ -34,7 +34,7 @@ class IdeasResource(Resource):
     @idea_ns.response(204, 'Ideas successfully deleted')
     def delete(self):
         """Delete all ideas"""
-        db.session.query(Idea).delete()
+        db.session.query(Idea).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
 
@@ -57,6 +57,6 @@ class IdeaResource(Resource):
         """Delete the idea with the selected idea_id"""
         if Idea.query.get(idea_id) is None:
             idea_ns.abort(404, 'Idea not found')
-        db.session.query(Idea).filter_by(id=idea_id).delete()
+        db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
