@@ -17,7 +17,9 @@ user = user_ns.model('User', {
     'surname': fields.String(readOnly=True, description='The user\'s surname'),
     'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address'),
     'ideas': fields.List(cls_or_instance=fields.Integer, readonly=True,
-                         description='The ids of the ideas that the user created')
+                         description='The ids of the ideas that the user created'),
+    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
+                         description='The ids of the votes that the user issued')
 })
 
 new_user = user_ns.inherit('New User', user, {
@@ -35,7 +37,9 @@ new_idea = user_ns.model('New Idea', {
 idea = user_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
-    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author')
+    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
+    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
+                         description='The ids of the votes are targeted to this idea')
 })
 
 modify_vote = user_ns.model('New Vote', {

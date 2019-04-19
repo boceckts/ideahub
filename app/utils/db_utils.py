@@ -11,6 +11,7 @@ def expand_user(queried_user):
     if queried_user is not None:
         user_as_dict = queried_user.as_dict()
         user_as_dict['ideas'] = list(map(lambda idea: idea.id, queried_user.ideas.all()))
+        user_as_dict['votes'] = list(map(lambda idea: idea.id, queried_user.votes.all()))
         return user_as_dict
 
 
@@ -27,6 +28,7 @@ def expand_idea(queried_idea):
     if queried_idea is not None:
         idea_as_dict = queried_idea.as_dict()
         idea_as_dict['author'] = queried_idea.user_id
+        idea_as_dict['votes'] = list(map(lambda idea: idea.id, queried_idea.votes.all()))
         return idea_as_dict
 
 

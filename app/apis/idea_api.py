@@ -17,7 +17,9 @@ new_idea = idea_ns.model('New Idea', {
 idea = idea_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
-    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author')
+    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
+    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
+                         description='The ids of the votes are targeted to this idea')
 })
 
 
