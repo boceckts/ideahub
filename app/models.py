@@ -56,8 +56,8 @@ class Vote(db.Model):
     idea_id = db.Column(db.Integer, db.ForeignKey('idea.id'))
     UniqueConstraint('user_id', 'idea_id', name='unique_vote')
     value = db.Column(db.Integer)
-    created = db.Column(db.DateTime)
-    modified = db.Column(db.DateTime)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    modified = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Vote %r>' % self.value
