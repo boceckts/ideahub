@@ -1,9 +1,9 @@
 from flask import request
 from flask_restplus import Resource, Namespace, fields
 from sqlalchemy.exc import IntegrityError
-from app import db
-from app.models import User
 
+from app import db
+from app.models import User, Idea
 
 user_ns = Namespace('users', description='User operations')
 
@@ -12,11 +12,27 @@ user = user_ns.model('User', {
     'username': fields.String(readOnly=True, required=True, description='The user\'s unique username'),
     'name': fields.String(readOnly=True, description='The user\'s name'),
     'surname': fields.String(readOnly=True, description='The user\'s surname'),
-    'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address')
+    'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address'),
+    'ideas': fields.List(cls_or_instance=fields.Integer, readonly=True,
+                         description='The ids of the ideas that the user created')
 })
 
 new_user = user_ns.inherit('New User', user, {
     'password': fields.String(readOnly=True, required=True, description='The user\'s password')
+})
+
+new_idea = user_ns.model('New Idea', {
+    'id': fields.Integer(readOnly=True, description='The idea\'s unique id'),
+    'title': fields.String(readOnly=True, required=True, description='The idea\'s title'),
+    'description': fields.String(readOnly=True, description='The idea\'s description'),
+    'categories': fields.String(readOnly=True, description='The idea\'s categories'),
+    'tags': fields.String(readOnly=True, description='The idea\'s tags')
+})
+
+idea = user_ns.inherit('Idea', new_idea, {
+    'created': fields.String(readOnly=True, description='The idea\'s creation date'),
+    'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
+    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author')
 })
 
 
@@ -68,7 +84,10 @@ class UserResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        return queried_user.as_dict(), 200
+        dict = queried_user.as_dict()
+        print(dict)
+        dict['ideas'] = list(map(lambda idea: idea.id, queried_user.ideas.all()))
+        return dict, 200
 
     @user_ns.expect(new_user, 204, 'User was successfully modified', validate=True)
     @user_ns.response(409, "Username already exists")
@@ -99,4 +118,49 @@ class UserResource(Resource):
             user_ns.abort(404, 'User not found')
         db.session.query(User).filter_by(id=user_id).delete()
         db.session.commit()
+        return '', 204
+
+
+@user_ns.route('/<int:user_id>/ideas', strict_slashes=False)
+@user_ns.response(404, 'User not found')
+@user_ns.response(500, 'Internal Server Error')
+class UserIdeaResource(Resource):
+
+    @user_ns.marshal_with(idea, code=200, description='Show the ideas for the user with the selected id')
+    def get(self, user_id):
+        """Show all ideas for the user with the selected id"""
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
+        ideas = queried_user.ideas.all()
+        return list(map(lambda idea: idea.as_dict(), ideas)), 200
+
+    @user_ns.expect(new_idea, 201, 'Idea created', validate=True)
+    @user_ns.response(400, 'Bad request')
+    @user_ns.response(409, 'Idea already exists')
+    def post(self, user_id):
+        """Create a new idea for the user with the selected id"""
+        json_data = request.get_json(force=True)
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
+        new_idea = Idea()
+        new_idea.title = json_data['title']
+        new_idea.description = json_data['description']
+        new_idea.categories = json_data['categories']
+        new_idea.tags = json_data['tags']
+        new_idea.author = queried_user
+        try:
+            queried_user.ideas.append(new_idea)
+            db.session.commit()
+        except IntegrityError:
+            user_ns.abort(409, "Idea already exists")
+        return "{}/{}".format(request.url, new_idea.id), 201
+
+    @user_ns.response(204, 'Ideas successfully deleted')
+    def delete(self, user_id):
+        """Delete all ideas for the user with the selected id"""
+        queried_user = User.query.get(user_id)
+        if queried_user is None:
+            user_ns.abort(404, 'User not found')
         return '', 204
