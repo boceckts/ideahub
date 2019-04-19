@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import User, Idea
+from app.utils.db_utils import expand_users, expand_user
 
 user_ns = Namespace('users', description='User operations')
 
@@ -43,8 +44,8 @@ class UsersResource(Resource):
     @user_ns.marshal_list_with(user, code=200, description='List all users')
     def get(self):
         """List all users"""
-        users = User.query.all()
-        return list(map(lambda user: user.as_dict(), users)), 200
+        queried_users = User.query.all()
+        return expand_users(queried_users), 200
 
     @user_ns.expect(new_user, 201, 'User created', validate=True)
     @user_ns.response(400, 'Bad request')
@@ -52,13 +53,13 @@ class UsersResource(Resource):
     def post(self):
         """Create a new user"""
         json_data = request.get_json(force=True)
-        new_user = User()
-        new_user.username = json_data['username']
-        new_user.name = json_data['name']
-        new_user.surname = json_data['surname']
-        new_user.email = json_data['email']
-        new_user.set_password(json_data['password'])
-        db.session.add(new_user)
+        future_user = User()
+        future_user.username = json_data['username']
+        future_user.name = json_data['name']
+        future_user.surname = json_data['surname']
+        future_user.email = json_data['email']
+        future_user.set_password(json_data['password'])
+        db.session.add(future_user)
         try:
             db.session.commit()
         except IntegrityError:
@@ -84,10 +85,7 @@ class UserResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        dict = queried_user.as_dict()
-        print(dict)
-        dict['ideas'] = list(map(lambda idea: idea.id, queried_user.ideas.all()))
-        return dict, 200
+        return expand_user(queried_user), 200
 
     @user_ns.expect(new_user, 204, 'User was successfully modified', validate=True)
     @user_ns.response(409, "Username already exists")
@@ -124,7 +122,7 @@ class UserResource(Resource):
 @user_ns.route('/<int:user_id>/ideas', strict_slashes=False)
 @user_ns.response(404, 'User not found')
 @user_ns.response(500, 'Internal Server Error')
-class UserIdeaResource(Resource):
+class UserIdeasResource(Resource):
 
     @user_ns.marshal_with(idea, code=200, description='Show the ideas for the user with the selected id')
     def get(self, user_id):
