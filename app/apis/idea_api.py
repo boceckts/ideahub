@@ -4,7 +4,7 @@ from flask_restplus import Resource, Namespace, fields
 from sqlalchemy.exc import IntegrityError
 from app import db
 from app.models import Idea
-
+from app.utils.db_utils import expand_idea, expand_ideas
 
 idea_ns = Namespace('ideas', description='Idea operations')
 
@@ -31,7 +31,7 @@ class IdeasResource(Resource):
     def get(self):
         """List all ideas"""
         ideas = Idea.query.all()
-        return list(map(lambda idea: idea.as_dict(), ideas)), 200
+        return expand_ideas(ideas), 200
 
     @idea_ns.expect(new_idea, 201, 'Idea created', validate=True)
     @idea_ns.response(400, 'Bad request')
@@ -70,7 +70,7 @@ class IdeaResource(Resource):
         queried_idea = Idea.query.get(idea_id)
         if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
-        return queried_idea.as_dict(), 200
+        return expand_idea(queried_idea), 200
 
     @idea_ns.expect(new_idea, 204, 'Idea was successfully modified', validate=True)
     @idea_ns.response(409, "Idea already exists")
