@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "c8a3ede8-0b92-4d82-900b-c1a148b36432",
+		"name": "IdeaHub",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"description": null,
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"aasadadsda\",\n    \"name\": \"\",\n    \"surname\": \"\",\n    \"email\": \"ssdasdasdasaj@asd.com\",\n    \"password\": \"12345678\"\n}"
+						},
+						"url": "localhost:5000/api/v1/users"
+					},
+					"response": []
+				},
+				{
+					"name": "list users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users"
+					},
+					"response": []
+				},
+				{
+					"name": "delete users",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users"
+					},
+					"response": []
+				},
+				{
+					"name": "show user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "edit user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"aasadadsda\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n    \"email\": \"ssdasdasdasaj@asd.com\",\n    \"password\": \"87654321\"\n}"
+						},
+						"url": "localhost:5000/api/v1/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users/1"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,5 +1,6 @@
 from app import app
 from flask_restplus import Api
+from app.apis.user_api import user_ns
 
 api = Api(
     title='IdeaHub API',
@@ -11,5 +12,7 @@ api = Api(
     doc='/api/v1/docs',
     prefix='/api/v1'
 )
+
+api.add_namespace(user_ns)
 
 api.init_app(app)
