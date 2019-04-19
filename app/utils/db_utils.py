@@ -22,3 +22,17 @@ def expand_idea(queried_idea):
     idea_as_dict = queried_idea.as_dict()
     idea_as_dict['author'] = queried_idea.user_id
     return idea_as_dict
+
+
+def expand_votes(queried_votes):
+    expanded_votes = []
+    for queried_vote in queried_votes:
+        expanded_votes.append(expand_vote(queried_vote))
+    return expanded_votes
+
+
+def expand_vote(queried_vote):
+    vote_as_dict = queried_vote.as_dict()
+    vote_as_dict['target'] = queried_vote.idea_id
+    vote_as_dict['owner'] = queried_vote.user_id
+    return vote_as_dict
