@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
 
 
 class Idea(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.String(128))
     picture = db.Column(db.BLOB)
@@ -50,6 +50,7 @@ class Idea(db.Model):
 class Vote(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     idea_id = db.Column(db.Integer, db.ForeignKey('idea.id'), primary_key=True)
+    id = db.Column(db.Integer, index=True, autoincrement=True)
     value = db.Column(db.Integer)
     created = db.Column(db.DateTime)
     modified = db.Column(db.DateTime)
