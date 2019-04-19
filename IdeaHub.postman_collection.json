@@ -21,14 +21,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"aasadadsda\",\n    \"name\": \"\",\n    \"surname\": \"\",\n    \"email\": \"ssdasdasdasaj@asd.com\",\n    \"password\": \"12345678\"\n}"
+							"raw": "{\n\t\"id\": 1,\n    \"username\": \"Jdoe\",\n    \"name\": \"John\",\n    \"surname\": \"Doe\",\n    \"email\": \"john.doe@gmail.com\",\n    \"password\": \"12345678\"\n}"
 						},
 						"url": "localhost:5000/api/v1/users"
 					},
 					"response": []
 				},
 				{
-					"name": "list users",
+					"name": "list all users",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -38,7 +38,7 @@
 					"response": []
 				},
 				{
-					"name": "delete users",
+					"name": "delete all users",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -82,6 +82,264 @@
 						"header": [],
 						"body": {},
 						"url": "localhost:5000/api/v1/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "create idea for user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"title\": \"My Awesome Idea\",\r\n  \"description\": \"some description for my fancy idea\",\r\n  \"categories\": \"web application\",\r\n  \"tags\": \"csse, se, agile\"\r\n}"
+						},
+						"url": "localhost:5000/api/v1/users/1/ideas"
+					},
+					"response": []
+				},
+				{
+					"name": "list all ideas for user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users/1/ideas"
+					},
+					"response": []
+				},
+				{
+					"name": "delete all ideas for user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users/2/ideas"
+					},
+					"response": []
+				},
+				{
+					"name": "Show idea for user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1/ideas/1"
+					},
+					"response": []
+				},
+				{
+					"name": "edit idea for user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"My Awesome Edited Idea\",\n    \"description\": \"some edited description for my fancy idea\",\n    \"categories\": \"web application, se\",\n    \"tags\": \"csse, agile\"\n}"
+						},
+						"url": "http://localhost:5000/api/v1/users/1/ideas/2"
+					},
+					"response": []
+				},
+				{
+					"name": "delete idea for user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/users/1/ideas/2"
+					},
+					"response": []
+				},
+				{
+					"name": "create vote for user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": 1,\n    \"target\": 1\n}"
+						},
+						"url": "http://localhost:5000/api/v1/users/1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "show all votes for user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "delete all votes for user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "show vote for user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "edit vote for user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"value\": -1\n}"
+						},
+						"url": "http://localhost:5000/api/v1/users/1/votes/1"
+					},
+					"response": []
+				},
+				{
+					"name": "delete vote for user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/users/1/votes"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ideas",
+			"description": "",
+			"item": [
+				{
+					"name": "list all ideas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/ideas"
+					},
+					"response": []
+				},
+				{
+					"name": "delete all ideas",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/ideas"
+					},
+					"response": []
+				},
+				{
+					"name": "show idea",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/ideas/1"
+					},
+					"response": []
+				},
+				{
+					"name": "delete idea",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/ideas/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "votes",
+			"description": null,
+			"item": [
+				{
+					"name": "list all votes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "delete all votes",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"title\": \"Modified Idea\",\r\n  \"description\": \"This is an even better idea\",\r\n  \"categories\": \"cat1, cat2\",\r\n  \"tags\": \"csse, agile\"\r\n}"
+						},
+						"url": "http://localhost:5000/api/v1/votes"
+					},
+					"response": []
+				},
+				{
+					"name": "list vote",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/votes/1"
+					},
+					"response": []
+				},
+				{
+					"name": "delete vote",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/votes/1"
 					},
 					"response": []
 				}
