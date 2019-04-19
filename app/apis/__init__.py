@@ -3,6 +3,7 @@ from flask_restplus import Api
 
 from app.apis.idea_api import idea_ns
 from app.apis.user_api import user_ns
+from app.apis.vote_api import vote_ns
 
 api = Api(
     title='IdeaHub API',
@@ -17,5 +18,6 @@ api = Api(
 
 api.add_namespace(user_ns)
 api.add_namespace(idea_ns)
+api.add_namespace(vote_ns)
 
 api.init_app(app)
