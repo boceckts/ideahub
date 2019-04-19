@@ -1,10 +1,12 @@
+from datetime import datetime
+
 from flask import request
 from flask_restplus import Resource, Namespace, fields
 from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import User, Idea
-from app.utils.db_utils import expand_users, expand_user
+from app.utils.db_utils import expand_users, expand_user, expand_idea
 
 user_ns = Namespace('users', description='User operations')
 
@@ -34,6 +36,17 @@ idea = user_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
     'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author')
+})
+
+new_vote = user_ns.model('New Vote', {
+    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote'),
+    'idea_id': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
+    'value': fields.Integer(readOnly=True, description='The value of the vote')
+})
+
+vote = user_ns.inherit('Vote', new_vote, {
+    'created': fields.DateTime(readOnly=True, description='The vote\'s creation date'),
+    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date')
 })
 
 
@@ -161,4 +174,56 @@ class UserIdeasResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
+        queried_user.ideas.delete()
+        db.session.commit()
+        return '', 204
+
+
+@user_ns.route('/<int:user_id>/ideas/<int:idea_id>', strict_slashes=False)
+@user_ns.response(404, 'Resource not found')
+@user_ns.response(500, 'Internal Server Error')
+class UserIdeaResource(Resource):
+
+    @user_ns.marshal_with(idea, code=200, description='Show the selected idea')
+    def get(self, user_id, idea_id):
+        """Show the idea with the selected idea_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        queried_idea = Idea.query.get(idea_id)
+        if queried_idea is None:
+            user_ns.abort(404, 'Idea not found')
+        return expand_idea(queried_idea), 200
+
+    @user_ns.expect(new_idea, 204, 'Idea was successfully modified', validate=True)
+    @user_ns.response(409, "Idea already exists")
+    @user_ns.response(400, 'Bad request')
+    def put(self, user_id, idea_id):
+        """Update the idea with the selected idea_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        if Idea.query.get(idea_id) is None:
+            user_ns.abort(404, 'Idea not found')
+        json_data = request.get_json(force=True)
+        try:
+            db.session.query(Idea).filter_by(id=idea_id).update({
+                Idea.title: json_data['title'],
+                Idea.description: json_data['description'],
+                Idea.categories: json_data['categories'],
+                Idea.tags: json_data['tags'],
+                Idea.modified: datetime.utcnow()
+            })
+            db.session.commit()
+        except IntegrityError:
+            user_ns.abort(409, "Idea already exists")
+        return '', 204
+
+    @user_ns.response(204, 'Idea was successfully deleted')
+    def delete(self, user_id, idea_id):
+        """Delete the idea with the selected idea_id of the user with the selected user id"""
+        if User.query.get(user_id) is None:
+            user_ns.abort(404, 'User not found')
+        if Idea.query.get(idea_id) is None:
+            user_ns.abort(404, 'Idea not found')
+        db.session.query(Idea).filter_by(id=idea_id).delete()
+        db.session.commit()
         return '', 204
