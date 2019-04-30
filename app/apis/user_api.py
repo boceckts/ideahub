@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import request
-from flask_restplus import Resource
+from flask_restplus import Resource, marshal
 from sqlalchemy.exc import IntegrityError
 
 from app import db
@@ -23,7 +23,8 @@ class UsersResource(Resource):
         queried_users = User.query.all()
         return expand_users(queried_users), 200
 
-    @user_ns.expect(new_user, 201, 'User created', validate=True)
+    @user_ns.expect(new_user, validate=True)
+    @user_ns.response(201, 'User successfully created', user, headers={'location': 'The user\'s location'})
     @user_ns.response(400, 'Bad request')
     @user_ns.response(409, 'User already exists')
     def post(self):
@@ -40,7 +41,7 @@ class UsersResource(Resource):
             db.session.commit()
         except IntegrityError:
             user_ns.abort(409, "User already exists")
-        return "{}/{}".format(request.url, future_user.id), 201
+        return marshal(expand_user(future_user), user), 201, {'Location': '{}/{}'.format(request.url, future_user.id)}
 
     @user_ns.response(204, 'Users successfully deleted')
     def delete(self):
@@ -63,7 +64,8 @@ class UserResource(Resource):
             user_ns.abort(404, 'User not found')
         return expand_user(queried_user), 200
 
-    @user_ns.expect(new_user, 204, 'User was successfully modified', validate=True)
+    @user_ns.expect(new_user, validate=True)
+    @user_ns.response(204, 'User successfully modified')
     @user_ns.response(409, "Username already exists")
     @user_ns.response(400, 'Bad request')
     def put(self, user_id):
@@ -71,14 +73,14 @@ class UserResource(Resource):
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         json_data = request.get_json(force=True)
-        new_user = User()
-        new_user.set_password(json_data['password'])
+        temp_user = User()
+        temp_user.set_password(json_data['password'])
         try:
             db.session.query(User).filter_by(id=user_id).update({
                 User.username: json_data['username'],
                 User.name: json_data['name'],
                 User.surname: json_data['surname'],
-                User.password_hash: new_user.password_hash
+                User.password_hash: temp_user.password_hash
             })
             db.session.commit()
         except IntegrityError:
@@ -108,7 +110,8 @@ class UserIdeasResource(Resource):
             user_ns.abort(404, 'User not found')
         return expand_ideas(queried_user.ideas.all()), 200
 
-    @user_ns.expect(new_idea, 201, 'Idea created', validate=True)
+    @user_ns.expect(new_idea, validate=True)
+    @user_ns.response(201, 'Idea successfully created', idea, headers={'location': 'The idea\'s location'})
     @user_ns.response(400, 'Bad request')
     @user_ns.response(409, 'Idea already exists')
     def post(self, user_id):
@@ -117,18 +120,18 @@ class UserIdeasResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        new_idea = Idea()
-        new_idea.title = json_data['title']
-        new_idea.description = json_data['description']
-        new_idea.categories = json_data['categories']
-        new_idea.tags = json_data['tags']
-        new_idea.author = queried_user
+        future_idea = Idea()
+        future_idea.title = json_data['title']
+        future_idea.description = json_data['description']
+        future_idea.categories = json_data['categories']
+        future_idea.tags = json_data['tags']
+        future_idea.author = queried_user
         try:
-            queried_user.ideas.append(new_idea)
+            queried_user.ideas.append(future_idea)
             db.session.commit()
         except IntegrityError:
             user_ns.abort(409, "Idea already exists")
-        return "{}/{}".format(request.url, new_idea.id), 201
+        return marshal(expand_idea(future_idea), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
 
     @user_ns.response(204, 'Ideas successfully deleted')
     def delete(self, user_id):
@@ -156,7 +159,8 @@ class UserIdeaResource(Resource):
             user_ns.abort(404, 'Idea not found')
         return expand_idea(queried_idea), 200
 
-    @user_ns.expect(new_idea, 204, 'Idea was successfully modified', validate=True)
+    @user_ns.expect(new_idea, validate=True)
+    @user_ns.response(204, 'Idea successfully modified')
     @user_ns.response(409, "Idea already exists")
     @user_ns.response(400, 'Bad request')
     def put(self, user_id, idea_id):
@@ -204,7 +208,8 @@ class UserVotesResource(Resource):
             user_ns.abort(404, 'User not found')
         return expand_votes(queried_user.votes), 200
 
-    @user_ns.expect(new_vote, 201, 'Vote created', validate=True)
+    @user_ns.expect(new_vote, validate=True)
+    @user_ns.response(201, 'Vote successfully created', vote, headers={'location': 'The vote\'s location'})
     @user_ns.response(400, 'Bad request')
     @user_ns.response(409, 'Vote already exists')
     def post(self, user_id):
@@ -213,19 +218,19 @@ class UserVotesResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        new_vote = Vote()
-        new_vote.value = json_data['value']
+        future_vote = Vote()
+        future_vote.value = json_data['value']
         queried_idea = Idea.query.get(json_data['target'])
         if queried_idea is None:
             user_ns.abort(409, 'Target not found')
-        new_vote.target = queried_idea
-        new_vote.owner = queried_user
+        future_vote.target = queried_idea
+        future_vote.owner = queried_user
         try:
-            db.session.add(new_vote)
+            db.session.add(future_vote)
             db.session.commit()
         except IntegrityError:
             user_ns.abort(409, "Vote already exists")
-        return "{}/{}".format(request.url, new_vote.id), 201
+        return marshal(expand_vote(future_vote), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
 
     @user_ns.response(204, 'Votes successfully deleted')
     def delete(self, user_id):
@@ -253,7 +258,8 @@ class UserVoteResource(Resource):
             user_ns.abort(404, 'Vote not found')
         return expand_vote(queried_vote), 200
 
-    @user_ns.expect(modify_vote, 204, 'Vote was successfully modified', validate=True)
+    @user_ns.expect(modify_vote, validate=True)
+    @user_ns.response(204, 'Vote successfully modified')
     @user_ns.response(409, "Vote already exists")
     @user_ns.response(400, 'Bad request')
     def put(self, user_id, vote_id):
