@@ -1,9 +1,8 @@
-from app import app
 from flask_restplus import Api
 
-from app.apis.idea_api import idea_ns
-from app.apis.user_api import user_ns
-from app.apis.vote_api import vote_ns
+from app import app
+from app.api import apis
+from app.api.namespaces import user_ns, idea_ns, vote_ns
 
 api = Api(
     title='IdeaHub API',

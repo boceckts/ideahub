@@ -1,6 +1,6 @@
-from flask_restplus import fields
+from flask_restplus import fields, Namespace
 
-from app.apis.namespaces import user_ns
+user_ns = Namespace('users', description='User operations')
 
 modify_user = user_ns.model('Modify User', {
     'username': fields.String(required=True, description='The user\'s unique username'),

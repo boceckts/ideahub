@@ -3,8 +3,8 @@ from flask_restplus import Resource
 from app import db
 from app.models.vote import Vote
 from app.utils.db_utils import expand_votes, expand_vote
-from app.apis.namespaces import vote_ns
-from app.apis.namespaces.votes_namespace import vote
+from app.api.namespaces import *
+from app.api.namespaces.vote_namespace import vote
 
 
 @vote_ns.route('', strict_slashes=False)

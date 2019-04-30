@@ -1,6 +1,6 @@
-from flask_restplus import fields
+from flask_restplus import fields, Namespace
 
-from app.apis.namespaces import idea_ns
+idea_ns = Namespace('ideas', description='Idea operations')
 
 new_idea = idea_ns.model('New Idea', {
     'title': fields.String(required=True, description='The idea\'s title'),
