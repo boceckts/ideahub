@@ -2,7 +2,7 @@ from flask_restplus import Resource, Namespace, fields
 
 from app import db
 from app.models import Idea
-from app.utils.db_utils import expand_idea, expand_ideas
+from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
 
 idea_ns = Namespace('ideas', description='Idea operations')
 
@@ -18,8 +18,16 @@ idea = idea_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
     'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
-    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
-                         description='The ids of the votes are targeted to this idea')
+    'votes_count': fields.Integer(readonly=True, description='The number of votes that are targeted to this idea'),
+    'votes_url': fields.String(readonly=True, description='The url to the votes targeting this idea')
+})
+
+vote = idea_ns.model('Vote', {
+    'target': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
+    'value': fields.Integer(readOnly=True, description='The value of the vote'),
+    'created': fields.DateTime(readOnly=True, description='The vote\'s creation date'),
+    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date'),
+    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote')
 })
 
 
@@ -62,3 +70,17 @@ class IdeaResource(Resource):
         db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
+
+
+@idea_ns.route('/<int:idea_id>/votes', strict_slashes=False, endpoint='idea_votes_ep')
+@idea_ns.response(404, 'Resource not found')
+@idea_ns.response(500, 'Internal Server Error')
+class IdeaVotesResource(Resource):
+
+    @idea_ns.marshal_with(vote, code=200, description='Show the votes for the selected idea')
+    def get(self, idea_id):
+        """Show all votes that are targeted to the idea with the selected id"""
+        queried_idea = Idea.query.get(idea_id)
+        if queried_idea is None:
+            idea_ns.abort(404, 'Idea not found')
+        return expand_votes(queried_idea.votes), 200

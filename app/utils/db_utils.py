@@ -1,3 +1,6 @@
+from flask import url_for
+
+
 def expand_users(queried_users):
     expanded_users = []
     for queried_user in queried_users:
@@ -10,8 +13,10 @@ def expand_users(queried_users):
 def expand_user(queried_user):
     if queried_user is not None:
         user_as_dict = queried_user.as_dict()
-        user_as_dict['ideas'] = list(map(lambda idea: idea.id, queried_user.ideas.all()))
-        user_as_dict['votes'] = list(map(lambda idea: idea.id, queried_user.votes.all()))
+        user_as_dict['ideas_url'] = url_for('user_ideas_ep', user_id=queried_user.id, _external=True)
+        user_as_dict['votes_url'] = url_for('user_votes_ep', user_id=queried_user.id, _external=True)
+        user_as_dict['ideas_count'] = len(queried_user.ideas.all())
+        user_as_dict['votes_count'] = len(queried_user.votes.all())
         return user_as_dict
 
 
@@ -28,7 +33,8 @@ def expand_idea(queried_idea):
     if queried_idea is not None:
         idea_as_dict = queried_idea.as_dict()
         idea_as_dict['author'] = queried_idea.user_id
-        idea_as_dict['votes'] = list(map(lambda idea: idea.id, queried_idea.votes.all()))
+        idea_as_dict['votes_count'] = len(queried_idea.votes.all())
+        idea_as_dict['votes_url'] = url_for('idea_votes_ep', idea_id=queried_idea.id, _external=True)
         return idea_as_dict
 
 

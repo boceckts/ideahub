@@ -16,10 +16,10 @@ user = user_ns.model('User', {
     'name': fields.String(readOnly=True, description='The user\'s name'),
     'surname': fields.String(readOnly=True, description='The user\'s surname'),
     'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address'),
-    'ideas': fields.List(cls_or_instance=fields.Integer, readonly=True,
-                         description='The ids of the ideas that the user created'),
-    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
-                         description='The ids of the votes that the user issued')
+    'ideas_count': fields.Integer(readonly=True, description='The number of ideas that the user created'),
+    'votes_count': fields.Integer(readonly=True, description='The number of votes that the user issued'),
+    'ideas_url': fields.String(readonly=True, description='The url to this user\'s ideas'),
+    'votes_url': fields.String(readonly=True, description='The url to this user\'s votes')
 })
 
 new_user = user_ns.inherit('New User', user, {
@@ -38,11 +38,11 @@ idea = user_ns.inherit('Idea', new_idea, {
     'created': fields.String(readOnly=True, description='The idea\'s creation date'),
     'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
     'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
-    'votes': fields.List(cls_or_instance=fields.Integer, readonly=True,
-                         description='The ids of the votes are targeted to this idea')
+    'votes_count': fields.Integer(readonly=True, description='The number of votes that are targeted to this idea'),
+    'votes_url': fields.String(readonly=True, description='The url to the votes targeting this idea')
 })
 
-modify_vote = user_ns.model('New Vote', {
+modify_vote = user_ns.model('Modify Vote', {
     'value': fields.Integer(readOnly=True, description='The value of the vote')
 })
 
@@ -58,7 +58,7 @@ vote = user_ns.inherit('Vote', new_vote, {
 })
 
 
-@user_ns.route('', strict_slashes=False)
+@user_ns.route('', strict_slashes=False, endpoint='users_ep')
 @user_ns.response(500, 'Internal Server Error')
 class UsersResource(Resource):
 
@@ -95,7 +95,7 @@ class UsersResource(Resource):
         return '', 204
 
 
-@user_ns.route('/<int:user_id>', strict_slashes=False)
+@user_ns.route('/<int:user_id>', strict_slashes=False, endpoint='user_ep')
 @user_ns.response(404, 'User not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserResource(Resource):
@@ -140,7 +140,7 @@ class UserResource(Resource):
         return '', 204
 
 
-@user_ns.route('/<int:user_id>/ideas', strict_slashes=False)
+@user_ns.route('/<int:user_id>/ideas', strict_slashes=False, endpoint='user_ideas_ep')
 @user_ns.response(404, 'User not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserIdeasResource(Resource):
@@ -236,7 +236,7 @@ class UserIdeaResource(Resource):
         return '', 204
 
 
-@user_ns.route('/<int:user_id>/votes', strict_slashes=False)
+@user_ns.route('/<int:user_id>/votes', strict_slashes=False, endpoint='user_votes_ep')
 @user_ns.response(404, 'Resource not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserVotesResource(Resource):
