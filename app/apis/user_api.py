@@ -211,18 +211,22 @@ class UserVotesResource(Resource):
     @user_ns.expect(new_vote, validate=True)
     @user_ns.response(201, 'Vote successfully created', vote, headers={'location': 'The vote\'s location'})
     @user_ns.response(400, 'Bad request')
-    @user_ns.response(409, 'Vote already exists')
+    @user_ns.response(409, 'Conflict')
     def post(self, user_id):
         """Create a new idea for the user with the selected id"""
         json_data = request.get_json(force=True)
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        future_vote = Vote()
-        future_vote.value = json_data['value']
-        queried_idea = Idea.query.get(json_data['target'])
+        idea_id = json_data['target']
+        queried_idea = Idea.query.get(idea_id)
         if queried_idea is None:
             user_ns.abort(409, 'Target not found')
+        existing_vote = Vote.query.filter_by(user_id=user_id, idea_id=idea_id).first()
+        if existing_vote is not None:
+            user_ns.abort(409, 'Vote already exists')
+        future_vote = Vote()
+        future_vote.value = json_data['value']
         future_vote.target = queried_idea
         future_vote.owner = queried_user
         try:
