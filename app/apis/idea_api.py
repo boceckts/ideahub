@@ -1,34 +1,11 @@
-from flask_restplus import Resource, Namespace, fields
+from flask_restplus import Resource
 
 from app import db
+from app.apis.namespaces import idea_ns
+from app.apis.namespaces.ideas_namespace import idea
+from app.apis.namespaces.votes_namespace import vote
 from app.models import Idea
 from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
-
-idea_ns = Namespace('ideas', description='Idea operations')
-
-new_idea = idea_ns.model('New Idea', {
-    'id': fields.Integer(readOnly=True, description='The idea\'s unique id'),
-    'title': fields.String(readOnly=True, required=True, description='The idea\'s title'),
-    'description': fields.String(readOnly=True, description='The idea\'s description'),
-    'categories': fields.String(readOnly=True, description='The idea\'s categories'),
-    'tags': fields.String(readOnly=True, description='The idea\'s tags')
-})
-
-idea = idea_ns.inherit('Idea', new_idea, {
-    'created': fields.String(readOnly=True, description='The idea\'s creation date'),
-    'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
-    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
-    'votes_count': fields.Integer(readonly=True, description='The number of votes that are targeted to this idea'),
-    'votes_url': fields.String(readonly=True, description='The url to the votes targeting this idea')
-})
-
-vote = idea_ns.model('Vote', {
-    'target': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
-    'value': fields.Integer(readOnly=True, description='The value of the vote'),
-    'created': fields.DateTime(readOnly=True, description='The vote\'s creation date'),
-    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date'),
-    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote')
-})
 
 
 @idea_ns.route('', strict_slashes=False)

@@ -1,61 +1,16 @@
 from datetime import datetime
 
 from flask import request
-from flask_restplus import Resource, Namespace, fields
+from flask_restplus import Resource
 from sqlalchemy.exc import IntegrityError
 
 from app import db
+from app.apis.namespaces import user_ns
+from app.apis.namespaces.ideas_namespace import idea, new_idea
+from app.apis.namespaces.users_namespaces import user, new_user
+from app.apis.namespaces.votes_namespace import vote, new_vote, modify_vote
 from app.models import User, Idea, Vote
 from app.utils.db_utils import expand_users, expand_user, expand_idea, expand_votes, expand_ideas, expand_vote
-
-user_ns = Namespace('users', description='User operations')
-
-user = user_ns.model('User', {
-    'id': fields.Integer(readOnly=True, description='The user\'s unique id'),
-    'username': fields.String(readOnly=True, required=True, description='The user\'s unique username'),
-    'name': fields.String(readOnly=True, description='The user\'s name'),
-    'surname': fields.String(readOnly=True, description='The user\'s surname'),
-    'email': fields.String(readOnly=True, required=True, description='The user\'s unique email address'),
-    'ideas_count': fields.Integer(readonly=True, description='The number of ideas that the user created'),
-    'votes_count': fields.Integer(readonly=True, description='The number of votes that the user issued'),
-    'ideas_url': fields.String(readonly=True, description='The url to this user\'s ideas'),
-    'votes_url': fields.String(readonly=True, description='The url to this user\'s votes')
-})
-
-new_user = user_ns.inherit('New User', user, {
-    'password': fields.String(readOnly=True, required=True, description='The user\'s password')
-})
-
-new_idea = user_ns.model('New Idea', {
-    'id': fields.Integer(readOnly=True, description='The idea\'s unique id'),
-    'title': fields.String(readOnly=True, required=True, description='The idea\'s title'),
-    'description': fields.String(readOnly=True, description='The idea\'s description'),
-    'categories': fields.String(readOnly=True, description='The idea\'s categories'),
-    'tags': fields.String(readOnly=True, description='The idea\'s tags')
-})
-
-idea = user_ns.inherit('Idea', new_idea, {
-    'created': fields.String(readOnly=True, description='The idea\'s creation date'),
-    'modified': fields.String(readOnly=True, description='The idea\'s last modified date'),
-    'author': fields.Integer(readOnly=True, requuired=True, description='The id of the idea\'s author'),
-    'votes_count': fields.Integer(readonly=True, description='The number of votes that are targeted to this idea'),
-    'votes_url': fields.String(readonly=True, description='The url to the votes targeting this idea')
-})
-
-modify_vote = user_ns.model('Modify Vote', {
-    'value': fields.Integer(readOnly=True, description='The value of the vote')
-})
-
-new_vote = user_ns.model('New Vote', {
-    'target': fields.Integer(readOnly=True, required=True, description='The idea id that the vote belongs to'),
-    'value': fields.Integer(readOnly=True, description='The value of the vote')
-})
-
-vote = user_ns.inherit('Vote', new_vote, {
-    'created': fields.DateTime(readOnly=True, description='The vote\'s creation date'),
-    'modified': fields.DateTime(readOnly=True, description='The vote\'s last modified date'),
-    'user_id': fields.Integer(readOnly=True, description='The user id of the user that issued the vote')
-})
 
 
 @user_ns.route('', strict_slashes=False, endpoint='users_ep')
