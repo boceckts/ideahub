@@ -4,7 +4,7 @@ from app import db
 from app.apis.namespaces import idea_ns
 from app.apis.namespaces.ideas_namespace import idea
 from app.apis.namespaces.votes_namespace import vote
-from app.models import Idea
+from app.models.idea import Idea
 from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
 
 

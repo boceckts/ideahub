@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 
 from app import db
-from app.models import Vote
+from app.models.vote import Vote
 from app.utils.db_utils import expand_votes, expand_vote
 from app.apis.namespaces import vote_ns
 from app.apis.namespaces.votes_namespace import vote
