@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>New Idea</h1>
+    <h1>Edit Profile: {{ current_user.username }}</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=32) }}<br>
-            {% for error in form.title.errors %}
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}<br>
+            {% for error in form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ form.description.label }}<br>
-            {{ form.description(size=32) }}<br>
-            {% for error in form.description.errors %}
+            {{ form.surname.label }}<br>
+            {{ form.surname(size=32) }}<br>
+            {% for error in form.surname.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ form.categories.label }}<br>
-            {{ form.categories(size=1) }}<br>
-            {% for error in form.description.errors %}
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}<br>
+            {% for error in form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

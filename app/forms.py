@@ -30,6 +30,7 @@ class RegistrationForm(FlaskForm):
 class NewIdeaForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = StringField('Description')
+    categories = SelectField('Categories', choices = [('Computing','Computing'),('DIY','DIY'),('Sport & Exercise','Sport & Exercise'),('Other','Other')], validators = [DataRequired()])
     # picture =
     submit = SubmitField('Submit')
 
@@ -38,7 +39,13 @@ class NewIdeaForm(FlaskForm):
         if idea is not None:
             raise ValidationError('This idea already exists!')
 
+class EditProfileForm(FlaskForm):
+    name = StringField('Name', validators = [DataRequired()])
+    surname = StringField('Surname', validators = [DataRequired()])
+    email = StringField('Email', validators = [DataRequired()])
+    submit = SubmitField('Submit')
+
 class EditIdeaForm(FlaskForm):
     description = StringField('Description')
-    categories = SelectField('Categories', choices = [('Test1','Test1'),('Test2','Test2'),('Other','Other')], validators = [DataRequired()])
+    categories = SelectField('Categories', choices = [('Computing','Computing'),('DIY','DIY'),('Sport & Exercise','Sport & Exercise'),('Other','Other')], validators = [DataRequired()])
     submit = SubmitField('Submit')

@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditIdeaForm
+from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea
 
 
@@ -67,7 +67,9 @@ def newIdea():
     form = NewIdeaForm()
     if form.validate_on_submit():
         print(current_user.id)
-        idea = Idea(title=form.title.data, description=form.description.data,
+        idea = Idea(title=form.title.data,
+                    description=form.description.data,
+                    categories=form.categories.data,
                     user_id=current_user.id)  # not sure if i have to initialise votes here
         db.session.add(idea)
         db.session.commit()
@@ -75,6 +77,28 @@ def newIdea():
         return redirect(url_for('index'))
     return render_template('newIdea.html', title='New Idea', form=form)
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    ideas = Idea.query.filter_by(user_id=current_user.id)
+    return render_template("profile.html", title='Profile', ideas=ideas)
+
+@app.route('/editProfile', methods=['GET', 'POST'])
+def editProfile():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    user = User.query.filter_by(id=current_user.id).first()
+    if user:
+        form = EditProfileForm()
+        if request.method == 'POST':
+            current_user.name = form.name.data
+            current_user.surname = form.surname.data
+            current_user.email = form.email.data
+            db.session.commit()
+            flash('Your profile has been edited!')
+            return redirect(url_for('profile'))
+        return render_template('editProfile.html', title='Edit Profile', form=form)
 
 @app.route('/editIdea/<int:id>', methods=['GET', 'POST'])
 def editIdea(id):
@@ -89,23 +113,14 @@ def editIdea(id):
             idea.modified = datetime.utcnow()
             db.session.commit()
             flash('Your idea has been edited!')
-            return redirect(url_for('ideas'))
-        if request.method == 'DELETE':
-            flash('Your idea has been deleted! (not working yet)')
-            return redirect(url_for('ideas'))
+            return redirect(url_for('profile'))
         return render_template('editIdea.html', title='Edit Idea', form=form, idea=idea)
 
-
-@app.route('/profile', methods=['GET', 'POST'])
-def profile():
+@app.route('/deleteIdea/<int:id>', methods=['GET'])
+def deleteIdea(id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template("profile.html", title='Account')
-
-
-@app.route('/ideas', methods=['GET', 'POST'])
-def ideas():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    ideas = Idea.query.filter_by(user_id=current_user.id)
-    return render_template("ideas.html", title='Ideas', ideas=ideas)
+    Idea.query.filter_by(id=id).delete()
+    db.session.commit()
+    flash('Your idea has been deleted!')
+    return redirect(url_for('profile'))

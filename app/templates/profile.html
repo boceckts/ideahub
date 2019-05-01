@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script>
+        function deleteIdeaConfirmation(code) {
+            return (confirm('Are you sure you want to delete this idea?'));
+        }
+    </script>
     <h1>
-        {{ current_user.username }}'s Profile
+        <!-- {{ current_user.username }}'s Profile -->
+        Profile
     </h1>
     <div>
         <p>
@@ -14,11 +20,38 @@
             <br>
             <b>Email: </b>{{ current_user.email }}
             <br>
-        <form action="/editUser/{{ current_user.id }}">
-            <input type="submit" value="Edit"/>
+        </p>
+        <form action="/editProfile">
+            <input type="submit" value="Edit Profile"/>
         </form>
         <br>
-        </p>
     </div>
+    <hr>
+    <h1>
+        Ideas
+    </h1>
+    {% for idea in ideas %}
+        <div>
+            <p>
+                <b>Title: </b>{{ idea.title }}
+                <br>
+                <b>Description: </b>{{ idea.description }}
+                <br>
+                <b>Categories: </b>{{ idea.categories }}
+                <br>
+                <b>Created: </b>{{ idea.created }}
+                <br>
+                <b>Last Modified: </b>{{ idea.modified }}
+                <br>
+            </p>
+                <form action="/editIdea/{{ idea.id }}">
+                    <input type="submit" value="Edit Idea" />
+                </form>
+                <form action="/deleteIdea/{{ idea.id }}" onsubmit='return deleteIdeaConfirmation()'>
+                    <input type="submit" value="Delete Idea" />
+                </form>
+                <br>
+        </div>
+    {% endfor %}
 
 {% endblock %}
