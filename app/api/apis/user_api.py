@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from app import db
 from app.api.namespaces.user_namespaces import user_ns, user, new_user
 from app.api.security.authentication import token_auth
+from app.api.security.authorization import check_for_ownership
 from app.models import User
 from app.utils.db_utils import expand_users, expand_user
 
@@ -54,6 +55,7 @@ class UsersResource(Resource):
 
 @user_ns.route('/<int:user_id>', strict_slashes=False, endpoint='user_ep')
 @user_ns.response(401, 'Unauthorized')
+@user_ns.response(403, 'Forbidden')
 @user_ns.response(404, 'User not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserResource(Resource):
@@ -62,6 +64,7 @@ class UserResource(Resource):
     @token_auth.login_required
     def get(self, user_id):
         """Show the user with the selected user_id"""
+        check_for_ownership(user_id)
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
@@ -74,6 +77,7 @@ class UserResource(Resource):
     @token_auth.login_required
     def put(self, user_id):
         """Update the user with the selected user_id"""
+        check_for_ownership(user_id)
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         json_data = request.get_json(force=True)
@@ -95,6 +99,7 @@ class UserResource(Resource):
     @token_auth.login_required
     def delete(self, user_id):
         """Delete the user with the selected user_id"""
+        check_for_ownership(user_id)
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         db.session.query(User).filter_by(id=user_id).delete(synchronize_session='fetch')

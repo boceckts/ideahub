@@ -8,12 +8,14 @@ from app import db
 from app.api.namespaces import user_ns
 from app.api.namespaces.idea_namespace import idea, new_idea
 from app.api.security.authentication import token_auth
+from app.api.security.authorization import check_for_ownership
 from app.models import User, Idea
 from app.utils.db_utils import expand_idea, expand_ideas
 
 
 @user_ns.route('/<int:user_id>/ideas', strict_slashes=False, endpoint='user_ideas_ep')
 @user_ns.response(401, 'Unauthorized')
+@user_ns.response(403, 'Forbidden')
 @user_ns.response(404, 'User not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserIdeasResource(Resource):
@@ -22,6 +24,7 @@ class UserIdeasResource(Resource):
     @token_auth.login_required
     def get(self, user_id):
         """Show all ideas for the user with the selected id"""
+        check_for_ownership(user_id)
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
@@ -34,6 +37,7 @@ class UserIdeasResource(Resource):
     @token_auth.login_required
     def post(self, user_id):
         """Create a new idea for the user with the selected id"""
+        check_for_ownership(user_id)
         json_data = request.get_json(force=True)
         queried_user = User.query.get(user_id)
         if queried_user is None:
@@ -55,6 +59,7 @@ class UserIdeasResource(Resource):
     @token_auth.login_required
     def delete(self, user_id):
         """Delete all ideas for the user with the selected id"""
+        check_for_ownership(user_id)
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
@@ -65,6 +70,7 @@ class UserIdeasResource(Resource):
 
 @user_ns.route('/<int:user_id>/ideas/<int:idea_id>', strict_slashes=False)
 @user_ns.response(401, 'Unauthorized')
+@user_ns.response(403, 'Forbidden')
 @user_ns.response(404, 'Resource not found')
 @user_ns.response(500, 'Internal Server Error')
 class UserIdeaResource(Resource):
@@ -73,6 +79,7 @@ class UserIdeaResource(Resource):
     @token_auth.login_required
     def get(self, user_id, idea_id):
         """Show the idea with the selected idea_id of the user with the selected user id"""
+        check_for_ownership(user_id)
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         queried_idea = Idea.query.get(idea_id)
@@ -87,6 +94,7 @@ class UserIdeaResource(Resource):
     @token_auth.login_required
     def put(self, user_id, idea_id):
         """Update the idea with the selected idea_id of the user with the selected user id"""
+        check_for_ownership(user_id)
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         if Idea.query.get(idea_id) is None:
@@ -109,6 +117,7 @@ class UserIdeaResource(Resource):
     @token_auth.login_required
     def delete(self, user_id, idea_id):
         """Delete the idea with the selected idea_id of the user with the selected user id"""
+        check_for_ownership(user_id)
         if User.query.get(user_id) is None:
             user_ns.abort(404, 'User not found')
         if Idea.query.get(idea_id) is None:
