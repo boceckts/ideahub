@@ -2,9 +2,10 @@ from flask_restplus import Resource, marshal
 
 from app import db
 from app.api.namespaces import idea_ns
-from app.api.namespaces.idea_namespace import idea
+from app.api.namespaces.idea_namespace import idea, public_idea
 from app.api.namespaces.vote_namespace import vote
 from app.api.security.authentication import token_auth
+from app.api.security.authorization import check_for_idea_ownership
 from app.models.idea import Idea
 from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
 
@@ -14,12 +15,12 @@ from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
 @idea_ns.response(500, 'Internal Server Error')
 class IdeasResource(Resource):
 
-    @idea_ns.response(200, 'List all ideas', [idea])
+    @idea_ns.response(200, 'List all ideas', [public_idea])
     @token_auth.login_required
     def get(self):
         """List all ideas"""
         ideas = Idea.query.all()
-        return marshal(expand_ideas(ideas), idea), 200
+        return marshal(expand_ideas(ideas), public_idea), 200
 
     @idea_ns.response(204, 'Ideas successfully deleted')
     @token_auth.login_required
@@ -43,14 +44,17 @@ class IdeaResource(Resource):
         queried_idea = Idea.query.get(idea_id)
         if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
+        check_for_idea_ownership(queried_idea)
         return marshal(expand_idea(queried_idea), idea), 200
 
     @idea_ns.response(204, 'Idea was successfully deleted')
     @token_auth.login_required
     def delete(self, idea_id):
         """Delete the idea with the selected idea_id"""
-        if Idea.query.get(idea_id) is None:
+        queried_idea = Idea.query.get(idea_id)
+        if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
+        check_for_idea_ownership(queried_idea)
         db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
         db.session.commit()
         return '', 204
@@ -68,4 +72,5 @@ class IdeaVotesResource(Resource):
         queried_idea = Idea.query.get(idea_id)
         if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
+        check_for_idea_ownership(queried_idea)
         return marshal(expand_votes(queried_idea.votes), vote), 200

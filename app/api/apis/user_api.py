@@ -3,7 +3,7 @@ from flask_restplus import Resource, marshal
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.api.namespaces.user_namespaces import user_ns, user, new_user
+from app.api.namespaces.user_namespaces import user_ns, user, new_user, public_user
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_ownership
 from app.models import User
@@ -14,13 +14,13 @@ from app.utils.db_utils import expand_users, expand_user
 @user_ns.response(500, 'Internal Server Error')
 class UsersResource(Resource):
 
-    @user_ns.response(200, 'List all users', [user])
+    @user_ns.response(200, 'List all users', [public_user])
     @user_ns.response(401, 'Unauthorized')
     @token_auth.login_required
     def get(self):
         """List all users"""
         queried_users = User.query.all()
-        return marshal(expand_users(queried_users), user), 200
+        return marshal(expand_users(queried_users), public_user), 200
 
     @user_ns.expect(new_user, validate=True)
     @user_ns.response(201, 'User successfully created', user, headers={'location': 'The user\'s location'})
