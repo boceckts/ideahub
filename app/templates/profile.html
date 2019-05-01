@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+        {{ current_user.username }}'s Profile
+    </h1>
+    <div>
+        <p>
+            <b>Username: </b>{{ current_user.username}}
+            <br>
+            <b>Name: </b>{{ current_user.name }}
+            <br>
+            <b>Surname: </b>{{ current_user.surname }}
+            <br>
+            <b>Email: </b>{{ current_user.email }}
+            <br>
+        <form action="/editUser/{{ current_user.id }}">
+            <input type="submit" value="Edit"/>
+        </form>
+        <br>
+        </p>
+    </div>
+
+{% endblock %}
