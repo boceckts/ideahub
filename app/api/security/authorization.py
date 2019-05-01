@@ -13,5 +13,5 @@ def check_for_idea_ownership(idea):
 
 
 def check_for_vote_ownership(vote):
-    if g.current_user.id != vote.owner:
+    if g.current_user.id != vote.user_id:
         abort(403, 'You are not allowed to access the resource')
