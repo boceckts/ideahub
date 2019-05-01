@@ -1,15 +1,13 @@
-from datetime import datetime
-
 from flask import request, g
 from flask_restplus import Resource, marshal
-from sqlalchemy.exc import IntegrityError
 
-from app import db
 from app.api.namespaces.vote_namespace import vote, vote_ns, public_vote, new_vote, modify_vote
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_vote_ownership
 from app.models import Idea
 from app.models.vote import Vote
+from app.services.vote_service import get_all_votes, save_vote, vote_exists, delete_vote_by_id, get_vote_by_id, \
+    edit_vote
 from app.utils.db_utils import expand_votes, expand_vote
 
 
@@ -22,8 +20,7 @@ class VotesResource(Resource):
     @token_auth.login_required
     def get(self):
         """List all votes"""
-        votes = Vote.query.all()
-        return marshal(expand_votes(votes), public_vote), 200
+        return marshal(expand_votes(get_all_votes()), public_vote), 200
 
     @vote_ns.expect(new_vote, validate=True)
     @vote_ns.response(201, 'Vote successfully created', vote, headers={'location': 'The vote\'s location'})
@@ -37,18 +34,13 @@ class VotesResource(Resource):
         queried_idea = Idea.query.get(idea_id)
         if queried_idea is None:
             vote_ns.abort(409, 'Target not found')
-        existing_vote = Vote.query.filter_by(user_id=g.current_user.id, idea_id=idea_id).first()
-        if existing_vote is not None:
+        if vote_exists(g.current_user.id, idea_id):
             vote_ns.abort(409, 'Vote already exists')
         future_vote = Vote()
         future_vote.value = json_data['value']
         future_vote.target = queried_idea
         future_vote.owner = g.current_user
-        try:
-            db.session.add(future_vote)
-            db.session.commit()
-        except IntegrityError:
-            vote_ns.abort(409, "Vote already exists")
+        save_vote(future_vote)
         return marshal(expand_vote(future_vote), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
 
 
@@ -63,7 +55,7 @@ class VoteResource(Resource):
     @token_auth.login_required
     def get(self, vote_id):
         """Show the vote with the selected vote_id"""
-        queried_vote = Vote.query.get(vote_id)
+        queried_vote = get_vote_by_id(vote_id)
         if queried_vote is None:
             vote_ns.abort(404, 'Vote not found')
         check_for_vote_ownership(queried_vote)
@@ -76,29 +68,21 @@ class VoteResource(Resource):
     @token_auth.login_required
     def put(self, vote_id):
         """Update the vote with the selected vote_id"""
-        queried_vote = Vote.query.get(vote_id)
+        queried_vote = get_vote_by_id(vote_id)
         if queried_vote is None:
             vote_ns.abort(404, 'Vote not found')
         check_for_vote_ownership(queried_vote)
         json_data = request.get_json(force=True)
-        try:
-            db.session.query(Vote).filter_by(id=vote_id).update({
-                Vote.value: json_data['value'],
-                Vote.modified: datetime.utcnow()
-            })
-            db.session.commit()
-        except IntegrityError:
-            vote_ns.abort(409, "Vote already exists")
+        edit_vote(vote_id, json_data['value'])
         return '', 204
 
     @vote_ns.response(204, 'Vote was successfully deleted')
     @token_auth.login_required
     def delete(self, vote_id):
         """Delete the vote with the selected vote_id"""
-        queried_vote = Vote.query.get(vote_id)
+        queried_vote = get_vote_by_id(vote_id)
         if queried_vote is None:
             vote_ns.abort(404, 'Vote not found')
         check_for_vote_ownership(queried_vote)
-        db.session.query(Vote).filter_by(id=vote_id).delete(synchronize_session='fetch')
-        db.session.commit()
+        delete_vote_by_id(vote_id)
         return '', 204
