@@ -30,6 +30,12 @@
 				{
 					"name": "list all users",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -40,6 +46,12 @@
 				{
 					"name": "delete all users",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -50,6 +62,12 @@
 				{
 					"name": "show user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -60,6 +78,12 @@
 				{
 					"name": "edit user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -78,6 +102,12 @@
 				{
 					"name": "delete user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -88,6 +118,12 @@
 				{
 					"name": "create idea for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -106,6 +142,12 @@
 				{
 					"name": "list all ideas for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -116,6 +158,12 @@
 				{
 					"name": "delete all ideas for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -126,6 +174,12 @@
 				{
 					"name": "Show idea for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -136,6 +190,12 @@
 				{
 					"name": "edit idea for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -154,6 +214,12 @@
 				{
 					"name": "delete idea for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -164,6 +230,12 @@
 				{
 					"name": "create vote for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -182,6 +254,12 @@
 				{
 					"name": "show all votes for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -192,6 +270,12 @@
 				{
 					"name": "delete all votes for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -202,6 +286,12 @@
 				{
 					"name": "show vote for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -212,6 +302,12 @@
 				{
 					"name": "edit vote for user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -246,6 +342,12 @@
 				{
 					"name": "list all ideas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -256,6 +358,12 @@
 				{
 					"name": "delete all ideas",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -276,6 +384,12 @@
 				{
 					"name": "delete idea",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {},
@@ -292,6 +406,12 @@
 				{
 					"name": "list all votes",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -302,6 +422,12 @@
 				{
 					"name": "delete all votes",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [
 							{
@@ -320,6 +446,12 @@
 				{
 					"name": "list vote",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -330,6 +462,12 @@
 				{
 					"name": "delete vote",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
 						"method": "DELETE",
 						"header": [
 							{
@@ -340,6 +478,45 @@
 						],
 						"body": {},
 						"url": "http://localhost:5000/api/v1/votes/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tokens",
+			"description": "",
+			"item": [
+				{
+					"name": "generate token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "12345678",
+								"username": "Jdoe"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/token"
+					},
+					"response": []
+				},
+				{
+					"name": "revoke token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/token"
 					},
 					"response": []
 				}
