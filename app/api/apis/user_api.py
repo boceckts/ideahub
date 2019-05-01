@@ -43,15 +43,6 @@ class UsersResource(Resource):
             user_ns.abort(409, "User already exists")
         return marshal(expand_user(future_user), user), 201, {'Location': '{}/{}'.format(request.url, future_user.id)}
 
-    @user_ns.response(204, 'Users successfully deleted')
-    @user_ns.response(401, 'Unauthorized')
-    @token_auth.login_required
-    def delete(self):
-        """Delete all users"""
-        db.session.query(User).delete(synchronize_session='fetch')
-        db.session.commit()
-        return '', 204
-
 
 @user_ns.route('/<int:user_id>', strict_slashes=False, endpoint='user_ep')
 @user_ns.response(401, 'Unauthorized')

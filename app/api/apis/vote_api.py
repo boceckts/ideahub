@@ -51,14 +51,6 @@ class VotesResource(Resource):
             vote_ns.abort(409, "Vote already exists")
         return marshal(expand_vote(future_vote), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
 
-    @vote_ns.response(204, 'Votes successfully deleted')
-    @token_auth.login_required
-    def delete(self):
-        """Delete all votes"""
-        db.session.query(Vote).delete(synchronize_session='fetch')
-        db.session.commit()
-        return '', 204
-
 
 @vote_ns.route('/<int:vote_id>', strict_slashes=False)
 @vote_ns.response(401, 'Unauthorized')

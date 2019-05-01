@@ -47,14 +47,6 @@ class IdeasResource(Resource):
             idea_ns.abort(409, "Idea already exists")
         return marshal(expand_idea(future_idea), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
 
-    @idea_ns.response(204, 'Ideas successfully deleted')
-    @token_auth.login_required
-    def delete(self):
-        """Delete all ideas"""
-        db.session.query(Idea).delete(synchronize_session='fetch')
-        db.session.commit()
-        return '', 204
-
 
 @idea_ns.route('/<int:idea_id>', strict_slashes=False)
 @idea_ns.response(401, 'Unauthorized')
