@@ -19,12 +19,3 @@ class Vote(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    @staticmethod
-    def of(owner, target, value):
-        vote = Vote()
-        vote.value = value
-        vote.target = target
-        vote.owner = owner
-        return vote
-

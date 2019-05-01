@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import User, Idea
+
+from app.models import User
+from app.services.idea_service import idea_title_exists
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -35,8 +38,7 @@ class NewIdeaForm(FlaskForm):
     submit = SubmitField('Submit')
 
     def validate_title(self, title):
-        idea = Idea.query.filter_by(title=title.data).first()
-        if idea is not None:
+        if idea_title_exists(title.data):
             raise ValidationError('This idea already exists!')
 
 class EditProfileForm(FlaskForm):

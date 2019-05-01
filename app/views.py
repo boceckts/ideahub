@@ -1,15 +1,13 @@
-from datetime import datetime
-
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import func
 from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea, Vote
 from app.models.errors import VoteExistsError, IdeaNotFoundError
-from app.services.idea_service import get_idea
+from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, edit_idea, \
+    get_all_ideas_for_user, get_random_unvoted_idea_for_user
 from app.services.vote_service import save_vote, vote_exists
 
 
@@ -75,8 +73,7 @@ def newIdea():
                     description=form.description.data,
                     categories=form.categories.data,
                     user_id=current_user.id)  # not sure if i have to initialise votes here
-        db.session.add(idea)
-        db.session.commit()
+        save_idea(idea)
         flash('Your idea has been saved!')
         return redirect(url_for('index'))
     return render_template('newIdea.html', title='New Idea', form=form)
@@ -86,8 +83,7 @@ def newIdea():
 def profile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    ideas = Idea.query.filter_by(user_id=current_user.id)
-    return render_template("profile.html", title='Profile', ideas=ideas)
+    return render_template("profile.html", title='Profile', ideas=get_all_ideas_for_user(current_user.id))
 
 
 @app.route('/editProfile', methods=['GET', 'POST'])
@@ -111,25 +107,23 @@ def editProfile():
 def editIdea(id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    idea = Idea.query.filter_by(id=id).first()
-    if idea:
+    if idea_exists(id):
         form = EditIdeaForm()
+        edited_idea = get_idea(id)
         if request.method == 'POST':
-            idea.description = form.description.data
-            idea.categories = form.categories.data
-            idea.modified = datetime.utcnow()
-            db.session.commit()
+            edited_idea.description = form.description.data
+            edited_idea.categories = form.categories.data
+            edit_idea(id, edited_idea)
             flash('Your idea has been edited!')
             return redirect(url_for('profile'))
-        return render_template('editIdea.html', title='Edit Idea', form=form, idea=idea)
+        return render_template('editIdea.html', title='Edit Idea', form=form, idea=edited_idea)
 
 
 @app.route('/deleteIdea/<int:id>', methods=['GET'])
 def deleteIdea(id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    Idea.query.filter_by(id=id).delete()
-    db.session.commit()
+    delete_idea_by_id(id)
     flash('Your idea has been deleted!')
     return redirect(url_for('profile'))
 
@@ -144,8 +138,8 @@ def voting():
             raise IdeaNotFoundError
         if vote_exists(current_user.id, queried_idea.id):
             raise VoteExistsError
-        future_vote = Vote.of(current_user, queried_idea, request.form.get('value'))
+        future_vote = Vote(owner=current_user,
+                           target=queried_idea,
+                           value=request.form.get('value'))
         save_vote(future_vote)
-    rand_idea = db.session.query(Idea).filter(
-        ~Idea.votes.any(Vote.user_id.is_(current_user.id))).order_by(func.random()).first()
-    return render_template("voting.html", title='Voting', idea=rand_idea)
+    return render_template("voting.html", title='Voting', idea=get_random_unvoted_idea_for_user(current_user.id))

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask import request, g
 from flask_restplus import Resource, marshal
 from sqlalchemy.exc import IntegrityError
@@ -11,6 +9,8 @@ from app.api.namespaces.vote_namespace import vote
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_idea_ownership
 from app.models.idea import Idea
+from app.services.idea_service import get_all_ideas, get_idea, idea_exists, edit_idea, idea_title_exists, \
+    delete_idea_by_id
 from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
 
 
@@ -23,8 +23,7 @@ class IdeasResource(Resource):
     @token_auth.login_required
     def get(self):
         """List all ideas"""
-        ideas = Idea.query.all()
-        return marshal(expand_ideas(ideas), public_idea), 200
+        return marshal(expand_ideas(get_all_ideas()), public_idea), 200
 
     @idea_ns.expect(new_idea, validate=True)
     @idea_ns.response(201, 'Idea successfully created', idea, headers={'location': 'The idea\'s location'})
@@ -59,7 +58,7 @@ class IdeaResource(Resource):
     @token_auth.login_required
     def get(self, idea_id):
         """Show the idea with the selected idea_id"""
-        queried_idea = Idea.query.get(idea_id)
+        queried_idea = get_idea(idea_id)
         if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
         check_for_idea_ownership(queried_idea)
@@ -72,34 +71,28 @@ class IdeaResource(Resource):
     @token_auth.login_required
     def put(self, idea_id):
         """Update the idea with the selected idea_id"""
-        queried_idea = Idea.query.get(idea_id)
-        if queried_idea is None:
+        if not idea_exists(idea_id):
             idea_ns.abort(404, 'Idea not found')
-        check_for_idea_ownership(queried_idea)
+        check_for_idea_ownership(get_idea(idea_id))
         json_data = request.get_json(force=True)
-        try:
-            db.session.query(Idea).filter_by(id=idea_id).update({
-                Idea.title: json_data['title'],
-                Idea.description: json_data['description'],
-                Idea.categories: json_data['categories'],
-                Idea.tags: json_data['tags'],
-                Idea.modified: datetime.utcnow()
-            })
-            db.session.commit()
-        except IntegrityError:
+        if idea_title_exists(json_data['title']):
             idea_ns.abort(409, "Idea already exists")
+        edited_idea = get_idea(idea_id)
+        edited_idea.title = json_data['title']
+        edited_idea.description = json_data['description']
+        edited_idea.categories = json_data['categories']
+        edited_idea.tags = json_data['tags']
+        edit_idea(idea_id, edited_idea)
         return '', 204
 
     @idea_ns.response(204, 'Idea was successfully deleted')
     @token_auth.login_required
     def delete(self, idea_id):
         """Delete the idea with the selected idea_id"""
-        queried_idea = Idea.query.get(idea_id)
-        if queried_idea is None:
+        if not idea_exists(idea_id):
             idea_ns.abort(404, 'Idea not found')
-        check_for_idea_ownership(queried_idea)
-        db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
-        db.session.commit()
+        check_for_idea_ownership(get_idea(idea_id))
+        delete_idea_by_id(idea_id)
         return '', 204
 
 
@@ -114,8 +107,8 @@ class IdeaVotesResource(Resource):
     @token_auth.login_required
     def get(self, idea_id):
         """Show all votes that are targeted to the idea with the selected id"""
-        queried_idea = Idea.query.get(idea_id)
-        if queried_idea is None:
+        if not idea_exists(idea_id):
             idea_ns.abort(404, 'Idea not found')
+        queried_idea = get_idea(idea_id)
         check_for_idea_ownership(queried_idea)
         return marshal(expand_votes(queried_idea.votes), vote), 200
