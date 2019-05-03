@@ -1,11 +1,10 @@
-from flask import request
+from flask import request, g
 from flask_restplus import Resource, marshal
 
 from app.api.namespaces.user_namespaces import user_ns, user, modify_user
 from app.api.security.authentication import token_auth
-from app.models import User
-from app.services.user_service import get_current_user, edit_current_user, email_exists, \
-    delete_current_user
+from app.services.user_service import edit_user_by_json, email_exists, \
+    delete_user_by_id
 
 
 @user_ns.route('', strict_slashes=False, endpoint='user_ep')
@@ -17,7 +16,7 @@ class UserResource(Resource):
     @token_auth.login_required
     def get(self):
         """Show the user with the selected user_id"""
-        return marshal(get_current_user().as_dict(), user), 200
+        return marshal(g.current_user.as_dict(), user), 200
 
     @user_ns.expect(modify_user, validate=True)
     @user_ns.response(204, 'User successfully modified')
@@ -29,12 +28,12 @@ class UserResource(Resource):
         json_data = request.get_json(force=True)
         if email_exists(json_data['email']):
             user_ns.abort(409, "Username already exists")
-        edit_current_user(json_data)
+        edit_user_by_json(g.current_user.id, json_data)
         return '', 204
 
     @user_ns.response(204, 'User was successfully deleted')
     @token_auth.login_required
     def delete(self):
         """Delete the current user"""
-        delete_current_user()
+        delete_user_by_id(g.current_user)
         return '', 204

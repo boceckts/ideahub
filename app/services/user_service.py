@@ -1,17 +1,7 @@
-from flask import g
-
 from app import db
 from app.models import User
 from app.services.idea_service import delete_ideas_for_user
 from app.services.vote_service import delete_votes_for_user
-
-
-def get_current_user():
-    return g.current_user
-
-
-def set_current_user(user):
-    g.current_user = user
 
 
 def get_all_users():
@@ -34,11 +24,7 @@ def username_exists(username):
     return db.session.query(User).filter_by(username=username).first() is not None
 
 
-def delete_current_user():
-    delete_current_user_by_id(get_current_user().id)
-
-
-def delete_current_user_by_id(user_id):
+def delete_user_by_id(user_id):
     delete_votes_for_user(user_id)
     delete_ideas_for_user(user_id)
     db.session.query(User).filter_by(id=user_id).delete(synchronize_session='fetch')
@@ -50,27 +36,22 @@ def save_user(user):
     db.session.commit()
 
 
-def save_new_user(user):
-    db.session.add(user)
-    db.session.commit()
-
-
-def edit_current_user(json_data):
-    db.session.query(User).filter_by(id=get_current_user().id).update({
+def edit_user_by_json(user_id, json_data):
+    db.session.query(User).filter_by(id=user_id).update({
         User.email: json_data['email'],
         User.name: json_data['name'],
         User.surname: json_data['surname'],
     })
-    get_current_user().set_password(json_data['password'])
+    user = get_user_by_id(user_id).set_password(json_data['password'])
     db.session.commit()
-    return get_current_user()
+    return user
 
 
-def edit_current_user_by_for(form_data):
-    db.session.query(User).filter_by(id=get_current_user().id).update({
+def edit_user_by_form(user_id, form_data):
+    db.session.query(User).filter_by(id=user_id).update({
         User.email: form_data.email.data,
         User.name: form_data.name.data,
         User.surname: form_data.surname.data,
     })
     db.session.commit()
-    return get_current_user()
+    return get_user_by_id(user_id)
