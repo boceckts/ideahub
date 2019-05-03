@@ -16,9 +16,11 @@ class TokensResource(Resource):
     @basic_auth.login_required
     def post(self):
         """Generate a new bearer token"""
-        new_token = g.current_user.generate_auth_token()
+        g.current_user.generate_auth_token()
         db.session.commit()
-        return marshal({'token': new_token}, token), 200
+        token_obj = {'token': g.current_user.token,
+                     'expires_on': g.current_user.token_expiration}
+        return marshal(token_obj, token), 200
 
     @token_ns.response(204, 'Token successfully revoked')
     @token_auth.login_required
