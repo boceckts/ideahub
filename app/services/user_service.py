@@ -35,10 +35,13 @@ def username_exists(username):
 
 
 def delete_current_user():
-    user_id = get_current_user().id
+    delete_current_user_by_id(get_current_user().id)
+
+
+def delete_current_user_by_id(user_id):
     delete_votes_for_user(user_id)
     delete_ideas_for_user(user_id)
-    db.session.query(User).filter_by(id=get_current_user().id).delete(synchronize_session='fetch')
+    db.session.query(User).filter_by(id=user_id).delete(synchronize_session='fetch')
     db.session.commit()
 
 

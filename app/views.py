@@ -8,7 +8,8 @@ from app.models import User, Idea, Vote
 from app.models.errors import VoteExistsError, IdeaNotFoundError
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, edit_idea, \
     get_all_ideas_for_user, get_random_unvoted_idea_for_user
-from app.services.user_service import get_user_by_username, save_user, edit_current_user_by_for
+from app.services.user_service import get_user_by_username, save_user, edit_current_user_by_for, \
+    delete_current_user_by_id
 from app.services.vote_service import save_vote, vote_exists
 
 
@@ -98,6 +99,15 @@ def editProfile():
         flash('Your profile has been edited!')
         return redirect(url_for('profile'))
     return render_template('editProfile.html', title='Edit Profile', form=form)
+
+
+@app.route('/deleteProfile', methods=['GET'])
+def deleteProfile():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    delete_current_user_by_id(current_user.id)
+    flash('Your profile has been deleted!')
+    return redirect(url_for('login'))
 
 
 @app.route('/editIdea/<int:id>', methods=['GET', 'POST'])
