@@ -7,7 +7,7 @@ from app.api.namespaces.user_namespaces import user_ns, user, new_user, public_u
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_ownership
 from app.models import User
-from app.utils.db_utils import expand_users, expand_user
+from app.utils import collection_as_dict
 
 
 @user_ns.route('', strict_slashes=False, endpoint='users_ep')
@@ -20,7 +20,7 @@ class UsersResource(Resource):
     def get(self):
         """List all users"""
         queried_users = User.query.all()
-        return marshal(expand_users(queried_users), public_user), 200
+        return marshal(collection_as_dict(queried_users), public_user), 200
 
     @user_ns.expect(new_user, validate=True)
     @user_ns.response(201, 'User successfully created', user, headers={'location': 'The user\'s location'})
@@ -41,7 +41,7 @@ class UsersResource(Resource):
             db.session.commit()
         except IntegrityError:
             user_ns.abort(409, "User already exists")
-        return marshal(expand_user(future_user), user), 201, {'Location': '{}/{}'.format(request.url, future_user.id)}
+        return marshal(future_user.as_dict(), user), 201, {'Location': '{}/{}'.format(request.url, future_user.id)}
 
 
 @user_ns.route('/<int:user_id>', strict_slashes=False, endpoint='user_ep')
@@ -59,7 +59,7 @@ class UserResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        return marshal(expand_user(queried_user), user), 200
+        return marshal(queried_user.as_dict(), user), 200
 
     @user_ns.expect(new_user, validate=True)
     @user_ns.response(204, 'User successfully modified')

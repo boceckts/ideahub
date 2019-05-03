@@ -2,10 +2,14 @@ import base64
 import os
 from datetime import datetime, timedelta
 
+from flask import url_for
 from flask_login import UserMixin
+from sqlalchemy import func, select
+from sqlalchemy.orm import column_property
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login
+from app.models import Vote, Idea
 
 
 class User(UserMixin, db.Model):
@@ -19,6 +23,12 @@ class User(UserMixin, db.Model):
     votes = db.relationship('Vote', backref='owner', lazy='dynamic', cascade="all, delete-orphan")
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    votes_count = column_property(
+        select([func.count(Vote.id)]).where(Vote.user_id == id)
+    )
+    idea_count = column_property(
+        select([func.count(Idea.id)]).where(Idea.user_id == id)
+    )
 
     def generate_auth_token(self, expires_in=3600):
         now = datetime.utcnow()
@@ -49,7 +59,12 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        user_as_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        user_as_dict['ideas_url'] = url_for('user_ideas_ep', user_id=self.id, _external=True)
+        user_as_dict['votes_url'] = url_for('user_votes_ep', user_id=self.id, _external=True)
+        user_as_dict['ideas_count'] = self.idea_count
+        user_as_dict['votes_count'] = self.votes_count
+        return user_as_dict
 
 
 @login.user_loader

@@ -6,7 +6,7 @@ from app.api.namespaces.idea_namespace import idea
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_ownership
 from app.models import User
-from app.utils.db_utils import expand_ideas
+from app.utils import collection_as_dict
 
 
 @user_ns.route('/<int:user_id>/ideas', strict_slashes=False, endpoint='user_ideas_ep')
@@ -24,7 +24,7 @@ class UserIdeasResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        return marshal(expand_ideas(queried_user.ideas.all()), idea), 200
+        return marshal(collection_as_dict(queried_user.ideas.all()), idea), 200
 
     @user_ns.response(204, 'Ideas successfully deleted')
     @token_auth.login_required

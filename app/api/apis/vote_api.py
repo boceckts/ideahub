@@ -8,7 +8,7 @@ from app.models.vote import Vote
 from app.services.idea_service import idea_exists, get_idea
 from app.services.vote_service import get_all_votes, save_vote, vote_exists, delete_vote_by_id, get_vote_by_id, \
     edit_vote
-from app.utils.db_utils import expand_votes, expand_vote
+from app.utils import collection_as_dict
 
 
 @vote_ns.route('', strict_slashes=False)
@@ -20,7 +20,7 @@ class VotesResource(Resource):
     @token_auth.login_required
     def get(self):
         """List all votes"""
-        return marshal(expand_votes(get_all_votes()), public_vote), 200
+        return marshal(collection_as_dict(get_all_votes()), public_vote), 200
 
     @vote_ns.expect(new_vote, validate=True)
     @vote_ns.response(201, 'Vote successfully created', vote, headers={'location': 'The vote\'s location'})
@@ -39,7 +39,7 @@ class VotesResource(Resource):
                            target=get_idea(idea_id),
                            value=request.form.get('value'))
         save_vote(future_vote)
-        return marshal(expand_vote(future_vote), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
+        return marshal(future_vote.as_dict(), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
 
 
 @vote_ns.route('/<int:vote_id>', strict_slashes=False)
@@ -57,7 +57,7 @@ class VoteResource(Resource):
         if queried_vote is None:
             vote_ns.abort(404, 'Vote not found')
         check_for_vote_ownership(queried_vote)
-        return marshal(expand_vote(queried_vote), vote), 200
+        return marshal(queried_vote.as_dict(), vote), 200
 
     @vote_ns.expect(modify_vote, validate=True)
     @vote_ns.response(204, 'Vote successfully modified')

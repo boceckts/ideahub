@@ -18,4 +18,7 @@ class Vote(db.Model):
         return '<Vote %r>' % self.value
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        vote_as_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        vote_as_dict['target'] = self.idea_id
+        vote_as_dict['owner'] = self.user_id
+        return vote_as_dict

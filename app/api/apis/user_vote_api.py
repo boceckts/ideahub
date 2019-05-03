@@ -6,7 +6,7 @@ from app.api.namespaces.vote_namespace import vote
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_ownership
 from app.models import User
-from app.utils.db_utils import expand_votes
+from app.utils import collection_as_dict
 
 
 @user_ns.route('/<int:user_id>/votes', strict_slashes=False, endpoint='user_votes_ep')
@@ -24,7 +24,7 @@ class UserVotesResource(Resource):
         queried_user = User.query.get(user_id)
         if queried_user is None:
             user_ns.abort(404, 'User not found')
-        return marshal(expand_votes(queried_user.votes), vote), 200
+        return marshal(collection_as_dict(queried_user.votes), vote), 200
 
     @user_ns.response(204, 'Votes successfully deleted')
     @token_auth.login_required

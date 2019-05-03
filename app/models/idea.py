@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from flask import url_for
 from sqlalchemy import select, func
 from sqlalchemy.orm import column_property
 
@@ -36,4 +37,11 @@ class Idea(db.Model):
         return '<Idea %r>' % self.title
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        idea_as_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        idea_as_dict['author'] = self.user_id
+        idea_as_dict['votes_count'] = self.votes_count
+        idea_as_dict['score'] = self.score
+        idea_as_dict['upvotes'] = self.upvotes
+        idea_as_dict['downvotes'] = self.downvotes
+        idea_as_dict['votes_url'] = url_for('idea_votes_ep', idea_id=self.id, _external=True)
+        return  idea_as_dict

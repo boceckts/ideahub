@@ -11,7 +11,7 @@ from app.api.security.authorization import check_for_idea_ownership
 from app.models.idea import Idea
 from app.services.idea_service import get_all_ideas, get_idea, idea_exists, edit_idea, idea_title_exists, \
     delete_idea_by_id
-from app.utils.db_utils import expand_idea, expand_ideas, expand_votes
+from app.utils import collection_as_dict
 
 
 @idea_ns.route('', strict_slashes=False)
@@ -23,7 +23,7 @@ class IdeasResource(Resource):
     @token_auth.login_required
     def get(self):
         """List all ideas"""
-        return marshal(expand_ideas(get_all_ideas()), public_idea), 200
+        return marshal(collection_as_dict(get_all_ideas()), public_idea), 200
 
     @idea_ns.expect(new_idea, validate=True)
     @idea_ns.response(201, 'Idea successfully created', idea, headers={'location': 'The idea\'s location'})
@@ -44,7 +44,7 @@ class IdeasResource(Resource):
             db.session.commit()
         except IntegrityError:
             idea_ns.abort(409, "Idea already exists")
-        return marshal(expand_idea(future_idea), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
+        return marshal(future_idea.as_dict(), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
 
 
 @idea_ns.route('/<int:idea_id>', strict_slashes=False)
@@ -62,7 +62,7 @@ class IdeaResource(Resource):
         if queried_idea is None:
             idea_ns.abort(404, 'Idea not found')
         check_for_idea_ownership(queried_idea)
-        return marshal(expand_idea(queried_idea), idea), 200
+        return marshal(queried_idea.as_dict(), idea), 200
 
     @idea_ns.expect(new_idea, validate=True)
     @idea_ns.response(204, 'Idea successfully modified')
@@ -111,4 +111,4 @@ class IdeaVotesResource(Resource):
             idea_ns.abort(404, 'Idea not found')
         queried_idea = get_idea(idea_id)
         check_for_idea_ownership(queried_idea)
-        return marshal(expand_votes(queried_idea.votes), vote), 200
+        return marshal(collection_as_dict(queried_idea.votes), vote), 200
