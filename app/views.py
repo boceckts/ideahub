@@ -75,7 +75,7 @@ def newIdea():
                     user_id=current_user.id)
         save_idea(idea)
         flash('Your idea has been saved!')
-        return redirect(url_for('index'))
+        return redirect(url_for('voting'))
     return render_template('newIdea.html', title='New Idea', form=form)
 
 
