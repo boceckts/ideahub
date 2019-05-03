@@ -33,7 +33,10 @@ def expand_idea(queried_idea):
     if queried_idea is not None:
         idea_as_dict = queried_idea.as_dict()
         idea_as_dict['author'] = queried_idea.user_id
-        idea_as_dict['votes_count'] = len(queried_idea.votes.all())
+        idea_as_dict['votes_count'] = queried_idea.votes_count
+        idea_as_dict['score'] = queried_idea.score
+        idea_as_dict['upvotes'] = queried_idea.upvotes
+        idea_as_dict['downvotes'] = queried_idea.downvotes
         idea_as_dict['votes_url'] = url_for('idea_votes_ep', idea_id=queried_idea.id, _external=True)
         return idea_as_dict
 

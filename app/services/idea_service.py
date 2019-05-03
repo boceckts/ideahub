@@ -19,7 +19,7 @@ def get_all_ideas():
 
 
 def get_all_ideas_for_user(user_id):
-    return db.session.query(Idea).filter_by(user_id=user_id).first()
+    return db.session.query(Idea).filter_by(user_id=user_id).order_by(Idea.score).all()
 
 
 def get_random_unvoted_idea_for_user(user_id):

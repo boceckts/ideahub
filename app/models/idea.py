@@ -1,6 +1,10 @@
 from datetime import datetime
 
+from sqlalchemy import select, func
+from sqlalchemy.orm import column_property
+
 from app import db
+from app.models import Vote
 
 
 class Idea(db.Model):
@@ -15,6 +19,18 @@ class Idea(db.Model):
     modified = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     votes = db.relationship('Vote', backref='target', lazy='dynamic', cascade="all, delete-orphan")
+    votes_count = column_property(
+        select([func.count(Vote.id)]).where(Vote.idea_id == id)
+    )
+    upvotes = column_property(
+        select([func.count(Vote.value)]).where(Vote.idea_id == id).where(Vote.value == 1)
+    )
+    downvotes = column_property(
+        select([func.count(Vote.value)]).where(Vote.idea_id == id).where(Vote.value == -1)
+    )
+    score = column_property(
+        select([func.sum(Vote.value)]).where(Vote.idea_id == id)
+    )
 
     def __repr__(self):
         return '<Idea %r>' % self.title
