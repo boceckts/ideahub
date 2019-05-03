@@ -42,23 +42,13 @@
 						"url": "localhost:5000/api/v1/users"
 					},
 					"response": []
-				},
-				{
-					"name": "show user",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "{{bearer}}"
-							}
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"url": "http://localhost:5000/api/v1/users/2"
-					},
-					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "user",
+			"description": "",
+			"item": [
 				{
 					"name": "edit user",
 					"request": {
@@ -77,9 +67,25 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"aasadadsda\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n    \"email\": \"ssdasdasdasaj@asd.com\",\n    \"password\": \"87654321\"\n}"
+							"raw": "{\n    \"name\": \"Joshn\",\n    \"surname\": \"Dsoe\",\n    \"email\": \"new@mail.com\",\n    \"password\": \"1234ss5678\"\n}"
 						},
-						"url": "localhost:5000/api/v1/users/1"
+						"url": "localhost:5000/api/v1/user"
+					},
+					"response": []
+				},
+				{
+					"name": "show user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "http://localhost:5000/api/v1/user"
 					},
 					"response": []
 				},
@@ -95,7 +101,7 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {},
-						"url": "localhost:5000/api/v1/users/1"
+						"url": "localhost:5000/api/v1/user"
 					},
 					"response": []
 				},
@@ -111,7 +117,7 @@
 						"method": "GET",
 						"header": [],
 						"body": {},
-						"url": "localhost:5000/api/v1/users/2/ideas"
+						"url": "localhost:5000/api/v1/user/ideas"
 					},
 					"response": []
 				},
@@ -127,7 +133,7 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {},
-						"url": "localhost:5000/api/v1/users/2/ideas"
+						"url": "localhost:5000/api/v1/user/ideas"
 					},
 					"response": []
 				},
@@ -143,7 +149,7 @@
 						"method": "GET",
 						"header": [],
 						"body": {},
-						"url": "http://localhost:5000/api/v1/users/1/votes"
+						"url": "http://localhost:5000/api/v1/user/votes"
 					},
 					"response": []
 				},
@@ -159,7 +165,7 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {},
-						"url": "http://localhost:5000/api/v1/users/1/votes"
+						"url": "http://localhost:5000/api/v1/user/votes"
 					},
 					"response": []
 				}
@@ -229,7 +235,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"title\": \"My Awesome Edited Idea\",\n    \"description\": \"some edited description for my fancy idea\",\n    \"categories\": \"web application, se\",\n    \"tags\": \"csse, agile\"\n}"
 						},
-						"url": "localhost:5000/api/v1/ideas/1"
+						"url": "localhost:5000/api/v1/ideas/{{idea}}"
 					},
 					"response": []
 				},
@@ -245,7 +251,7 @@
 						"method": "GET",
 						"header": [],
 						"body": {},
-						"url": "http://localhost:5000/api/v1/ideas/1"
+						"url": "http://localhost:5000/api/v1/ideas/{{idea}}"
 					},
 					"response": []
 				},
@@ -261,7 +267,23 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {},
-						"url": "localhost:5000/api/v1/ideas/1"
+						"url": "localhost:5000/api/v1/ideas/{{idea}}"
+					},
+					"response": []
+				},
+				{
+					"name": "list all votes of an idea",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": "localhost:5000/api/v1/ideas/{{idea}}/votes"
 					},
 					"response": []
 				}
@@ -331,12 +353,12 @@
 							"mode": "raw",
 							"raw": "{\n\t\"value\": -1\n}"
 						},
-						"url": "http://localhost:5000/api/v1/votes/1"
+						"url": "http://localhost:5000/api/v1/votes/{{vote}}"
 					},
 					"response": []
 				},
 				{
-					"name": "list vote",
+					"name": "show vote",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -347,7 +369,7 @@
 						"method": "GET",
 						"header": [],
 						"body": {},
-						"url": "localhost:5000/api/v1/votes/2"
+						"url": "localhost:5000/api/v1/votes/{{vote}}"
 					},
 					"response": []
 				},
@@ -369,7 +391,7 @@
 							}
 						],
 						"body": {},
-						"url": "http://localhost:5000/api/v1/votes/2"
+						"url": "http://localhost:5000/api/v1/votes/{{vote}}"
 					},
 					"response": []
 				}
