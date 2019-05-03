@@ -1,4 +1,4 @@
-from flask import request, g
+from flask import request
 from flask_restplus import Resource, marshal
 
 from app.api.namespaces.vote_namespace import vote, vote_ns, public_vote, new_vote, modify_vote
@@ -6,6 +6,7 @@ from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_vote_ownership
 from app.models.vote import Vote
 from app.services.idea_service import idea_exists, get_idea
+from app.services.user_service import get_current_user
 from app.services.vote_service import get_all_votes, save_vote, vote_exists, delete_vote_by_id, get_vote_by_id, \
     edit_vote
 from app.utils import collection_as_dict
@@ -33,11 +34,11 @@ class VotesResource(Resource):
         idea_id = json_data['target']
         if idea_exists(idea_id) is None:
             vote_ns.abort(409, 'Target not found')
-        if vote_exists(g.current_user.id, idea_id):
+        if vote_exists(get_current_user().id, idea_id):
             vote_ns.abort(409, 'Vote already exists')
-        future_vote = Vote(owner=g.current_user,
+        future_vote = Vote(owner=get_current_user(),
                            target=get_idea(idea_id),
-                           value=request.form.get('value'))
+                           value=json_data['value'])
         save_vote(future_vote)
         return marshal(future_vote.as_dict(), vote), 201, {'Location': '{}/{}'.format(request.url, future_vote.id)}
 

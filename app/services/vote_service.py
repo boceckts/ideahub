@@ -36,3 +36,13 @@ def save_vote(vote):
 def delete_vote_by_id(vote_id):
     db.session.query(Vote).filter_by(id=vote_id).delete(synchronize_session='fetch')
     db.session.commit()
+
+
+def delete_votes_for_user(user_id):
+    db.session.query(Vote).filter_by(user_id=user_id).delete(synchronize_session='fetch')
+    db.session.commit()
+
+
+def delete_votes_for_idea(idea_id):
+    db.session.query(Vote).filter_by(idea_id=idea_id).delete(synchronize_session='fetch')
+    db.session.commit()

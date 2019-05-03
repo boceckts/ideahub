@@ -1,8 +1,6 @@
-from flask import request, g
+from flask import request
 from flask_restplus import Resource, marshal
-from sqlalchemy.exc import IntegrityError
 
-from app import db
 from app.api.namespaces import idea_ns
 from app.api.namespaces.idea_namespace import idea, public_idea, new_idea
 from app.api.namespaces.vote_namespace import vote
@@ -10,7 +8,8 @@ from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_idea_ownership
 from app.models.idea import Idea
 from app.services.idea_service import get_all_ideas, get_idea, idea_exists, edit_idea, idea_title_exists, \
-    delete_idea_by_id
+    delete_idea_by_id, save_idea
+from app.services.user_service import get_current_user
 from app.utils import collection_as_dict
 
 
@@ -33,17 +32,15 @@ class IdeasResource(Resource):
     def post(self):
         """Create a new idea for the current user"""
         json_data = request.get_json(force=True)
+        if idea_title_exists(json_data['title']):
+            idea_ns.abort(409, "Idea already exists")
         future_idea = Idea()
         future_idea.title = json_data['title']
         future_idea.description = json_data['description']
         future_idea.categories = json_data['categories']
         future_idea.tags = json_data['tags']
-        future_idea.author = g.current_user
-        try:
-            g.current_user.ideas.append(future_idea)
-            db.session.commit()
-        except IntegrityError:
-            idea_ns.abort(409, "Idea already exists")
+        future_idea.author = get_current_user()
+        save_idea(future_idea)
         return marshal(future_idea.as_dict(), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
 
 

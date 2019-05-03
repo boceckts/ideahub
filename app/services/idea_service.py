@@ -4,6 +4,7 @@ from sqlalchemy import func
 
 from app import db
 from app.models import Idea, Vote
+from app.services.vote_service import delete_votes_for_idea
 
 
 def get_idea(idea_id):
@@ -19,7 +20,7 @@ def get_all_ideas():
 
 
 def get_all_ideas_for_user(user_id):
-    return db.session.query(Idea).filter_by(user_id=user_id).order_by(Idea.score).all()
+    return db.session.query(Idea).filter_by(user_id=user_id).order_by(Idea.score.desc()).all()
 
 
 def get_random_unvoted_idea_for_user(user_id):
@@ -47,5 +48,13 @@ def save_idea(idea):
 
 
 def delete_idea_by_id(idea_id):
+    delete_votes_for_idea(idea_id)
     db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
+    db.session.commit()
+
+
+def delete_ideas_for_user(user_id):
+    for idea in get_all_ideas_for_user(user_id):
+        delete_votes_for_idea(idea.id)
+    db.session.query(Idea).filter_by(user_id=user_id).delete(synchronize_session='fetch')
     db.session.commit()

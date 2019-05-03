@@ -2,7 +2,7 @@ from flask_restplus import Api
 
 from app import app
 from app.api import apis
-from app.api.namespaces import user_ns, idea_ns, vote_ns, token_ns
+from app.api.namespaces import users_ns, user_ns, idea_ns, vote_ns, token_ns
 
 authorizations = {
     'Basic Auth': {
@@ -30,6 +30,7 @@ api = Api(
     authorizations=authorizations
 )
 
+api.add_namespace(users_ns)
 api.add_namespace(user_ns)
 api.add_namespace(idea_ns)
 api.add_namespace(vote_ns)

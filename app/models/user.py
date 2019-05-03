@@ -60,8 +60,8 @@ class User(UserMixin, db.Model):
 
     def as_dict(self):
         user_as_dict = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        user_as_dict['ideas_url'] = url_for('user_ideas_ep', user_id=self.id, _external=True)
-        user_as_dict['votes_url'] = url_for('user_votes_ep', user_id=self.id, _external=True)
+        user_as_dict['ideas_url'] = url_for('user_ideas_ep', _external=True)
+        user_as_dict['votes_url'] = url_for('user_votes_ep', _external=True)
         user_as_dict['ideas_count'] = self.idea_count
         user_as_dict['votes_count'] = self.votes_count
         return user_as_dict

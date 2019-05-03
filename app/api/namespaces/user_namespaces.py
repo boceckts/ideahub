@@ -1,16 +1,16 @@
 from flask_restplus import fields, Namespace
 
-user_ns = Namespace('users', description='User operations')
+user_ns = Namespace('user', description='User operations')
 
 modify_user = user_ns.model('Modify User', {
-    'username': fields.String(required=True, description='The user\'s unique username'),
     'name': fields.String(description='The user\'s name'),
     'surname': fields.String(description='The user\'s surname'),
+    'password': fields.String(required=True, description='The user\'s password'),
     'email': fields.String(required=True, description='The user\'s unique email address')
 })
 
 new_user = user_ns.inherit('New User', modify_user, {
-    'password': fields.String(required=True, description='The user\'s password')
+    'username': fields.String(required=True, description='The user\'s unique username'),
 })
 
 public_user = user_ns.model('Public User', {

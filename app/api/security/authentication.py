@@ -1,17 +1,18 @@
-from flask import g, jsonify
+from flask import jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 
 from app.models import User
+from app.services.user_service import set_current_user, get_current_user, get_user_by_username
 
 basic_auth = HTTPBasicAuth()
 
 
 @basic_auth.verify_password
 def verify_password(username, password):
-    user = User.query.filter_by(username=username).first()
+    user = get_user_by_username(username)
     if user is None:
         return False
-    g.current_user = user
+    set_current_user(user)
     return user.check_password(password)
 
 
@@ -20,8 +21,8 @@ token_auth = HTTPTokenAuth()
 
 @token_auth.verify_token
 def verify_token(token):
-    g.current_user = User.check_token(token) if token else None
-    return g.current_user is not None
+    set_current_user(User.check_token(token)) if token else None
+    return get_current_user() is not None
 
 
 @basic_auth.error_handler

@@ -2,12 +2,13 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from app import app, db
+from app import app
 from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea, Vote
 from app.models.errors import VoteExistsError, IdeaNotFoundError
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, edit_idea, \
     get_all_ideas_for_user, get_random_unvoted_idea_for_user
+from app.services.user_service import get_user_by_username, save_user, edit_current_user_by_for
 from app.services.vote_service import save_vote, vote_exists
 
 
@@ -23,7 +24,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = get_user_by_username(form.username.data)
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -49,8 +50,7 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        save_user(user)
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -68,11 +68,10 @@ def newIdea():
         return redirect(url_for('login'))
     form = NewIdeaForm()
     if form.validate_on_submit():
-        print(current_user.id)
         idea = Idea(title=form.title.data,
                     description=form.description.data,
                     categories=form.categories.data,
-                    user_id=current_user.id)  # not sure if i have to initialise votes here
+                    user_id=current_user.id)
         save_idea(idea)
         flash('Your idea has been saved!')
         return redirect(url_for('index'))
@@ -90,17 +89,15 @@ def profile():
 def editProfile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    user = User.query.filter_by(id=current_user.id).first()
-    if user:
-        form = EditProfileForm()
-        if request.method == 'POST':
-            current_user.name = form.name.data
-            current_user.surname = form.surname.data
-            current_user.email = form.email.data
-            db.session.commit()
-            flash('Your profile has been edited!')
-            return redirect(url_for('profile'))
-        return render_template('editProfile.html', title='Edit Profile', form=form)
+    form = EditProfileForm()
+    form.name.data = current_user.name
+    form.surname.data = current_user.surname
+    form.email.data = current_user.email
+    if request.method == 'POST':
+        edit_current_user_by_for(form)
+        flash('Your profile has been edited!')
+        return redirect(url_for('profile'))
+    return render_template('editProfile.html', title='Edit Profile', form=form)
 
 
 @app.route('/editIdea/<int:id>', methods=['GET', 'POST'])
