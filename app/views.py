@@ -75,7 +75,7 @@ def newIdea():
                     user_id=current_user.id)
         save_idea(idea)
         flash('Your idea has been saved!')
-        return redirect(url_for('voting'))
+        return redirect(url_for('inspire'))
     return render_template('newIdea.html', title='New Idea', form=form)
 
 
@@ -132,8 +132,8 @@ def deleteIdea(id):
     return redirect(url_for('profile'))
 
 
-@app.route('/voting', methods=['GET', 'POST'])
-def voting():
+@app.route('/inspire', methods=['GET', 'POST'])
+def inspire():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     if request.method == 'POST':
@@ -146,4 +146,4 @@ def voting():
                            target=queried_idea,
                            value=request.form.get('value'))
         save_vote(future_vote)
-    return render_template("voting.html", title='Voting', idea=get_random_unvoted_idea_for_user(current_user.id))
+    return render_template("inspire.html", title='Inspire Me', idea=get_random_unvoted_idea_for_user(current_user.id))

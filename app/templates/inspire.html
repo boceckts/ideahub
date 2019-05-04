@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <script>
+        function setVoteValue(value) {
+            document.getElementById("vote_value").value = value;
+            document.forms["vote_form"].submit();
+        }
+    </script>
+    {% if idea is not none %}
+
+        <div class="h1">Inspire Me</div>
+        <p>
+            Here is a random idea that you might like. If you do not want to vote on this idea use the shuffle button.
+            <a href="{{ url_for('inspire') }}" class="btn btn-default" role="button">
+                <span class="glyphicon glyphicon-random"></span>
+            </a>
+        </p>
+
+        <form id="vote_form" action="{{ url_for('inspire') }}" method="post">
+            <div class="form-group">
+                <input type="hidden" name="owner" value="{{ current_user.id }}">
+                <input type="hidden" name="target" value="{{ idea.id }}">
+                <input type="hidden" name="value" id="vote_value" value="0">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="h2">{{ idea.title }}
+                            {% if idea.score is none %}
+                                <div class="label label-success" style="vertical-align: top;font-size: 12px">New</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-xs-9 col-sm-11">
+                            {{ idea.description }}
+                        </div>
+                        <div class="col-xs-3 col-sm-1">
+
+                            <div class="text-center">
+                                <button class="btn btn-success" onclick="setVoteValue(1)"><span
+                                        class="glyphicon glyphicon-chevron-up"></span></button>
+                            </div>
+                            <div class="text-center" style="font-size: 20px">
+                                {% if idea.score is none %}
+                                    0
+                                {% else %}
+                                    {{ idea.score }}
+                                {% endif %}
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-danger" onclick="setVoteValue(-1)"><span
+                                        class="glyphicon glyphicon-chevron-down"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="label label-default" style="margin-right: 5px">
+                            {{ idea.categories }}
+                        </div>
+                        {% if idea.tags %}
+                            {% for tag in idea.tags.split(",") %}
+                                <div class="badge">
+                                    {{ tag }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    {% else %}
+        <div class="jumbotron">
+            <div class="h2">You have voted on all ideas!</div>
+            <br>
+            <p>Do you want to create a new idea instead?
+            </p>
+            <a class="btn btn-success" href="{{ url_for('newIdea') }}">Create new idea</a>
+        </div>
+    {% endif %}
+
+{% endblock %}
