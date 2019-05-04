@@ -14,5 +14,5 @@ login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
 
-from app import views
+from app import views, errors
 from app.api import api

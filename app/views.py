@@ -1,11 +1,10 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, abort
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import app
 from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea, Vote
-from app.models.errors import VoteExistsError, IdeaNotFoundError
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, \
     get_all_ideas_for_user, get_random_unvoted_idea_for_user, edit_idea_by_form
 from app.services.user_service import get_user_by_username, save_user, edit_user_by_form, \
@@ -17,6 +16,11 @@ from app.services.vote_service import save_vote, vote_exists
 @app.route('/index')
 def index():
     return render_template("index.html", title='Home')
+
+
+@app.route('/error/<int:code>')
+def error(code):
+    abort(code)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -127,6 +131,8 @@ def editIdea(idea_id):
                 flash('Your idea has been edited!', 'info')
                 return redirect(url_for('profile'))
         return render_template('editIdea.html', title='Edit Idea', form=form, idea=idea_to_edit)
+    else:
+        abort(404)
 
 
 @app.route('/deleteIdea/<int:id>', methods=['GET'])
@@ -145,9 +151,9 @@ def inspire():
     if request.method == 'POST':
         queried_idea = get_idea(request.form.get('target'))
         if queried_idea is None:
-            raise IdeaNotFoundError
+            abort(409)
         if vote_exists(current_user.id, queried_idea.id):
-            raise VoteExistsError
+            abort(409)
         future_vote = Vote(owner=current_user,
                            target=queried_idea,
                            value=request.form.get('value'))
