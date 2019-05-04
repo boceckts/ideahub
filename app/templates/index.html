@@ -4,35 +4,42 @@
 
     {% if current_user.username %}
         <div class="h1">Hi, {{ current_user.username }}! Welcome to IdeaHub</div>
-        <br>
-        {% if current_user.votes_count == 0 %}
-            <div class="h3">It seems like you have never voted on an idea.</div>
-            <br>
-            <p>Do you want to go to the voting page?</p>
-            <a class="btn btn-success" href="{{ url_for('inspire') }}">Go voting</a>
-        {% elif current_user.idea_count == 0 %}
-            <div class="h3">It seems like you have never created an idea.</div>
-            <br>
-            <p>Do you want to go to create a new idea now?</p>
-            <a class="btn btn-success" href="{{ url_for('newIdea') }}">Create new idea</a>
-        {% else %}
-            <div class="h3">You have created {{ current_user.idea_count }} idea(s) and voted
-                on {{ current_user.votes_count }} idea(s). Thank you for sharing your ideas with us!
-            </div>
-            <br>
-            <p>Do you want to see how you and your ideas are ranked amongst others?</p>
-            <a class="btn btn-success" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
-        {% endif %}
+        <div class="container">
+            {% if current_user.votes_count == 0 %}
+                <div class="h3">It seems like you have never voted on an idea.</div>
+                <br>
+                <p>Do you want to go to the voting page?</p>
+                <a class="btn btn-success" href="{{ url_for('inspire') }}">Go voting</a>
+            {% elif current_user.idea_count == 0 %}
+                <div class="h3">It seems like you have never created an idea.</div>
+                <br>
+                <p>Do you want to go to create a new idea now?</p>
+                <a class="btn btn-success" href="{{ url_for('newIdea') }}">Create new idea</a>
+            {% else %}
+                <div class="h3">You have created {{ current_user.idea_count }} idea(s) and voted
+                    on {{ current_user.votes_count }} idea(s). Thank you for sharing your ideas with us!
+                </div>
+                <br>
+                <p>Do you want to see how you and your ideas are ranked amongst others?</p>
+                <a class="btn btn-success" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
+            {% endif %}
+        </div>
     {% else %}
         <div class="h1">Welcome to IdeaHub</div>
+        <div class="h3">Make your ideas seen and loved.</div>
+        <br>
         <div class="container">
-            <div class="h3">Here is why you should join</div>
-            <div class="h3"><span class="glyphicon glyphicon-user"></span> Create and manage your ideas</div>
-            <div class="h3"><span class="glyphicon glyphicon-globe"></span> See what others are thinking of your ideas</div>
-            <div class="h3"><span class="glyphicon glyphicon-lamp"></span> Get inspired by other's ideas</div>
-            <div class="h3"><span class="glyphicon glyphicon-heart"></span> Vote for your favourite ideas</div>
-            <div class="h3"><span class="glyphicon glyphicon-fire"></span> Find out the newest, hottest and trendiest ideas</div>
-            <div class="h3"><span class="glyphicon glyphicon-stats"></span> See how you and your ideas compare to others</div>
+            <div class="h4">The best place to...</div>
+            <div class="h4"><span class="glyphicon glyphicon-user"></span> Create and manage your ideas</div>
+            <div class="h4"><span class="glyphicon glyphicon-globe"></span> See what others are thinking of your ideas
+            </div>
+            <div class="h4"><span class="glyphicon glyphicon-lamp"></span> Get inspired by other's ideas</div>
+            <div class="h4"><span class="glyphicon glyphicon-heart"></span> Vote for your favourite ideas</div>
+            <div class="h4"><span class="glyphicon glyphicon-fire"></span> Find out the newest, hottest and trendiest
+                ideas
+            </div>
+            <div class="h4"><span class="glyphicon glyphicon-stats"></span> See how you and your ideas compare to others
+            </div>
         </div>
         <div class="h4">Do you want to join?
             <a class="btn btn-default" href="{{ url_for('register') }}">Sign Up</a>
