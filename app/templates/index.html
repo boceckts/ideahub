@@ -9,7 +9,7 @@
                 <div class="h3">It seems like you have never voted on an idea.</div>
                 <br>
                 <p>Do you want to go to the voting page?</p>
-                <a class="btn btn-success" href="{{ url_for('inspire') }}">Go voting</a>
+                <a class="btn btn-primary" href="{{ url_for('inspire') }}">Go voting</a>
             {% elif current_user.idea_count == 0 %}
                 <div class="h3">It seems like you have never created an idea.</div>
                 <br>
@@ -21,7 +21,7 @@
                 </div>
                 <br>
                 <p>Do you want to see how you and your ideas are ranked amongst others?</p>
-                <a class="btn btn-success" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
+                <a class="btn btn-primary" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
             {% endif %}
         </div>
     {% else %}
