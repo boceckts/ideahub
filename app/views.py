@@ -27,7 +27,7 @@ def login():
     if form.validate_on_submit():
         user = get_user_by_username(form.username.data)
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'danger')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -52,7 +52,7 @@ def register():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         save_user(user)
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are now a registered user!', 'info')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -74,7 +74,7 @@ def newIdea():
                     categories=form.categories.data,
                     user_id=current_user.id)
         save_idea(idea)
-        flash('Your idea has been saved!')
+        flash('Your idea has been saved!', 'info')
         return redirect(url_for('inspire'))
     return render_template('newIdea.html', title='New Idea', form=form)
 
@@ -93,7 +93,7 @@ def editProfile():
     form = EditProfileForm()
     if request.method == 'POST':
         edit_user_by_form(current_user.id, form)
-        flash('Your profile has been edited!')
+        flash('Your profile has been edited!', 'info')
         return redirect(url_for('profile'))
     return render_template('editProfile.html', title='Edit Profile', form=form)
 
@@ -103,7 +103,7 @@ def deleteProfile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     delete_user_by_id(current_user.id)
-    flash('Your profile has been deleted!')
+    flash('Your profile has been deleted!', 'info')
     return redirect(url_for('login'))
 
 
@@ -118,7 +118,7 @@ def editIdea(id):
             edited_idea.description = form.description.data
             edited_idea.categories = form.categories.data
             edit_idea(id, edited_idea)
-            flash('Your idea has been edited!')
+            flash('Your idea has been edited!', 'info')
             return redirect(url_for('profile'))
         return render_template('editIdea.html', title='Edit Idea', form=form, idea=edited_idea)
 
@@ -128,7 +128,7 @@ def deleteIdea(id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     delete_idea_by_id(id)
-    flash('Your idea has been deleted!')
+    flash('Your idea has been deleted!', 'info')
     return redirect(url_for('profile'))
 
 
