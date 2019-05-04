@@ -5,8 +5,8 @@ idea_ns = Namespace('ideas', description='Idea operations')
 new_idea = idea_ns.model('New Idea', {
     'title': fields.String(required=True, description='The idea\'s title'),
     'description': fields.String(description='The idea\'s description'),
-    'categories': fields.String(description='The idea\'s categories'),
-    'tags': fields.String(description='The idea\'s tags')
+    'category': fields.String(description='The idea\'s category'),
+    'tags': fields.String(description='The idea\'s tags as comma separated list')
 })
 
 public_idea = idea_ns.inherit('Public Idea', new_idea, {

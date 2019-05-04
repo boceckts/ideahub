@@ -1,30 +1,12 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>New Idea</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=32) }}<br>
-            {% for error in form.title.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.description.label }}<br>
-            {{ form.description(size=32) }}<br>
-            {% for error in form.description.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.categories.label }}<br>
-            {{ form.categories(size=1) }}<br>
-            {% for error in form.description.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="h1">New Idea</div>
+    <div class=container"><br>
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

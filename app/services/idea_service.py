@@ -36,7 +36,7 @@ def edit_idea(idea_id, idea):
         Idea.title: idea.title,
         Idea.description: idea.description,
         Idea.tags: idea.tags,
-        Idea.categories: idea.categories,
+        Idea.category: idea.categories,
         Idea.modified: datetime.utcnow()
     })
     db.session.commit()

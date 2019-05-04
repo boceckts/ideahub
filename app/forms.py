@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, Regexp
 
 from app.services.idea_service import idea_title_exists
 from app.services.user_service import username_exists, email_exists
@@ -33,13 +33,18 @@ class RegistrationForm(FlaskForm):
 
 
 class NewIdeaForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    description = StringField('Description')
-    categories = SelectField('Categories', choices=[('Computing', 'Computing'), ('DIY', 'DIY'),
-                                                    ('Sport & Exercise', 'Sport & Exercise'), ('Other', 'Other')],
-                             validators=[DataRequired()])
-    # picture =
-    submit = SubmitField('Submit')
+    title = StringField('Title', validators=[DataRequired(), Length(min=1, max=128)])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    category = SelectField('Category', choices=[
+        ('Engineering', 'Engineering'), ('Software Engineering', 'Software Engineering'),
+        ('Science', 'Science'), ('Computer Science', 'Computer Science'),
+        ('Chemistry', 'Chemistry'), ('Physics', 'Physics'),
+        ('Sports', 'Sports'), ('Social', 'Social'),
+        ('Lifestyle', 'Lifestyle'), ('Other', 'Other')],
+                           validators=[DataRequired(), Length(min=1, max=64)])
+    tags = StringField('Tags', validators=[
+        Regexp(r'^$|^\w+(,\w+)*$', message='Tags have to be entered as a comma (,) separated list.')])
+    submit = SubmitField('Create')
 
     def validate_title(self, title):
         if idea_title_exists(title.data):

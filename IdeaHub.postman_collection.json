@@ -193,7 +193,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 0,\r\n  \"title\": \"My Awesome Idea\",\r\n  \"description\": \"some description for my fancy idea\",\r\n  \"categories\": \"web application\",\r\n  \"tags\": \"csse, se, agile\"\r\n}"
+							"raw": "{\r\n  \"id\": 0,\r\n  \"title\": \"My Awesome Idea\",\r\n  \"description\": \"some description for my fancy idea\",\r\n  \"category\": \"web application\",\r\n  \"tags\": \"csse, se, agile\"\r\n}"
 						},
 						"url": "localhost:5000/api/v1/ideas"
 					},
@@ -233,7 +233,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"My Awesome Edited Idea\",\n    \"description\": \"some edited description for my fancy idea\",\n    \"categories\": \"web application, se\",\n    \"tags\": \"csse, agile\"\n}"
+							"raw": "{\n    \"title\": \"My Awesome Edited Idea\",\n    \"description\": \"some edited description for my fancy idea\",\n    \"category\": \"web application\",\n    \"tags\": \"csse, agile\"\n}"
 						},
 						"url": "localhost:5000/api/v1/ideas/{{idea}}"
 					},

@@ -40,6 +40,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash('You are now logged out.', 'info')
     return redirect(url_for('index'))
 
 
@@ -71,7 +72,8 @@ def newIdea():
     if form.validate_on_submit():
         idea = Idea(title=form.title.data,
                     description=form.description.data,
-                    categories=form.categories.data,
+                    category=form.category.data,
+                    tags=form.tags.data,
                     user_id=current_user.id)
         save_idea(idea)
         flash('Your idea has been saved!', 'info')

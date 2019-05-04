@@ -36,7 +36,7 @@ class IdeasResource(Resource):
         future_idea = Idea()
         future_idea.title = json_data['title']
         future_idea.description = json_data['description']
-        future_idea.categories = json_data['categories']
+        future_idea.category = json_data['category']
         future_idea.tags = json_data['tags']
         future_idea.author = g.current_user
         save_idea(future_idea)
@@ -76,7 +76,7 @@ class IdeaResource(Resource):
         edited_idea = get_idea(idea_id)
         edited_idea.title = json_data['title']
         edited_idea.description = json_data['description']
-        edited_idea.categories = json_data['categories']
+        edited_idea.category = json_data['category']
         edited_idea.tags = json_data['tags']
         edit_idea(idea_id, edited_idea)
         return '', 204
