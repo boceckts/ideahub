@@ -7,8 +7,8 @@ from app.api.namespaces.vote_namespace import vote
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_idea_ownership
 from app.models.idea import Idea
-from app.services.idea_service import get_all_ideas, get_idea, idea_exists, edit_idea, idea_title_exists, \
-    delete_idea_by_id, save_idea
+from app.services.idea_service import get_all_ideas, get_idea, idea_exists, idea_title_exists, \
+    delete_idea_by_id, save_idea, edit_idea_by_json
 from app.utils import collection_as_dict
 
 
@@ -73,12 +73,7 @@ class IdeaResource(Resource):
         json_data = request.get_json(force=True)
         if idea_title_exists(json_data['title']):
             idea_ns.abort(409, "Idea already exists")
-        edited_idea = get_idea(idea_id)
-        edited_idea.title = json_data['title']
-        edited_idea.description = json_data['description']
-        edited_idea.category = json_data['category']
-        edited_idea.tags = json_data['tags']
-        edit_idea(idea_id, edited_idea)
+        edit_idea_by_json(idea_id, json_data)
         return '', 204
 
     @idea_ns.response(204, 'Idea was successfully deleted')

@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 
-class NewIdeaForm(FlaskForm):
+class IdeaForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(min=1, max=128)])
     description = TextAreaField('Description', validators=[DataRequired()])
     category = SelectField('Category', choices=[
@@ -44,23 +44,23 @@ class NewIdeaForm(FlaskForm):
                            validators=[DataRequired(), Length(min=1, max=64)])
     tags = StringField('Tags', validators=[
         Regexp(r'^$|^\w+(,\w+)*$', message='Tags have to be entered as a comma (,) separated list.')])
-    submit = SubmitField('Create')
 
     def validate_title(self, title):
         if idea_title_exists(title.data):
             raise ValidationError('This idea already exists!')
 
 
+class NewIdeaForm(IdeaForm):
+    submit = SubmitField('Create')
+
+
+class EditIdeaForm(IdeaForm):
+    title = None
+    submit = SubmitField('Save')
+
+
 class EditProfileForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     surname = StringField('Surname', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-
-class EditIdeaForm(FlaskForm):
-    description = StringField('Description')
-    categories = SelectField('Categories', choices=[('Computing', 'Computing'), ('DIY', 'DIY'),
-                                                    ('Sport & Exercise', 'Sport & Exercise'), ('Other', 'Other')],
-                             validators=[DataRequired()])
     submit = SubmitField('Submit')

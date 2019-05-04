@@ -6,8 +6,8 @@ from app import app
 from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea, Vote
 from app.models.errors import VoteExistsError, IdeaNotFoundError
-from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, edit_idea, \
-    get_all_ideas_for_user, get_random_unvoted_idea_for_user
+from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, \
+    get_all_ideas_for_user, get_random_unvoted_idea_for_user, edit_idea_by_form
 from app.services.user_service import get_user_by_username, save_user, edit_user_by_form, \
     delete_user_by_id
 from app.services.vote_service import save_vote, vote_exists
@@ -109,20 +109,22 @@ def deleteProfile():
     return redirect(url_for('login'))
 
 
-@app.route('/editIdea/<int:id>', methods=['GET', 'POST'])
-def editIdea(id):
+@app.route('/editIdea/<int:idea_id>', methods=['GET', 'POST'])
+def editIdea(idea_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    if idea_exists(id):
-        form = EditIdeaForm()
-        edited_idea = get_idea(id)
-        if request.method == 'POST':
-            edited_idea.description = form.description.data
-            edited_idea.categories = form.categories.data
-            edit_idea(id, edited_idea)
-            flash('Your idea has been edited!', 'info')
-            return redirect(url_for('profile'))
-        return render_template('editIdea.html', title='Edit Idea', form=form, idea=edited_idea)
+    if idea_exists(idea_id):
+        idea_to_edit = get_idea(idea_id)
+        form = EditIdeaForm(title=idea_to_edit.title,
+                            description=idea_to_edit.description,
+                            category=idea_to_edit.category,
+                            tags=idea_to_edit.tags)
+        if form.validate_on_submit():
+            if request.method == 'POST':
+                edit_idea_by_form(idea_id, form)
+                flash('Your idea has been edited!', 'info')
+                return redirect(url_for('profile'))
+        return render_template('editIdea.html', title='Edit Idea', form=form, idea=idea_to_edit)
 
 
 @app.route('/deleteIdea/<int:id>', methods=['GET'])

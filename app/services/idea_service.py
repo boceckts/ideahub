@@ -31,15 +31,27 @@ def idea_title_exists(title):
     return db.session.query(Idea).filter_by(title=title).first() is not None
 
 
-def edit_idea(idea_id, idea):
+def edit_idea_by_json(idea_id, json_data):
     db.session.query(Idea).filter_by(id=idea_id).update({
-        Idea.title: idea.title,
-        Idea.description: idea.description,
-        Idea.tags: idea.tags,
-        Idea.category: idea.categories,
+        Idea.title: json_data['title'],
+        Idea.description: json_data['description'],
+        Idea.category: json_data['category'],
+        Idea.tags: json_data['tags'],
         Idea.modified: datetime.utcnow()
     })
     db.session.commit()
+    return get_idea(idea_id)
+
+
+def edit_idea_by_form(idea_id, form_data):
+    db.session.query(Idea).filter_by(id=idea_id).update({
+        Idea.description: form_data.description.data,
+        Idea.tags: form_data.tags.data,
+        Idea.category: form_data.category.data,
+        Idea.modified: datetime.utcnow()
+    })
+    db.session.commit()
+    return get_idea(idea_id)
 
 
 def save_idea(idea):
