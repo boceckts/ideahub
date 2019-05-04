@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, HiddenField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, Regexp
 
 from app.services.idea_service import idea_title_exists
@@ -60,7 +60,10 @@ class EditIdeaForm(IdeaForm):
 
 
 class EditProfileForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    surname = StringField('Surname', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    old_email = HiddenField('old_email')
+    name = StringField('Name', validators=[DataRequired(), Length(min=1, max=64)])
+    surname = StringField('Surname', validators=[DataRequired(), Length(min=1, max=64)])
+    password = PasswordField('New Password')
+    password2 = PasswordField(
+        'Repeat Password', validators=[EqualTo('password')])
+    submit = SubmitField('Save')

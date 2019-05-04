@@ -92,11 +92,13 @@ def profile():
 def editProfile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    form = EditProfileForm()
-    if request.method == 'POST':
-        edit_user_by_form(current_user.id, form)
-        flash('Your profile has been edited!', 'info')
-        return redirect(url_for('profile'))
+    form = EditProfileForm(name=current_user.name,
+                           surname=current_user.surname)
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            edit_user_by_form(current_user.id, form)
+            flash('Your profile has been edited!', 'info')
+            return redirect(url_for('profile'))
     return render_template('editProfile.html', title='Edit Profile', form=form)
 
 

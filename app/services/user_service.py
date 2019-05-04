@@ -42,16 +42,22 @@ def edit_user_by_json(user_id, json_data):
         User.name: json_data['name'],
         User.surname: json_data['surname'],
     })
-    user = get_user_by_id(user_id).set_password(json_data['password'])
+    pwd = json_data['password']
+    user = get_user_by_id(user_id)
+    if pwd is not None and pwd != "":
+        user.set_password(pwd)
     db.session.commit()
     return user
 
 
 def edit_user_by_form(user_id, form_data):
     db.session.query(User).filter_by(id=user_id).update({
-        User.email: form_data.email.data,
         User.name: form_data.name.data,
         User.surname: form_data.surname.data,
     })
+    pwd = form_data.password.data
+    user = get_user_by_id(user_id)
+    if pwd is not None and pwd != "":
+        user.set_password(pwd)
     db.session.commit()
-    return get_user_by_id(user_id)
+    return user
