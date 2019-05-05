@@ -9,6 +9,7 @@
             <div class="col-sm-6 col-md-4">
                 {{ wtf.quick_form(form, button_map={'submit': 'success'}) }}
             </div>
+            <br>
             <div class="justify-start col-sm-6 col-md-8">
                 {% for idea in ideas %}
                     {% include 'idea/idea.html' %}

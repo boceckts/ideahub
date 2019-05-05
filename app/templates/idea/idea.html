@@ -1,12 +1,29 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-       {{ idea.title }}
-            {% if idea.score is none %}
-                <div class="label label-success" style="vertical-align: top;font-size: 10px">New</div>
-            {% endif %}
+        <div class="row">
+            <div class="col-xs-12 col-sm-8">
+                {{ idea.title }}
+                {% if idea.score is none %}
+                    <div class="label label-success" style="vertical-align: top;font-size: 10px">New</div>
+                {% endif %}
+            </div>
+            <div class="text-right col-xs-12 col-sm-4">
+                <span class="glyphicon glyphicon-fire"> {{ idea.score }} </span>
+                {% if show_all %}
+                    <span class="glyphicon glyphicon-stats"> {{ idea.votes_count }} </span>
+                    <span class="glyphicon glyphicon-thumbs-up"> {{ idea.upvotes }} </span>
+                    <span class="glyphicon glyphicon-thumbs-down"> {{ idea.downvotes }} </span>
+                {% endif %}
+            </div>
+        </div>
     </div>
     <div class="panel-body">
         {{ idea.description }}
+        {% if idea.created == idea.modified %}
+            <div class="h5 text-right">created on {{ idea.created }}</div>
+        {% else %}
+            <div class="h5 text-right">created on {{ idea.created }}, last modified {{ idea.modified }}</div>
+        {% endif %}
     </div>
     <div class="panel-footer">
         <div class="label label-default" style="margin-right: 5px">

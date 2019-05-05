@@ -11,63 +11,72 @@
                 '\nWARNING: this will delete all your votes and all your ideas'));
         }
     </script>
-    <h1>
-        <!-- {{ current_user.username }}'s Profile -->
-        Profile
-    </h1>
-    <div>
-        <p>
-            <b>Username: </b>{{ current_user.username }}
-            <br>
-            <b>Name: </b>{{ current_user.name }}
-            <br>
-            <b>Surname: </b>{{ current_user.surname }}
-            <br>
-            <b>Email: </b>{{ current_user.email }}
-            <br>
-        </p>
-        <form action="{{ url_for('edit_profile') }}">
-            <input type="submit" value="Edit Profile"/>
-        </form>
-        <form action="{{ url_for('delete_profile') }}" onsubmit='return deleteProfileConfirmation()'>
-            <input type="submit" value="Delete Profile"/>
-        </form>
-        <br>
-    </div>
-    <hr>
-    <h1>
-        Ideas
-    </h1>
-    {% for idea in ideas %}
-        <div>
-            <p>
-                <b>Title: </b>{{ idea.title }}
-                <br>
-                <b>Description: </b>{{ idea.description }}
-                <br>
-                <b>Category: </b>{{ idea.category }}
-                <br>
-                <b>Created: </b>{{ idea.created }}
-                <br>
-                <b>Last Modified: </b>{{ idea.modified }}
-                <br>
-                <b>Votes: </b>{{ idea.votes_count }}
-                <br>
-                <b>Score: </b>{{ idea.score }}
-                <br>
-                <b>Upvotes: </b>{{ idea.upvotes }}
-                <br>
-                <b>Downvotes: </b>{{ idea.downvotes }}
-                <br>
-            </p>
-            <form action="{{ url_for('edit_idea', idea_id=idea.id) }}">
-                <input type="submit" value="Edit Idea"/>
-            </form>
-            <form action="{{ url_for('delete_idea', idea_id=idea.id) }}" onsubmit='return deleteIdeaConfirmation()'>
-                <input type="submit" value="Delete Idea"/>
-            </form>
-            <br>
+    <div class="h1">Profile of {{ current_user.username }}</div>
+    <br>
+    <div class=container-fluid">
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <div class="form">
+                    <div class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <p class="form-control" id="username">{{ current_user.username }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="name">Name</label>
+                        <p class="form-control" id="name">{{ current_user.name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="surname">Surname</label>
+                        <p class="form-control" id="surname">{{ current_user.surname }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="email">Email</label>
+                        <p class="form-control" id="email">{{ current_user.email }}</p>
+                    </div>
+                    <span>
+                        <a class="btn btn-warning" href="{{ url_for('edit_profile') }}"><span
+                                class="glyphicon glyphicon-edit"></span></a>
+                    </span>
+                    <form class="btn" action="{{ url_for('delete_profile') }}"
+                          onsubmit='return deleteProfileConfirmation()'>
+                        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-    {% endfor %}
+    </div>
+    {% if ideas|length > 0 %}
+        <div class="h1">
+            {% with count = ideas|length %}
+                {{ count }} Idea(s)
+            {% endwith %}
+        </div>
+        {% for idea in ideas %}
+            <div class="row">
+                <div class="col-sm-8 col-md-10">
+                    {% with show_all = True %}
+                        {% include 'idea/idea.html' %}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-4 col-md-2">
+                    <div class="row">
+                        <div class="container-fluid">
+                        <span>
+                            <a class="btn btn-warning" href="{{ url_for('edit_idea', idea_id=idea.id) }}"><span
+                                    class="glyphicon glyphicon-edit"></span></a>
+                        </span>
+                            <form class="btn" action="{{ url_for('delete_idea', idea_id=idea.id) }}"
+                                  onsubmit='return deleteIdeaConfirmation()'>
+                                <button type="submit" class="btn btn-danger"><span
+                                        class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

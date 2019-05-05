@@ -161,6 +161,8 @@ def create_idea():
 def edit_idea(idea_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if not idea_exists(idea_id):
+        abort(404)
     if current_user.id != get_idea(idea_id).author.id:
         abort(403)
     if idea_exists(idea_id):
@@ -183,6 +185,8 @@ def edit_idea(idea_id):
 def delete_idea(idea_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if not idea_exists(idea_id):
+        abort(404)
     if current_user.id != get_idea(idea_id).author.id:
         abort(403)
     delete_idea_by_id(idea_id)

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, HiddenField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, HiddenField, \
+    Label
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, Regexp
 
 from app.services.idea_service import idea_title_exists
@@ -30,6 +31,10 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if email_exists(email.data):
             raise ValidationError('Please use a different email address.')
+
+
+class UserForm(FlaskForm):
+    username = Label('Username', text="ma user")
 
 
 class IdeaForm(FlaskForm):
