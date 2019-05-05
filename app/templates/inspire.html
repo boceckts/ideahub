@@ -61,6 +61,7 @@
                         {% if idea.tags %}
                             {% for tag in idea.tags.split(",") %}
                                 <div class="badge">
+                                    <span class="glyphicon glyphicon-tag"></span>
                                     {{ tag }}
                                 </div>
                             {% endfor %}

@@ -43,7 +43,7 @@ class IdeaForm(FlaskForm):
         ('Lifestyle', 'Lifestyle'), ('Other', 'Other')],
                            validators=[DataRequired(), Length(min=1, max=64)])
     tags = StringField('Tags', validators=[
-        Regexp(r'^$|^\w+(,\w+)*$', message='Tags have to be entered as a comma (,) separated list.')])
+        Regexp(r'^$|^\w[\w| ]*(,[\w| ]+)*\w$', message='Tags have to be entered as a comma (,) separated list.')])
 
     def validate_title(self, title):
         if idea_title_exists(title.data):
