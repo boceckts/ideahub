@@ -14,5 +14,9 @@ login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
 
+from app.errors import internal_error
 from app import views, errors
 from app.api import api
+
+if not app.debug:
+    app.register_error_handler(Exception, internal_error)

@@ -18,7 +18,6 @@ def not_found_error(error):
     return render_template('error.html', message='The data you sent to the server is not valid', code=409), 409
 
 
-@app.errorhandler(Exception)
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
