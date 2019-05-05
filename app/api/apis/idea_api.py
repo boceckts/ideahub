@@ -6,9 +6,8 @@ from app.api.namespaces.idea_namespace import idea, public_idea, new_idea
 from app.api.namespaces.vote_namespace import vote
 from app.api.security.authentication import token_auth
 from app.api.security.authorization import check_for_idea_ownership
-from app.models.idea import Idea
 from app.services.idea_service import get_all_ideas, get_idea, idea_exists, idea_title_exists, \
-    delete_idea_by_id, save_idea, edit_idea_by_json
+    delete_idea_by_id, edit_idea_by_json, save_idea_by_json
 from app.utils import collection_as_dict
 
 
@@ -33,13 +32,7 @@ class IdeasResource(Resource):
         json_data = request.get_json(force=True)
         if idea_title_exists(json_data['title']):
             idea_ns.abort(409, "Idea already exists")
-        future_idea = Idea()
-        future_idea.title = json_data['title']
-        future_idea.description = json_data['description']
-        future_idea.category = json_data['category']
-        future_idea.tags = json_data['tags']
-        future_idea.author = g.current_user
-        save_idea(future_idea)
+        future_idea = save_idea_by_json(json_data, g.current_user)
         return marshal(future_idea.as_dict(), idea), 201, {'Location': '{}/{}'.format(request.url, future_idea.id)}
 
 

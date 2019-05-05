@@ -4,8 +4,7 @@ from flask_restplus import Resource, marshal
 from app.api.namespaces.user_namespaces import public_user, user, new_user
 from app.api.namespaces.users_namespace import users_ns
 from app.api.security.authentication import token_auth
-from app.models import User
-from app.services.user_service import get_all_users, email_exists, username_exists, save_user
+from app.services.user_service import get_all_users, email_exists, username_exists, save_user_by_json
 from app.utils import collection_as_dict
 
 
@@ -32,11 +31,5 @@ class UsersResource(Resource):
             users_ns.abort(409, "Email already registered")
         if username_exists(json_data['username']):
             users_ns.abort(409, "Username already exists")
-        future_user = User()
-        future_user.username = json_data['username']
-        future_user.name = json_data['name']
-        future_user.surname = json_data['surname']
-        future_user.email = json_data['email']
-        future_user.set_password(json_data['password'])
-        save_user(future_user)
+        future_user = save_user_by_json(json_data)
         return marshal(future_user.as_dict(), user), 201, {'Location': '{}/{}'.format(request.url, future_user.id)}

@@ -62,6 +62,26 @@ def edit_idea_by_form(idea_id, form_data):
 def save_idea(idea):
     db.session.add(idea)
     db.session.commit()
+    return idea
+
+
+def save_idea_by_json(json_data, user):
+    idea = Idea()
+    idea.title = json_data['title']
+    idea.description = json_data['description']
+    idea.category = json_data['category']
+    idea.tags = json_data['tags']
+    idea.author = user
+    return save_idea(idea)
+
+
+def save_idea_by_form(form, user_id):
+    idea = Idea(title=form.title.data,
+                description=form.description.data,
+                category=form.category.data,
+                tags=form.tags.data,
+                user_id=user_id)
+    return save_idea(idea)
 
 
 def delete_idea_by_id(idea_id):

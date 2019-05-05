@@ -34,6 +34,27 @@ def delete_user_by_id(user_id):
 def save_user(user):
     db.session.add(user)
     db.session.commit()
+    return user
+
+
+def save_user_by_json(json_data):
+    user = User()
+    user.username = json_data['username']
+    user.name = json_data['name']
+    user.surname = json_data['surname']
+    user.email = json_data['email']
+    user.set_password(json_data['password'])
+    return save_user(user)
+
+
+def save_user_by_form(form):
+    user = User()
+    user.username = form.username.data
+    user.name = form.name.data
+    user.surname = form.surname.data
+    user.email = form.email.data
+    user.set_password(form.password.data)
+    return save_user(user)
 
 
 def edit_user_by_json(user_id, json_data):

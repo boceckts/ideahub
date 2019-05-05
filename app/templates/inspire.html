@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "app/base.html" %}
 
 {% block app_content %}
     <script>
@@ -76,7 +76,7 @@
             <br>
             <p>Do you want to create a new idea instead?
             </p>
-            <a class="btn btn-success" href="{{ url_for('newIdea') }}">Create new idea</a>
+            <a class="btn btn-success" href="{{ url_for('create_idea') }}">Create new idea</a>
         </div>
     {% endif %}
 
