@@ -67,3 +67,16 @@ class EditProfileForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[EqualTo('password')])
     submit = SubmitField('Save')
+
+
+class SearchForm(FlaskForm):
+    title = StringField('Title', render_kw={'placeholder': 'any'})
+    category = SelectField('Category', choices=[
+        ('any', 'any'),
+        ('Engineering', 'Engineering'), ('Software Engineering', 'Software Engineering'),
+        ('Science', 'Science'), ('Computer Science', 'Computer Science'),
+        ('Chemistry', 'Chemistry'), ('Physics', 'Physics'),
+        ('Sports', 'Sports'), ('Social', 'Social'),
+        ('Lifestyle', 'Lifestyle'), ('Other', 'Other')])
+    tags = StringField('Tags', render_kw={'placeholder': 'any'})
+    submit = SubmitField('Search')

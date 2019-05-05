@@ -20,6 +20,19 @@ def get_all_ideas():
     return db.session.query(Idea).all()
 
 
+def get_ideas_by_search(search):
+    query = db.session.query(Idea)
+    if search.title not in ['any', '']:
+        query = query.filter(Idea.title.contains(search.title))
+    if search.category not in ['any', '']:
+        query = query.filter(Idea.category == search.category)
+    if search.tags not in ['any', '']:
+        for tag in search.tags.split(','):
+            query = query.filter(Idea.tags.contains(tag.strip()))
+    query = query.order_by(Idea.score.desc())
+    return query.all()
+
+
 def get_all_ideas_for_user(user_id):
     return db.session.query(Idea).filter_by(user_id=user_id).order_by(Idea.score.desc()).all()
 

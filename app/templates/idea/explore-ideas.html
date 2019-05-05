@@ -1,0 +1,27 @@
+{% extends "app/base.html" %}
+
+{% block app_content %}
+
+    <div class="h1">Explore other's Ideas</div>
+    <br>
+    <div class=container-fluid">
+        <div class="row justify-content-md-right">
+            <div class="col-sm-6 col-md-4">
+                {{ wtf.quick_form(form, button_map={'submit': 'success'}) }}
+            </div>
+            <div class="justify-start col-sm-6 col-md-8">
+                {% for idea in ideas %}
+                    {% include 'idea/idea.html' %}
+                {% endfor %}
+                {% if ideas|length == 0 %}
+                    <div class="jumbotron">
+                        <div class="h2">Your search didn't yield any results.</div>
+                        <br>
+                        <p>Adjust your search filters and try again</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

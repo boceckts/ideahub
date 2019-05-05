@@ -14,33 +14,36 @@
         </div>
     {% else %}
         <div class="h1">Activity Feed</div>
-        {% for event in events %}
-            {% if event.type == type.upvotes %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading"><span class="glyphicon glyphicon-heart"></span> {{ event.created }}
+        <br>
+        <div class=container-fluid">
+            {% for event in events %}
+                {% if event.type == type.upvotes %}
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><span class="glyphicon glyphicon-heart"></span> {{ event.created }}
+                        </div>
+                        <div class="panel-body">{{ event.data }} people liked your idea {{ event.idea_name }}</div>
                     </div>
-                    <div class="panel-body">{{ event.data }} people liked your idea {{ event.idea_name }}</div>
-                </div>
-            {% elif event.type == type.votes %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> {{ event.created }}
+                {% elif event.type == type.votes %}
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> {{ event.created }}
+                        </div>
+                        <div class="panel-body">{{ event.data }} people voted on your
+                            idea {{ event.idea_name }}</div>
                     </div>
-                    <div class="panel-body">{{ event.data }} people voted on your
-                        idea {{ event.idea_name }}</div>
-                </div>
-            {% elif event.type == type.idea_changed %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading"><span class="glyphicon glyphicon-edit"></span> {{ event.created }}
+                {% elif event.type == type.idea_changed %}
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><span class="glyphicon glyphicon-edit"></span> {{ event.created }}
+                        </div>
+                        <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been changed</div>
                     </div>
-                    <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been changed</div>
-                </div>
-            {% elif event.type == type.idea_deleted %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading"><span class="glyphicon glyphicon-trash"></span> {{ event.created }}
+                {% elif event.type == type.idea_deleted %}
+                    <div class="panel panel-primary">
+                        <div class="panel-heading"><span class="glyphicon glyphicon-trash"></span> {{ event.created }}
+                        </div>
+                        <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been deleted</div>
                     </div>
-                    <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been deleted</div>
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
     {% endif %}
 {% endblock %}

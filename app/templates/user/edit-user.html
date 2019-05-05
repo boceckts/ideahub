@@ -2,7 +2,8 @@
 
 {% block app_content %}
     <div class="h1">Edit Profile of {{ current_user.username }}</div>
-    <div class=container"><br>
+    <br>
+    <div class=container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-4">
                 {{ wtf.quick_form(form, button_map={'submit': 'success'}) }}

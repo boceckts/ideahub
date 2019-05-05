@@ -10,12 +10,16 @@
     {% if idea is not none %}
 
         <div class="h1">Inspire Me</div>
-        <p>
-            Here is a random idea that you might like. If you do not want to vote on this idea use the shuffle button.
-            <a href="{{ url_for('inspire') }}" class="btn btn-default" role="button">
-                <span class="glyphicon glyphicon-random"></span>
-            </a>
-        </p>
+        <br>
+        <div class=container-fluid">
+            <p>
+                Here is a random idea that you might like. If you do not want to vote on this idea use the shuffle
+                button.
+                <a href="{{ url_for('inspire') }}" class="btn btn-default" role="button">
+                    <span class="glyphicon glyphicon-random"></span>
+                </a>
+            </p>
+        </div>
 
         <form id="vote_form" action="{{ url_for('inspire') }}" method="post">
             <div class="form-group">

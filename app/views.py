@@ -3,12 +3,13 @@ from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import app
-from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
+from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm, SearchForm
 from app.models import Vote
 from app.models.event import EventType
+from app.models.search import Search
 from app.services.event_service import get_all_events_for_user
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, get_all_ideas_for_user, \
-    get_random_unvoted_idea_for_user, edit_idea_by_form, save_idea_by_form
+    get_random_unvoted_idea_for_user, edit_idea_by_form, save_idea_by_form, get_ideas_by_search, get_all_ideas
 from app.services.user_service import get_user_by_username, edit_user_by_form, \
     delete_user_by_id, save_user_by_form
 from app.services.vote_service import save_vote, vote_exists
@@ -133,7 +134,18 @@ def delete_profile():
     return redirect(url_for('index'))
 
 
-@app.route('/idea/new', methods=['GET', 'POST'])
+@app.route('/ideas/explore', methods=['GET', 'POST'])
+def explore_ideas():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    form = SearchForm()
+    ideas = get_all_ideas()
+    if request.method == 'POST':
+        ideas = get_ideas_by_search(Search.of_form(form))
+    return render_template('idea/explore-ideas.html', title='Explore Ideas', form=form, ideas=ideas)
+
+
+@app.route('/ideas/new', methods=['GET', 'POST'])
 def create_idea():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -145,7 +157,7 @@ def create_idea():
     return render_template('idea/create-idea.html', title='New Idea', form=form)
 
 
-@app.route('/idea/<int:idea_id>/edit', methods=['GET', 'POST'])
+@app.route('/ideas/<int:idea_id>/edit', methods=['GET', 'POST'])
 def edit_idea(idea_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -167,7 +179,7 @@ def edit_idea(idea_id):
         abort(404)
 
 
-@app.route('/idea/<int:idea_id>/delete', methods=['GET'])
+@app.route('/ideas/<int:idea_id>/delete', methods=['GET'])
 def delete_idea(idea_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))

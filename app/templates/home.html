@@ -3,7 +3,8 @@
 {% block app_content %}
 
     <div class="h1">Hi, {{ current_user.username }}! Welcome to IdeaHub</div>
-    <div class="container">
+    <br>
+    <div class=container-fluid">
         {% if current_user.votes_count == 0 %}
             <div class="h3">It seems like you have never voted on an idea.</div>
             <br>
