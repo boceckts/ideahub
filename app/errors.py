@@ -3,6 +3,11 @@ from flask import render_template
 from app import db, app
 
 
+@app.errorhandler(403)
+def not_found_error(error):
+    return render_template('error.html', message='You are not allowed to access the resource', code=403), 403
+
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('error.html', message='Resource not found', code=404), 404
