@@ -5,6 +5,8 @@ from werkzeug.urls import url_parse
 from app import app
 from app.forms import LoginForm, RegistrationForm, NewIdeaForm, EditProfileForm, EditIdeaForm
 from app.models import User, Idea, Vote
+from app.models.event import EventType
+from app.services.event_service import get_all_events_for_user
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, save_idea, \
     get_all_ideas_for_user, get_random_unvoted_idea_for_user, edit_idea_by_form
 from app.services.user_service import get_user_by_username, save_user, edit_user_by_form, \
@@ -159,3 +161,11 @@ def inspire():
                            value=request.form.get('value'))
         save_vote(future_vote)
     return render_template("inspire.html", title='Inspire Me', idea=get_random_unvoted_idea_for_user(current_user.id))
+
+
+@app.route('/events', methods=['GET'])
+def events():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    return render_template('events.html', title='Events', events=get_all_events_for_user(current_user.id),
+                           type=EventType)

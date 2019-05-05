@@ -2,6 +2,7 @@ from datetime import datetime
 
 from app import db
 from app.models import Vote
+from app.services.event_service import check_vote_event
 
 
 def vote_exists(user_id, idea_id):
@@ -31,6 +32,7 @@ def edit_vote(vote_id, value):
 def save_vote(vote):
     db.session.add(vote)
     db.session.commit()
+    check_vote_event(vote)
 
 
 def delete_vote_by_id(vote_id):

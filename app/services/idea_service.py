@@ -4,6 +4,7 @@ from sqlalchemy import func
 
 from app import db
 from app.models import Idea, Vote
+from app.services.event_service import check_idea_change_event, check_idea_delete_event
 from app.services.vote_service import delete_votes_for_idea
 
 
@@ -40,7 +41,9 @@ def edit_idea_by_json(idea_id, json_data):
         Idea.modified: datetime.utcnow()
     })
     db.session.commit()
-    return get_idea(idea_id)
+    idea = get_idea(idea_id)
+    check_idea_change_event(idea)
+    return idea
 
 
 def edit_idea_by_form(idea_id, form_data):
@@ -51,7 +54,9 @@ def edit_idea_by_form(idea_id, form_data):
         Idea.modified: datetime.utcnow()
     })
     db.session.commit()
-    return get_idea(idea_id)
+    idea = get_idea(idea_id)
+    check_idea_change_event(idea)
+    return idea
 
 
 def save_idea(idea):
@@ -60,6 +65,7 @@ def save_idea(idea):
 
 
 def delete_idea_by_id(idea_id):
+    check_idea_delete_event(get_idea(idea_id))
     delete_votes_for_idea(idea_id)
     db.session.query(Idea).filter_by(id=idea_id).delete(synchronize_session='fetch')
     db.session.commit()
@@ -67,6 +73,7 @@ def delete_idea_by_id(idea_id):
 
 def delete_ideas_for_user(user_id):
     for idea in get_all_ideas_for_user(user_id):
+        check_idea_delete_event(idea)
         delete_votes_for_idea(idea.id)
     db.session.query(Idea).filter_by(user_id=user_id).delete(synchronize_session='fetch')
     db.session.commit()
