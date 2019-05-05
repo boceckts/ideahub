@@ -46,3 +46,8 @@ def check_idea_delete_event(idea):
 def save_event(event):
     db.session.add(event)
     db.session.commit()
+
+
+def delete_events_for_user(user_id):
+    db.session.query(Event).filter_by(user_id=user_id).delete(synchronize_session='fetch')
+    db.session.commit()

@@ -1,5 +1,6 @@
 from app import db
 from app.models import User
+from app.services.event_service import delete_events_for_user
 from app.services.idea_service import delete_ideas_for_user
 from app.services.vote_service import delete_votes_for_user
 
@@ -27,6 +28,7 @@ def username_exists(username):
 def delete_user_by_id(user_id):
     delete_votes_for_user(user_id)
     delete_ideas_for_user(user_id)
+    delete_events_for_user(user_id)
     db.session.query(User).filter_by(id=user_id).delete(synchronize_session='fetch')
     db.session.commit()
 
