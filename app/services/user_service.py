@@ -44,6 +44,7 @@ def save_user_by_json(json_data):
     user.username = json_data['username']
     user.name = json_data['name']
     user.surname = json_data['surname']
+    user.tags = json_data['tags']
     user.email = json_data['email']
     user.set_password(json_data['password'])
     return save_user(user)
@@ -64,6 +65,7 @@ def edit_user_by_json(user_id, json_data):
         User.email: json_data['email'],
         User.name: json_data['name'],
         User.surname: json_data['surname'],
+        User.tags: json_data['tags'],
     })
     pwd = json_data['password']
     user = get_user_by_id(user_id)
@@ -77,6 +79,7 @@ def edit_user_by_form(user_id, form_data):
     db.session.query(User).filter_by(id=user_id).update({
         User.name: form_data.name.data,
         User.surname: form_data.surname.data,
+        User.tags: form_data.tags.data,
     })
     pwd = form_data.password.data
     user = get_user_by_id(user_id)

@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import func
 
 from app import db
-from app.models import Idea, Vote
+from app.models import Idea, Vote, User
 from app.services.event_service import check_idea_change_event, check_idea_delete_event
 from app.services.vote_service import delete_votes_for_idea
 
@@ -37,8 +37,20 @@ def get_all_ideas_for_user(user_id):
     return db.session.query(Idea).filter_by(user_id=user_id).order_by(Idea.score.desc()).all()
 
 
+def get_unvoted_ideas_query_for_user(user_id):
+    return db.session.query(Idea).filter(~Idea.votes.any(Vote.user_id.is_(user_id)))
+
+
 def get_random_unvoted_idea_for_user(user_id):
-    return db.session.query(Idea).filter(~Idea.votes.any(Vote.user_id.is_(user_id))).order_by(func.random()).first()
+    user = User.query.get(user_id)
+    query = get_unvoted_ideas_query_for_user(user_id)
+    if user and user.tags is not None:
+        for tag in user.tags.split(','):
+            query = query.filter(Idea.tags.contains(tag.strip()))
+        if query.first() is None:
+            query = get_unvoted_ideas_query_for_user(user_id)
+    query = query.order_by(func.random())
+    return query.first()
 
 
 def idea_title_exists(title):
