@@ -34,10 +34,11 @@ def register():
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        save_user_by_form(form)
+        user = save_user_by_form(form)
         flash('Congratulations, you are now a registered user!', 'info')
-        return redirect(url_for('login'))
-    return render_template('authentication/register.html', title='Register', form=form)
+        login_user(user)
+        return redirect(url_for('home'))
+    return render_template('authentication/register.html', title='Sign Up', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -55,7 +56,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
         return redirect(next_page)
-    return render_template('authentication/login.html', title='Sign In', form=form)
+    return render_template('authentication/login.html', title='Login', form=form)
 
 
 @app.route('/logout')
@@ -76,7 +77,7 @@ def home():
 def activity():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('events.html', title='Events', events=get_all_events_for_user(current_user.id),
+    return render_template('events.html', title='Activity Feed', events=get_all_events_for_user(current_user.id),
                            type=EventType)
 
 
