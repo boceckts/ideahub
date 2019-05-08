@@ -86,20 +86,10 @@ def leaderboard():
     return redirect(url_for('home'))
 
 
-@app.route('/inspire', methods=['GET', 'POST'])
+@app.route('/inspire', methods=['GET'])
 def inspire():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    if request.method == 'POST':
-        queried_idea = get_idea(request.form.get('target'))
-        if queried_idea is None:
-            abort(409)
-        if vote_exists(current_user.id, queried_idea.id):
-            abort(409)
-        future_vote = Vote(owner=current_user,
-                           target=queried_idea,
-                           value=request.form.get('value'))
-        save_vote(future_vote)
     return render_template("inspire.html", title='Inspire Me', idea=get_random_unvoted_idea_for_user(current_user.id))
 
 
