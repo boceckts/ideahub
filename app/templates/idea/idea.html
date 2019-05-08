@@ -7,7 +7,7 @@
 
 <div class="row">
     {% if show_all %}
-        <div class="col-sm-8 col-md-10">
+        <div class="col-*-10">
     {% else %}
         <div>
     {% endif %}
@@ -20,7 +20,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-8">
+                        <div class="col-xs-7 col-sm-8" style='overflow: hidden'>
                             {{ idea.title }}
                             {% if idea.score is none %}
                                 <div class="label label-success" style="vertical-align: top;font-size: 10px">
@@ -28,7 +28,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="text-right col-xs-12 col-sm-4">
+                        <div class="text-right col-xs-5 col-sm-4">
                             <span class="glyphicon glyphicon-fire">
                                 {% if idea.score is none %}
                                     0
@@ -43,10 +43,10 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="col-xs-9 col-sm-11">
+                    <div class="col-xs-10">
                         {{ idea.description }}
                     </div>
-                    <div class="col-xs-3 col-sm-1">
+                    <div class="col-xs-2">
 
                         <div class="text-center">
                             <button {{ "disabled" if upvote }} class="btn btn-success"
