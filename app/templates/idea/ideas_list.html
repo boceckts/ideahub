@@ -1,20 +1,25 @@
 {% for idea in ideas %}
-    <div class="list-group">
-        <a class="list-group-item"
-           href="{{ url_for('show_idea', idea_id=idea.id) }}">{{ idea.title }} <span
-                class="badge"><span class="glyphicon glyphicon-chevron-right"></span></span></a>
-        <div class="panel-footer">
-            <div class="label label-default" style="margin-right: 5px">
-                {{ idea.category }}
-            </div>
-            {% if idea.tags %}
-                {% for tag in idea.tags.split(",") %}
-                    <div class="badge">
-                        <span class="glyphicon glyphicon-tag"></span>
-                        {{ tag }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+  <div class="list-group">
+    <a class="list-group-item" style='overflow: hidden' href="{{ url_for('show_idea', idea_id=idea.id) }}">
+      <span class="col-xs-11" style='overflow: hidden'>
+        {{ idea.title }}
+      </span>
+      <span class="badge col-xs-1">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </span>
+    </a>
+    <div class="panel-footer">
+      <div class="label label-default" style="margin-right: 5px">
+        {{ idea.category }}
+      </div>
+      {% if idea.tags %}
+        {% for tag in idea.tags.split(",") %}
+          <div class="badge">
+            <span class="glyphicon glyphicon-tag"></span>
+            {{ tag }}
+          </div>
+        {% endfor %}
+      {% endif %}
     </div>
+  </div>
 {% endfor %}
