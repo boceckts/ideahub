@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="justify-start col-sm-6 col-md-8">
-                <div class="h1">My Ideas</div>
+                <div class="h1">Ideas of {{ current_user.username }}</div>
                 {% if ideas|length == 0 %}
                     <div class="jumbotron">
                         <div class="h2">You didn't create any ideas yet!</div>

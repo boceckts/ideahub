@@ -7,10 +7,9 @@
             document.forms["vote_form"].submit();
         }
     </script>
+    <div class="h1">Inspire Me</div>
+    <br>
     {% if idea is not none %}
-
-        <div class="h1">Inspire Me</div>
-        <br>
         <div class=container-fluid">
             <p>
                 Here is an idea that we found based on your interests which you specified in your profile. If you
@@ -20,7 +19,7 @@
                 </a>
             </p>
         </div>
-        {%  include 'idea/idea.html' %}
+        {% include 'idea/idea.html' %}
 
     {% else %}
         <div class="jumbotron">
