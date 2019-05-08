@@ -10,16 +10,16 @@
                 {{ wtf.quick_form(form, button_map={'submit': 'success'}) }}
             </div>
             <br>
-            <div class="justify-start col-sm-6 col-md-8">
-                {% for idea in ideas %}
-                    {% include 'idea/idea.html' %}
-                {% endfor %}
-                {% if ideas|length == 0 %}
+            <div class="col-sm-6 col-md-8">
+                 {% if ideas|length == 0 %}
                     <div class="jumbotron">
-                        <div class="h2">Your search didn't yield any results.</div>
+                        <div class="h2">Your search didn't yield any results!</div>
                         <br>
-                        <p>Adjust your search filters and try again</p>
+                        <p>Adjust your filters and try again.</p>
                     </div>
+                {% else %}
+
+                    {% include 'idea/ideas_list.html' %}
                 {% endif %}
             </div>
         </div>
