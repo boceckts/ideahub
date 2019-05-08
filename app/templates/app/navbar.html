@@ -10,39 +10,55 @@
         </div>
         <div class="collapse navbar-collapse" id="navBarContent">
             {% if not current_user.is_anonymous %}
-                <a class="btn btn-success navbar-btn" href="{{ url_for('create_idea') }}">New Idea</a>
+                <ul class="nav navbar-nav">
+                  <li class="{{ "active" if "home" in title|lower }}">
+                    <a href="{{ url_for('home') }}">Home</a>
+                  </li>
+                  <li class="{{ "active" if "explore" in title|lower }}">
+                    <a href="{{ url_for('explore_ideas') }}">Explore</a>
+                  </li>
+                  <li class="{{ "active" if "inspire" in title|lower }}">
+                    <a href="{{ url_for('inspire') }}">Inspire</a>
+                  </li>
+                  <li class="{{ "active" if "activity" in title|lower }}">
+                    <a href="{{ url_for('activity') }}">Activity</a>
+                  </li>
+                  <li class="{{ "active" if "leader" in title|lower }}">
+                    <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                  </li>
+                  <a class="btn btn-success navbar-btn navbar-left" href="{{ url_for('create_idea') }}">New Idea</a>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                      <li>
+                        <a href="{{ url_for('profile') }}"><span class="glyphicon glyphicon-user"></span> My Profile</a>
+                      </li>
+                      <li>
+                        <a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
             {% endif %}
-            <ul class="nav navbar-nav">
-                {% if not current_user.is_anonymous %}
-                    <li class="{{ "active" if "home" in title|lower }}"><a href="{{ url_for('home') }}">Home</a></li>
-                    <li class="{{ "active" if "explore" in title|lower }}"><a href="{{ url_for('explore_ideas') }}">Explore</a>
-                    </li>
-                    <li class="{{ "active" if "inspire" in title|lower }}"><a href="{{ url_for('inspire') }}">Inspire
-                        Me</a></li>
-                    <li class="{{ "active" if "activity" in title|lower }}"><a href="{{ url_for('activity') }}">Activity
-                        Feed</a></li>
-                    <li class="{{ "active" if "leader" in title|lower }}"><a href="{{ url_for('leaderboard') }}">Leaderboard</a>
-                    </li>
-                {% endif %}
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('register') }}">Sign Up</a>
-                    </li>
-                    <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
-                    </li>
-                {% else %}
-                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span
-                            class="glyphicon glyphicon-user"></span> {{ current_user.username }} <span
-                            class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('profile') }}"><span class="glyphicon glyphicon-user"></span>
-                                My Profile</a></li>
-                            <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span>
-                                Logout</a></li>
-                        </ul>
-                    </li>
-                {% endif %}
+            {% if current_user.is_anonymous %}
+              <ul class="nav navbar-nav">
+                <li class="{{ "active" if "home" in title|lower }}">
+                  <a href="{{ url_for('home') }}">Home</a>
+                </li>
+                <li class="{{ "active" if "leader" in title|lower }}">
+                  <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <a href="{{ url_for('register') }}">Sign Up</a>
+                </li>
+                <li>
+                  <a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                </li>
+            {% endif %}
             </ul>
         </div>
     </div>
