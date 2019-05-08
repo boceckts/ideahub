@@ -12,6 +12,10 @@ def get_idea(idea_id):
     return db.session.query(Idea).filter_by(id=idea_id).first()
 
 
+def get_idea_by_title(title):
+    return db.session.query(Idea).filter_by(title=title).first()
+
+
 def idea_exists(idea_id):
     return get_idea(idea_id) is not None
 

@@ -10,7 +10,8 @@ from app.models.search import Search
 from app.services.event_service import get_all_events_for_user
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, get_all_ideas_for_user, \
     get_random_unvoted_idea_for_user, edit_idea_by_form, save_idea_by_form, get_ideas_by_search, get_all_ideas, \
-    get_top_ten_ideas_by_score, get_top_ten_ideas_by_upvotes, get_top_ten_ideas_by_downvotes, get_top_ten_ideas_by_total_votes
+    get_top_ten_ideas_by_score, get_top_ten_ideas_by_upvotes, get_top_ten_ideas_by_downvotes, \
+    get_top_ten_ideas_by_total_votes, idea_title_exists, get_idea_by_title
 from app.services.user_service import get_user_by_username, edit_user_by_form, \
     delete_user_by_id, save_user_by_form
 from app.services.vote_service import save_vote, vote_exists, get_vote, edit_vote
@@ -173,44 +174,44 @@ def create_idea():
     return render_template('idea/create-idea.html', title='New Idea', form=form)
 
 
-@app.route('/ideas/<int:idea_id>', methods=['GET'])
-def show_idea(idea_id):
+@app.route('/ideas/<string:idea_title>', methods=['GET'])
+def show_idea(idea_title):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    if not idea_exists(idea_id):
+    if not idea_title_exists(idea_title):
         abort(404)
     show_all = True
-    if current_user.id != get_idea(idea_id).author.id:
+    idea = get_idea_by_title(idea_title)
+    if current_user.id != idea.author.id:
         show_all = False
     upvote = False
     downvote = False
-    if vote_exists(current_user.id, idea_id):
-        vote = get_vote(current_user.id, idea_id)
+    if vote_exists(current_user.id, idea.id):
+        vote = get_vote(current_user.id, idea.id)
         upvote = vote.value == 1
         downvote = vote.value == -1
-    idea = get_idea(idea_id)
     return render_template('idea/show_idea.html', title='Edit Idea', idea=idea, show_all=show_all, upvote=upvote,
                            downvote=downvote)
 
 
-@app.route('/ideas/<int:idea_id>/edit', methods=['GET', 'POST'])
-def edit_idea(idea_id):
+@app.route('/ideas/<string:idea_title>/edit', methods=['GET', 'POST'])
+def edit_idea(idea_title):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    if not idea_exists(idea_id):
+    if not idea_title_exists(idea_title):
         abort(404)
-    if current_user.id != get_idea(idea_id).author.id:
+    idea_to_edit = get_idea_by_title(idea_title)
+    if current_user.id != idea_to_edit.author.id:
         abort(403)
-    idea_to_edit = get_idea(idea_id)
     form = EditIdeaForm(title=idea_to_edit.title,
                         description=idea_to_edit.description,
                         category=idea_to_edit.category,
                         tags=idea_to_edit.tags)
     if form.validate_on_submit():
         if request.method == 'POST':
-            edit_idea_by_form(idea_id, form)
+            edit_idea_by_form(idea_to_edit.id, form)
             flash('Your idea has been edited!', 'info')
-            return redirect(url_for('show_idea', idea_id=idea_id))
+            return redirect(url_for('show_idea', idea_title=idea_to_edit.title))
     return render_template('idea/edit-idea.html', title='Edit Idea', form=form, idea=idea_to_edit)
 
 
