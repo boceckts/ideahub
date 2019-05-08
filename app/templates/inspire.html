@@ -7,10 +7,9 @@
             document.forms["vote_form"].submit();
         }
     </script>
+    <div class="h1">Inspire Me</div>
+    <br>
     {% if idea is not none %}
-
-        <div class="h1">Inspire Me</div>
-        <br>
         <div class=container-fluid">
             <p>
                 Here is an idea that we found based on your interests which you specified in your profile. If you
@@ -20,60 +19,7 @@
                 </a>
             </p>
         </div>
-
-        <form id="vote_form" action="{{ url_for('inspire') }}" method="post">
-            <div class="form-group">
-                <input type="hidden" name="owner" value="{{ current_user.id }}">
-                <input type="hidden" name="target" value="{{ idea.id }}">
-                <input type="hidden" name="value" id="vote_value" value="0">
-
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <div class="h2">{{ idea.title }}
-                            {% if idea.score is none %}
-                                <div class="label label-success" style="vertical-align: top;font-size: 12px">New</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="col-xs-9 col-sm-11">
-                            {{ idea.description }}
-                        </div>
-                        <div class="col-xs-3 col-sm-1">
-
-                            <div class="text-center">
-                                <button class="btn btn-success" onclick="setVoteValue(1)"><span
-                                        class="glyphicon glyphicon-chevron-up"></span></button>
-                            </div>
-                            <div class="text-center" style="font-size: 20px">
-                                {% if idea.score is none %}
-                                    0
-                                {% else %}
-                                    {{ idea.score }}
-                                {% endif %}
-                            </div>
-                            <div class="text-center">
-                                <button class="btn btn-danger" onclick="setVoteValue(-1)"><span
-                                        class="glyphicon glyphicon-chevron-down"></span></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <div class="label label-default" style="margin-right: 5px">
-                            {{ idea.category }}
-                        </div>
-                        {% if idea.tags %}
-                            {% for tag in idea.tags.split(",") %}
-                                <div class="badge">
-                                    <span class="glyphicon glyphicon-tag"></span>
-                                    {{ tag }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </form>
+        {% include 'idea/idea.html' %}
 
     {% else %}
         <div class="jumbotron">

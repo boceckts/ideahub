@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block app_content %}
+    <div class="h1">Activity Feed</div>
+    <br>
     {% if events is none or events|length == 0 %}
         <div class="jumbotron">
             <div class="h2">You don't have any Events yet!</div>
@@ -13,8 +15,6 @@
             <a class="btn btn-primary" href="{{ url_for('index') }}">Home</a>
         </div>
     {% else %}
-        <div class="h1">Activity Feed</div>
-        <br>
         <div class=container-fluid">
             {% for event in events %}
                 {% if event.type == type.upvotes %}
