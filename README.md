@@ -95,31 +95,36 @@ from within your virtual environment run the following scripts to init, migrate 
 
 
 ### Start the Web Application
-run the flask web application on your localhost by either using the **Windows** command prompt or the terminal on **Linux/Mac**.
-You can omit the path to the python executable when your virtual environment is activated.
+Run the flask web application on your localhost by either using the **Windows** command prompt or the terminal on **Linux/Mac**.
+from within your virtual environment run the following commands to start your flask application.
 
 on **Windows**
 ```
-flask\Scripts\python run.py
+set FLASK_APP=app
+set FLASK_ENV=development
+flask run
 ```
 or else on **Linux/Mac**
 ```
-chmod a+x run.py
-./run.py
+export FLASK_APP=app
+export FLASK_ENV=development
+flask run
 ```
 
 The web application should now be up and running at http://127.0.0.1:5000/.
 
 ### Update Python requirements
-I you need to install new python packages or update existing ones, start your virtual environment and do so.
-Afterwards run the following command to ensure the new requirements will be versioned and available to others.
-You can omit the path to the python executable when your virtual environment is activated.
+If you need to install new python packages or update existing ones, do so within your virtual environment.
+Afterwards run the following command in a command prompt or terminal from within your virtual environment to ensure the new requirements will be versioned and available to others.
+```
+pip freeze > requirements.txt
+```
 
-on **Windows**
+## Docker
+A dockerfile is available which can be used to quickly create a production container of the app.
+In order to manually start the application in production mode you need to set the environment variable `FLASK_ENV=production` and pass `--host=0.0.0.0` as command args to the flask `run` command.
+This will be automatically done by the docker container which can be build and run by typing the following commands in a command prompt or terminal.
 ```
-flask\Scripts\pip freeze > requirements.txt
-```
-or else on **Linux/Mac**
-```
-flask/bin/pip freeze > requirements.txt
+docker build -t ideahub:latest .
+docker run --name ideahub -p 5000:5000 ideahub:latest
 ```
