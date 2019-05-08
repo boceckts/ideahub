@@ -1,0 +1,48 @@
+{% if key == 'score' %}
+  <div id='{{ key }}' class='tab-pane fade in active'>
+{% else %}
+  <div id='{{ key }}' class='tab-pane fade'>
+{% endif %}
+  <table class='table table-hover' style='table-layout: fixed'>
+    <thead>
+      <tr>
+        <th class="col-xs-1 col-md-1">#</th>
+        <th class="col-xs-6 col-md-7">Title</th>
+        <th class="col-xs-3 col-md-3">Author</th>
+        {% if key == 'score' %}
+          <th class="col-xs-2 col-md-1">Score</th>
+        {% elif key == 'upvotes' %}
+          <th>Upvotes</th>
+        {% elif key == 'downvotes' %}
+          <th>Downvotes</th>
+        {% elif key == 'total_votes' %}
+          <th>Votes</th>
+        {% endif %}
+      </tr>
+    </thead>
+    {% for i in range(leaderboards[key]|count) %}
+      <tr>
+        <td>{{ i+1 }}</td>
+        <td style='word-wrap:break-word'>{{ leaderboards[key][i].title }}</td>
+        <td>{{ leaderboards[key][i].author.username }}</td>
+        {% if key == 'score' %}
+          <td>
+            <span class="glyphicon glyphicon-fire"> </span> {{ leaderboards[key][i].score }}
+          </td>
+        {% elif key == 'upvotes' %}
+          <td>
+            <span class="glyphicon glyphicon-thumbs-up"> </span> {{ leaderboards[key][i].upvotes }}
+          </td>
+        {% elif key == 'downvotes' %}
+          <td>
+            <span class="glyphicon glyphicon-thumbs-down"> </span> {{ leaderboards[key][i].downvotes }}
+          </td>
+        {% elif key == 'total_votes' %}
+          <td>
+            <span class="glyphicon glyphicon-stats"> </span> {{ leaderboards[key][i].votes_count }}
+          </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </table>
+</div>

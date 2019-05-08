@@ -122,3 +122,19 @@ def delete_ideas_for_user(user_id):
         delete_votes_for_idea(idea.id)
     db.session.query(Idea).filter_by(user_id=user_id).delete(synchronize_session='fetch')
     db.session.commit()
+
+
+def get_top_ten_ideas_by_score():
+    return db.session.query(Idea).order_by(Idea.score.desc()).all()[:10]
+
+
+def get_top_ten_ideas_by_upvotes():
+    return db.session.query(Idea).order_by(Idea.upvotes.desc()).all()[:10]
+
+
+def get_top_ten_ideas_by_downvotes():
+    return db.session.query(Idea).order_by(Idea.downvotes.desc()).all()[:10]
+
+
+def get_top_ten_ideas_by_total_votes():
+    return db.session.query(Idea).order_by(Idea.votes_count.desc()).all()[:10]

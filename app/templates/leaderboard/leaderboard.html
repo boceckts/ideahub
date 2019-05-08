@@ -1,0 +1,23 @@
+{% extends "app/base.html" %}
+
+{% block app_content %}
+
+    <div class="h1">Leaderboard</div>
+    <br>
+    <div class=container-fluid">
+      <ul class="nav nav-pills">
+        <li class="active"><a data-toggle="pill" href="#score"> <span class="glyphicon glyphicon-fire"> </span> Score</a></li>
+        <li><a data-toggle="pill" href='#upvotes'> <span class="glyphicon glyphicon-thumbs-up"> </span> Upvotes</a></li>
+        <li><a data-toggle="pill" href='#downvotes'> <span class="glyphicon glyphicon-thumbs-down"> </span> Downvotes</a></li>
+        <li><a data-toggle="pill" href='#total_votes'> <span class="glyphicon glyphicon-stats"> </span> Total Votes</a></li>
+      </ul>
+      <div class="tab-content">
+        {% for key in leaderboards.keys() %}
+          {% with key = key %}
+            {% include "leaderboard/leaderboard_table.html" %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+
+{% endblock %}

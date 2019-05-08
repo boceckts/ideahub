@@ -9,7 +9,8 @@ from app.models.event import EventType
 from app.models.search import Search
 from app.services.event_service import get_all_events_for_user
 from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, get_all_ideas_for_user, \
-    get_random_unvoted_idea_for_user, edit_idea_by_form, save_idea_by_form, get_ideas_by_search, get_all_ideas
+    get_random_unvoted_idea_for_user, edit_idea_by_form, save_idea_by_form, get_ideas_by_search, get_all_ideas, \
+    get_top_ten_ideas_by_score, get_top_ten_ideas_by_upvotes, get_top_ten_ideas_by_downvotes, get_top_ten_ideas_by_total_votes
 from app.services.user_service import get_user_by_username, edit_user_by_form, \
     delete_user_by_id, save_user_by_form
 from app.services.vote_service import save_vote, vote_exists
@@ -81,9 +82,15 @@ def activity():
                            type=EventType)
 
 
-@app.route('/leaderboard')
+@app.route('/leaderboard', methods=['GET'])
 def leaderboard():
-    return redirect(url_for('home'))
+    leaderboards = {
+        'score': get_top_ten_ideas_by_score(),
+        'upvotes': get_top_ten_ideas_by_upvotes(),
+        'downvotes': get_top_ten_ideas_by_downvotes(),
+        'total_votes': get_top_ten_ideas_by_total_votes(),
+    }
+    return render_template('leaderboard/leaderboard.html', title='Leaderboard', leaderboards=leaderboards)
 
 
 @app.route('/inspire', methods=['GET', 'POST'])
