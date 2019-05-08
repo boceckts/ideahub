@@ -23,22 +23,28 @@
     {% for i in range(leaderboards[key]|count) %}
       <tr>
         <td>{{ i+1 }}</td>
-        <td style='word-wrap:break-word'>{{ leaderboards[key][i].title }}</td>
-        <td>{{ leaderboards[key][i].author.username }}</td>
+        <td style='overflow: hidden'>
+          <a href='/ideas/{{ leaderboards[key][i].id }}' title="Go to Idea">
+            {{ leaderboards[key][i].title }}
+          </a>
+        </td>
+        <td style='overflow: hidden'>
+          {{ leaderboards[key][i].author.username }}
+        </td>
         {% if key == 'score' %}
-          <td>
+          <td style='overflow: hidden'>
             <span class="glyphicon glyphicon-fire"> </span> {{ leaderboards[key][i].score }}
           </td>
         {% elif key == 'upvotes' %}
-          <td>
+          <td style='overflow: hidden'>
             <span class="glyphicon glyphicon-thumbs-up"> </span> {{ leaderboards[key][i].upvotes }}
           </td>
         {% elif key == 'downvotes' %}
-          <td>
+          <td style='overflow: hidden'>
             <span class="glyphicon glyphicon-thumbs-down"> </span> {{ leaderboards[key][i].downvotes }}
           </td>
         {% elif key == 'total_votes' %}
-          <td>
+          <td style='overflow: hidden'>
             <span class="glyphicon glyphicon-stats"> </span> {{ leaderboards[key][i].votes_count }}
           </td>
         {% endif %}
