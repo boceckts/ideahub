@@ -17,3 +17,4 @@ bootstrap = Bootstrap(app)
 from app.errors import internal_error
 from app import views, errors
 from app.api import api
+from app.db_initializer import initdb

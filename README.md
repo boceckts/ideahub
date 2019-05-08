@@ -112,6 +112,7 @@ flask run
 ```
 
 The web application should now be up and running at http://127.0.0.1:5000/.
+The documentation of the REST API of the application will be available on http://127.0.0.1:5000/api/v1/docs.
 
 ### Update Python requirements
 If you need to install new python packages or update existing ones, do so within your virtual environment.
@@ -120,8 +121,17 @@ Afterwards run the following command in a command prompt or terminal from within
 pip freeze > requirements.txt
 ```
 
+
+## Database initialization
+We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
+If you need to use the command type the following command from within your virtual environment.
+```
+flask initdb
+```
+
 ## Docker
 A dockerfile is available which can be used to quickly create a production container of the app.
+For demonstration purposes we also initialize and fill the database inside the container with sample data.
 In order to manually start the application in production mode you need to set the environment variable `FLASK_ENV=production` and pass `--host=0.0.0.0` as command args to the flask `run` command.
 This will be automatically done by the docker container which can be build and run by typing the following commands in a command prompt or terminal.
 ```

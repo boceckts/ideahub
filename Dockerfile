@@ -18,6 +18,7 @@ ENV FLASK_ENV=production
 RUN flask db init
 RUN flask db migrate
 RUN flask db upgrade
+RUN flask initdb
 
 ENTRYPOINT [ "flask", "run" ]
 CMD ["--host=0.0.0.0"]
