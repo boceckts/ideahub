@@ -29,7 +29,13 @@
           </a>
         </td>
         <td style='overflow: hidden'>
-          {{ leaderboards[key][i].author.username }}
+          {% if current_user.username == leaderboards[key][i].author.username %}
+            <b>
+              {{ current_user.username }}
+            </b>
+          {% else %}
+            {{ leaderboards[key][i].author.username }}
+          {% endif %}
         </td>
         {% if key == 'score' %}
           <td style='overflow: hidden'>
