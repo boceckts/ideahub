@@ -1,11 +1,14 @@
 {% for idea in ideas %}
   <div class="list-group">
     <a class="list-group-item" style='overflow: hidden' href="{{ url_for('show_idea', idea_title=idea.title) }}">
-      <span class="col-xs-11" style='overflow: hidden'>
+      <span class="col-xs-8" style='overflow: hidden'>
         {{ idea.title }}
       </span>
+      <div class="col-xs-3" style='text-align:right'>
+        {{ moment(idea.modified).format('L') }}
+      </div
       <span class="badge col-xs-1">
-        <span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="glyphicon glyphicon-chevron-right pull-right"></span>
       </span>
     </a>
     <div class="panel-footer">
