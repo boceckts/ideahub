@@ -5,45 +5,50 @@
 {% endblock %}
 
 {% block app_content %}
-    <div class="h1">Activity Feed</div>
-    <br>
-    {% if events is none or events|length == 0 %}
-        <div class="jumbotron">
-            <div class="h2">You don't have any Events yet!</div>
-            <br>
-            <p>Do you want to go to the Home page instead?</p>
-            <a class="btn btn-primary" href="{{ url_for('index') }}">Home</a>
+  <div class="h1">Activity Feed</div>
+  <br>
+  {% if events is none or events|length == 0 %}
+    <div class="jumbotron">
+      <div class="h2">You don't have any Events yet!</div>
+      <br>
+      <p>Do you want to go to the Home page instead?</p>
+      <a class="btn btn-primary" href="{{ url_for('index') }}">Home</a>
+    </div>
+  {% else %}
+    <div class=container-fluid">
+      {% for event in events %}
+        <div class="panel panel-primary">
+          <div class="panel-heading col-xs-12">
+            {% if event.type == type.upvotes %}
+              <span class="glyphicon glyphicon-heart col-xs-1"></span>
+            {% elif event.type == type.votes %}
+              <span class="glyphicon glyphicon-stats col-xs-1"></span>
+            {% elif event.type == type.idea_changed %}
+              <span class="glyphicon glyphicon-edit col-xs-1"></span>
+            {% elif event.type == type.idea_deleted %}
+              <span class="glyphicon glyphicon-trash col-xs-1"></span>
+            {% endif %}
+            <div class='col-xs-8' style='overflow:hidden'>
+              <a href="/ideas/{{ event.idea_name }}" title="Go to Idea" style="color:black; font-weight:bold;">{{ event.idea_name }}</a>
+            </div>
+            <div class='col-xs-3' style='text-align:right'>
+              {{ moment(event.created).fromNow() }}
+            </div>
+          </div>
+          <div class="panel-body">
+            <br><br>
+            {% if event.type == type.upvotes %}
+              {{ event.data }} people liked this idea.
+            {% elif event.type == type.votes %}
+              {{ event.data }} people voted on this idea.
+            {% elif event.type == type.idea_changed %}
+              This idea that you voted on has been changed.
+            {% elif event.type == type.idea_deleted %}
+              The idea {{ event.idea_name }} that you voted on has been deleted.
+            {% endif %}
+          </div>
         </div>
-    {% else %}
-        <div class=container-fluid">
-            {% for event in events %}
-                {% if event.type == type.upvotes %}
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-heart"></span> {{ event.created }}
-                        </div>
-                        <div class="panel-body">{{ event.data }} people liked your idea {{ event.idea_name }}</div>
-                    </div>
-                {% elif event.type == type.votes %}
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> {{ event.created }}
-                        </div>
-                        <div class="panel-body">{{ event.data }} people voted on your
-                            idea {{ event.idea_name }}</div>
-                    </div>
-                {% elif event.type == type.idea_changed %}
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-edit"></span> {{ event.created }}
-                        </div>
-                        <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been changed</div>
-                    </div>
-                {% elif event.type == type.idea_deleted %}
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-trash"></span> {{ event.created }}
-                        </div>
-                        <div class="panel-body">The idea {{ event.idea_name }} that you voted on has been deleted</div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
 {% endblock %}
