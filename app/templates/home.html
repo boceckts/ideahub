@@ -1,5 +1,29 @@
 {% extends "app/base.html" %}
 
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+        var activityChartCanvas = document.getElementById('myActivityChart').getContext('2d');
+        var activityChart = new Chart(activityChartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Created Ideas', 'Given Votes'],
+                datasets: [{
+                    backgroundColor: ['#149a80', '#2384c6'],
+                    borderColor: ['#128f76', '#217dbb'],
+                    data: [{{ current_user.idea_count }}, {{ current_user.votes_count }}]
+                }]
+            },
+            options: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        });
+    </script>
+{% endblock %}
+
 {% block app_content %}
 
     <div class="h1">Hi, {{ current_user.username }}! Welcome to IdeaHub</div>
@@ -16,12 +40,19 @@
             <p>Do you want to go to create a new idea now?</p>
             <a class="btn btn-success" href="{{ url_for('create_idea') }}">Create new idea</a>
         {% else %}
-            <div class="h3">You have created {{ current_user.idea_count }} idea(s) and voted
-                on {{ current_user.votes_count }} idea(s). Thank you for sharing your ideas with us!
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="h3">You have created {{ current_user.idea_count }} idea(s) and voted
+                        on {{ current_user.votes_count }} idea(s). Thank you for sharing your ideas with us!
+                    </div>
+                    <p>Do you want to see how you and your ideas are ranked amongst others?</p>
+                    <a class="btn btn-primary" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
+                </div>
+                <br>
+                <div class="col-md-6">
+                    <canvas id="myActivityChart"></canvas>
+                </div>
             </div>
-            <br>
-            <p>Do you want to see how you and your ideas are ranked amongst others?</p>
-            <a class="btn btn-primary" href="{{ url_for('leaderboard') }}">Show Leaderboard</a>
         {% endif %}
     </div>
 
