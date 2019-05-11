@@ -6,7 +6,9 @@ flask*
 *.pyo
 __pycache__/
 migrations/
-app.db
+*.db
+htmlcov/
+.coverage
 
 # Project directories of IDEs
 .idea/
