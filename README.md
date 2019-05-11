@@ -1,17 +1,32 @@
 # IdeaHub
 Practical project for the agile web development lecture [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes)
 
-### Main Idea:
+ToC:
+1. [Main Idea](#main-Idea)
+2. [Concept](#concept)
+3. [Development](#development)
+    1. [Clone The Project](#clone-the-project)
+    2. [Install Virtual Environment](#install-virtual-environment)
+    3. [Initialize and Migrate new Database Schema](#initialize-and-migrate-new-database-schema)
+    4. [Start the Web Application](#start-the-web-application)
+    5. [Run Tests](#run-tests)
+        1. [Test Coverage](#test-coverage)
+    6. [Update Python Requirements](#update-python-requirements)
+    7. [Database Initialization](#database-initialization)
+    8. [Docker](#docker)
+
+
+## Main Idea:
 Ideas can be submitted by any registered user and other logged in users can then voted on them
 
-### Concept
+## Concept
 Users login and will be presented by a dashboard showing them their submitted ideas and their scores.
 They have the option to submit new ideas, edit the idea to a new revision or delete their idea.
 Users can also change their view to a stack of submitted ideas and vote on them.
 Ideas could be revealed depending on tags or categories or at random.
 Users not logged in can see all ideas but can not vote.
 
-## Developent
+## Development
 In order to develop on this project you need to set up your local development environment.
 The following steps need to performed in your terminal.
 Python 3.x is required to be installed before proceeding with the next steps.
@@ -114,7 +129,30 @@ flask run
 The web application should now be up and running at http://127.0.0.1:5000/.
 The documentation of the REST API of the application will be available on http://127.0.0.1:5000/api/v1/docs.
 
-### Update Python requirements
+### Run Tests
+The project includes a test directory where any tests are located. In order to run them we use the unittest module of python.
+Type the following commands within your virtual environment to run
+all tests
+```
+python -m unittest test -vvv
+```
+specific unittests
+```
+python -m unittest test.unittests.<package>[.<module_name>] -vvv
+```
+
+
+#### Test Coverage
+In order to see the test coverage of the project we can install and use the package `coverage` by typing `pip install coverage` into a terminal within your virtual environment.
+Use the following commands to generate a test coverage report which can be viewed by opening the [index](htmlcov/index.html) file in a browser.
+```
+coverage run --source=app -m unittest discover -s test/
+coverage html
+```
+Alternatively you can also view the report right in the terminal by using the command `coverage report -m`.
+
+
+### Update Python Requirements
 If you need to install new python packages or update existing ones, do so within your virtual environment.
 Afterwards run the following command in a command prompt or terminal from within your virtual environment to ensure the new requirements will be versioned and available to others.
 ```
@@ -122,14 +160,14 @@ pip freeze > requirements.txt
 ```
 
 
-## Database initialization
+### Database Initialization
 We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
 If you need to use the command type the following command from within your virtual environment.
 ```
 flask initdb
 ```
 
-## Docker
+### Docker
 A dockerfile is available which can be used to quickly create a production container of the app.
 For demonstration purposes we also initialize and fill the database inside the container with sample data.
 In order to manually start the application in production mode you need to set the environment variable `FLASK_ENV=production` and pass `--host=0.0.0.0` as command args to the flask `run` command.
