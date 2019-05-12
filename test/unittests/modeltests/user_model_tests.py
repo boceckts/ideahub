@@ -1,6 +1,8 @@
 import unittest
 from datetime import timedelta, datetime
 
+from sqlalchemy.exc import IntegrityError
+
 from app.models import User
 from test.base_test_case import BaseTestCase
 
@@ -31,7 +33,7 @@ class UserModelTest(BaseTestCase):
         self.addTestModels()
         self.testUser.generate_auth_token()
         self.assertIsNone(User.check_token('abcdefg'))
-        self.assertEquals(self.testUser, User.check_token(self.testUser.token))
+        self.assertEqual(self.testUser, User.check_token(self.testUser.token))
         self.testUser.revoke_token()
         self.assertIsNone(User.check_token(self.testUser.token))
 
@@ -47,6 +49,24 @@ class UserModelTest(BaseTestCase):
         user.set_password(pwd)
         self.assertTrue(user.check_password(pwd))
         self.assertFalse(user.check_password(pwd.upper()))
+
+    def test_user_username_constraint(self):
+        first_user = User()
+        first_user.username = 'MyUserName'
+        second_user = User()
+        second_user.username = 'MyUserName'
+        self.addModel(first_user)
+        with self.assertRaises(IntegrityError):
+            self.addModel(second_user)
+
+    def test_user_email_constraint(self):
+        first_user = User()
+        first_user.email = 'name@mail.com'
+        second_user = User()
+        second_user.email = 'name@mail.com'
+        self.addModel(first_user)
+        with self.assertRaises(IntegrityError):
+            self.addModel(second_user)
 
 
 if __name__ == '__main__':
