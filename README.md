@@ -1,4 +1,7 @@
 # IdeaHub
+[![Build Status](https://travis-ci.com/boceckts/ideahub.svg?token=peqtbSMtxkonhsy4FdNH&branch=master)](https://travis-ci.com/boceckts/ideahub)
+[![codecov](https://codecov.io/gh/boceckts/ideahub/branch/master/graph/badge.svg?token=2iHhFVNnIr)](https://codecov.io/gh/boceckts/ideahub)
+
 Practical project for the agile web development lecture [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes)
 
 ToC:
