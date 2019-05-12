@@ -34,8 +34,12 @@ class BaseTestCase(unittest.TestCase):
 
     def addTestModels(self):
         self.addModel(self.testUser)
+        self.testIdea.user_id = self.testUser.id
         self.addModel(self.testIdea)
+        self.testVote.idea_id = self.testIdea.id
+        self.testVote.user_id = self.testUser.id
         self.addModel(self.testVote)
+        self.testEvent.user_id = self.testUser.id
         self.addModel(self.testEvent)
 
     def setTestUser(self):
@@ -53,17 +57,13 @@ class BaseTestCase(unittest.TestCase):
         self.testIdea.description = 'Description of an Awesome Test Idea'
         self.testIdea.category = 'Engineering'
         self.testIdea.tags = self.testUser.tags
-        self.testIdea.user_id = self.testUser.id
 
     def setTestVote(self):
         self.testVote = Vote()
         self.testVote.value = 1
-        self.testVote.idea_id = self.testIdea.id
-        self.testVote.user_id = self.testUser.id
 
     def setTestEvent(self):
         self.testEvent = Event()
         self.testEvent.type = EventType.votes
-        self.testEvent.user_id = self.testUser.id
         self.testEvent.idea_name = self.testIdea.title
         self.testEvent.data = 10
