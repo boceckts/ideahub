@@ -10,7 +10,7 @@ services:
 # build a and run the docker image
 before_install:
   - docker build -t ideahub:latest .
-  - docker run --name ideahub -p 5000:5000 ideahub:latest
+  - docker run --detach --name ideahub -p 5000:5000 ideahub:latest
 
 # install python dependencies
 install:
