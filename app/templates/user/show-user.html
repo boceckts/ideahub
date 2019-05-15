@@ -1,17 +1,12 @@
 {% extends "app/base.html" %}
 
 {% block app_content %}
-    <script>
-        function deleteIdeaConfirmation() {
-            return (confirm('Are you sure you want to delete this idea?'));
-        }
-
-        function deleteProfileConfirmation() {
-            return (confirm('Are you sure you want to delete your profile?' +
-                '\nWARNING: this will delete all your votes and all your ideas'));
-        }
-    </script>
-
+  <script>
+    function deleteProfileConfirmation() {
+        return (confirm('Are you sure you want to delete your profile?' +
+            '\nWARNING: this will delete all your votes and all your ideas'));
+    }
+  </script>
     <div class="h1">Profile of {{ current_user.username }}</div>
     <br>
     <div class=container-fluid">
