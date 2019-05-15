@@ -174,7 +174,12 @@ pip freeze > requirements.txt
 
 ### Database Initialization
 We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
-If you need to use the command type the following command from within your virtual environment.
+This will make the following list of users available `users = ["Initial","Liam","William","James","Logan","Benjamin","Mason","Elijah","Oliver","Jacob","Lucas","Michael","Alexander","Ethan","Daniel","Matthew","Aiden","Henry","Joseph","Jackson","Samuel","Sebastian","David","Carter","Wyatt","Jayden","John","Owen","Dylan","Luke","Gabriel","Anthony","Isaac","Grayson","Jack","Julian","Levi","Christopher","Joshua","Andrew","Lincoln","Mateo","Ryan","Jaxon","Nathan","Aaron","Isaiah","Thomas","Charles","Caleb"]`.
+Each user is created with a username following the pattern of lower anme of user followed by a `1` with the password `123456`.
+
+E.g. username `logan1`, password `123456`.
+
+If you need to initialize the database, type the following command from within your virtual environment.
 ```
 flask initdb
 ```
