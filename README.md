@@ -7,7 +7,8 @@ Practical project for the agile web development lecture [CITS5505](http://teachi
 ToC:
 1. [Main Idea](#main-Idea)
 2. [Concept](#concept)
-3. [Development](#development)
+3. [Architecture](#Architecture)
+4. [Development](#development)
     1. [Clone The Project](#clone-the-project)
     2. [Install Virtual Environment](#install-virtual-environment)
     3. [Initialize and Migrate new Database Schema](#initialize-and-migrate-new-database-schema)
@@ -28,6 +29,14 @@ They have the option to submit new ideas, edit the idea to a new revision or del
 Users can also change their view to a stack of submitted ideas and vote on them.
 Ideas could be revealed depending on tags or categories or at random.
 Users not logged in can see all ideas but can not vote.
+
+
+## Architecture
+The following diagram visualizes the architecture of the ideahub application.
+We followed the principle that all the database communication should only be done by using the respective services.
+View and API should also not interfere or call each other.
+While the view uses the internal model directly our API uses models from its own namespaces to easily marshall and un-marshall response and request objects.
+![IdeaHub](ideahub-architecture.jpg)
 
 ## Development
 In order to develop on this project you need to set up your local development environment.
