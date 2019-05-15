@@ -1,6 +1,6 @@
 {% for idea in ideas %}
   <div class="list-group">
-    <a class="list-group-item" style='overflow: hidden' href="{{ url_for('show_idea', idea_title=idea.title) }}">
+    <a class="list-group-item panel-primary" style='overflow: hidden' href="{{ url_for('show_idea', idea_title=idea.title) }}">
       <span class="col-xs-8" style='overflow: hidden'>
         {{ idea.title }}
       </span>
