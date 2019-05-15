@@ -6,16 +6,37 @@
     {% if title %}{{ title }} - IdeaHub{% else %}IdeaHub{% endif %}
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        .app-body {
+            margin-bottom: 250px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
 {% block navbar %}
     {% include 'app/navbar.html' %}
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="app-body container">
         {% include'app/messages.html' %}
         {% block app_content %}
         {% endblock %}
     </div>
+    {% include 'app/footer.html' %}
 {% endblock %}
 
 {% block scripts %}
