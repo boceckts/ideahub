@@ -16,3 +16,6 @@ htmlcov/
 
 # Index files of Mac OS
 .DS_Store
+
+# Logs
+*.log
