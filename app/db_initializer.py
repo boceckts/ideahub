@@ -22,7 +22,6 @@ def create_admin():
     admin.set_password(app.config['ADMIN_PWD'])
     db.session.add(admin)
     db.session.commit()
-    print('Admin created with password ' + app.config['ADMIN_PWD'])
 
 
 @app.cli.command('init-db')
