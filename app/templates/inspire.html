@@ -10,7 +10,7 @@
     <div class="h1">Inspire Me</div>
     <br>
     {% if idea is not none %}
-        <div class=container-fluid">
+        <div class="container-fluid">
             <p>
                 Here is an idea that we found based on your interests which you specified in your profile. If you
                 do not want to vote on this idea use the shuffle button to get a new inspiring idea instead.
@@ -18,9 +18,8 @@
                     <span class="glyphicon glyphicon-random"></span>
                 </a>
             </p>
+            {% include 'idea/idea.html' %}
         </div>
-        {% include 'idea/idea.html' %}
-
     {% else %}
         <div class="jumbotron">
             <div class="h2">You have voted on all ideas!</div>
