@@ -13,6 +13,10 @@ def get_vote(user_id, idea_id):
     return db.session.query(Vote).filter_by(user_id=user_id, idea_id=idea_id).first()
 
 
+def get_votes(idea_id):
+    return db.session.query(Vote).filter_by(idea_id=idea_id).order_by(Vote.modified.desc()).all()
+
+
 def get_vote_by_id(vote_id):
     return db.session.query(Vote).filter_by(id=vote_id).first()
 

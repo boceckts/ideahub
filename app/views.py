@@ -14,7 +14,7 @@ from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, 
     get_top_ten_ideas_by_total_votes, idea_title_exists, get_idea_by_title
 from app.services.user_service import get_user_by_username, edit_user_by_form, \
     delete_user_by_id, save_user_by_form
-from app.services.vote_service import save_vote, vote_exists, get_vote, edit_vote
+from app.services.vote_service import save_vote, vote_exists, get_vote, get_votes, edit_vote, delete_vote_by_id
 
 
 @app.route('/')
@@ -57,7 +57,10 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
-        return redirect(next_page)
+        if str(user.role) == 'UserRole.admin':
+            return redirect(url_for('admin'))
+        else:
+            return redirect(next_page)
     return render_template('authentication/login.html', title='Login', form=form)
 
 
@@ -221,11 +224,16 @@ def delete_idea(idea_id):
         return redirect(url_for('login'))
     if not idea_exists(idea_id):
         abort(404)
-    if current_user.id != get_idea(idea_id).author.id:
-        abort(403)
-    delete_idea_by_id(idea_id)
-    flash('Your idea has been deleted!', 'info')
-    return redirect(url_for('profile'))
+    if str(current_user.role) == 'UserRole.admin':
+        delete_idea_by_id(idea_id)
+        flash('The idea has been deleted!', 'info')
+        return redirect(url_for('admin_ideas'))
+    else:
+        if current_user.id != get_idea(idea_id).author.id:
+            abort(403)
+        delete_idea_by_id(idea_id)
+        flash('Your idea has been deleted!', 'info')
+        return redirect(url_for('profile'))
 
 
 def redirect_back():
@@ -233,3 +241,41 @@ def redirect_back():
     if not prev_page:
         prev_page = url_for('home')
     return redirect(prev_page)
+
+
+'''
+Admin Views
+'''
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) != 'UserRole.admin':
+        abort(403)
+    return render_template('admin/admin.html', title='Admin')
+
+@app.route('/admin/ideas', methods=['GET', 'POST'])
+def admin_ideas():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) != 'UserRole.admin':
+        abort(403)
+    return render_template('admin/ideas.html', title='Admin - View Ideas', ideas=get_all_ideas())
+
+@app.route('/admin/<int:idea_id>/votes', methods=['GET', 'POST'])
+def admin_votes(idea_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) != 'UserRole.admin':
+        abort(403)
+    return render_template('admin/votes.html', title='Admin - View Votes', votes=get_votes(idea_id))
+
+@app.route('/admin/<int:idea_id>/<int:vote_id>/delete', methods=['GET', 'POST'])
+def delete_vote(idea_id, vote_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) != 'UserRole.admin':
+        abort(403)
+    delete_vote_by_id(vote_id)
+    flash('A vote was deleted!', 'info')
+    return render_template('admin/votes.html', title='Admin - Delete Vote', votes=get_votes(idea_id))

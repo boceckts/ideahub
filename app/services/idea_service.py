@@ -21,7 +21,7 @@ def idea_exists(idea_id):
 
 
 def get_all_ideas():
-    return db.session.query(Idea).all()
+    return db.session.query(Idea).order_by(Idea.score.desc()).all()
 
 
 def get_ideas_by_search(search):
