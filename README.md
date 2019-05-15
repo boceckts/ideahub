@@ -7,7 +7,8 @@ Practical project for the agile web development lecture [CITS5505](http://teachi
 ToC:
 1. [Main Idea](#main-Idea)
 2. [Concept](#concept)
-3. [Development](#development)
+3. [Architecture](#Architecture)
+4. [Development](#development)
     1. [Clone The Project](#clone-the-project)
     2. [Install Virtual Environment](#install-virtual-environment)
     3. [Initialize and Migrate new Database Schema](#initialize-and-migrate-new-database-schema)
@@ -28,6 +29,14 @@ They have the option to submit new ideas, edit the idea to a new revision or del
 Users can also change their view to a stack of submitted ideas and vote on them.
 Ideas could be revealed depending on tags or categories or at random.
 Users not logged in can see all ideas but can not vote.
+
+
+## Architecture
+The following diagram visualizes the architecture of the ideahub application.
+We followed the principle that all the database communication should only be done by using the respective services.
+View and API should also not interfere or call each other.
+While the view uses the internal model directly our API uses models from its own namespaces to easily marshall and un-marshall response and request objects.
+![IdeaHub](ideahub-architecture.jpg)
 
 ## Development
 In order to develop on this project you need to set up your local development environment.
@@ -165,7 +174,12 @@ pip freeze > requirements.txt
 
 ### Database Initialization
 We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
-If you need to use the command type the following command from within your virtual environment.
+This will make the following list of users available `users = ["Initial","Liam","William","James","Logan","Benjamin","Mason","Elijah","Oliver","Jacob","Lucas","Michael","Alexander","Ethan","Daniel","Matthew","Aiden","Henry","Joseph","Jackson","Samuel","Sebastian","David","Carter","Wyatt","Jayden","John","Owen","Dylan","Luke","Gabriel","Anthony","Isaac","Grayson","Jack","Julian","Levi","Christopher","Joshua","Andrew","Lincoln","Mateo","Ryan","Jaxon","Nathan","Aaron","Isaiah","Thomas","Charles","Caleb"]`.
+Each user is created with a username following the pattern of lower anme of user followed by a `1` with the password `123456`.
+
+E.g. username `logan1`, password `123456`.
+
+If you need to initialize the database, type the following command from within your virtual environment.
 ```
 flask initdb
 ```
