@@ -2,8 +2,8 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
 
 import config
 
@@ -19,4 +19,4 @@ moment = Moment(app)
 from app.errors import internal_error
 from app import views, errors
 from app.api import api
-from app.db_initializer import initdb
+from app import db_initializer

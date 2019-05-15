@@ -15,10 +15,13 @@ RUN pip install -r requirements.txt
 ENV FLASK_APP=app
 ENV FLASK_ENV=production
 
+ARG ADMIN_PWD
+
 RUN flask db init
 RUN flask db migrate
 RUN flask db upgrade
-RUN flask initdb
+RUN flask init-db
+RUN flask create-admin
 
 ENTRYPOINT [ "flask", "run" ]
 CMD ["--host=0.0.0.0"]

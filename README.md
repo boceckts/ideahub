@@ -7,16 +7,17 @@ Practical project for the agile web development lecture [CITS5505](http://teachi
 ToC:
 1. [Main Idea](#main-Idea)
 2. [Concept](#concept)
-3. [Architecture](#Architecture)
+3. [Architecture](#architecture)
 4. [Development](#development)
     1. [Clone The Project](#clone-the-project)
     2. [Install Virtual Environment](#install-virtual-environment)
     3. [Initialize and Migrate new Database Schema](#initialize-and-migrate-new-database-schema)
-    4. [Start the Web Application](#start-the-web-application)
-    5. [Run Tests](#run-tests)
+    4. [Database Initialization](#database-initialization)
+        1. [Create Admin User](#create-admin-user)
+    5. [Start the Web Application](#start-the-web-application)
+    6. [Run Tests](#run-tests)
         1. [Test Coverage](#test-coverage)
-    6. [Update Python Requirements](#update-python-requirements)
-    7. [Database Initialization](#database-initialization)
+    7. [Update Python Requirements](#update-python-requirements)
     8. [Docker](#docker)
 
 
@@ -36,6 +37,7 @@ The following diagram visualizes the architecture of the ideahub application.
 We followed the principle that all the database communication should only be done by using the respective services.
 View and API should also not interfere or call each other.
 While the view uses the internal model directly our API uses models from its own namespaces to easily marshall and un-marshall response and request objects.
+
 ![IdeaHub](ideahub-architecture.jpg)
 
 ## Development
@@ -120,6 +122,26 @@ from within your virtual environment run the following scripts to init, migrate 
     flask db upgrade
     ```
 
+### Database Initialization
+We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
+This will make the following list of users available `users = ["Initial","Liam","William","James","Logan","Benjamin","Mason","Elijah","Oliver","Jacob","Lucas","Michael","Alexander","Ethan","Daniel","Matthew","Aiden","Henry","Joseph","Jackson","Samuel","Sebastian","David","Carter","Wyatt","Jayden","John","Owen","Dylan","Luke","Gabriel","Anthony","Isaac","Grayson","Jack","Julian","Levi","Christopher","Joshua","Andrew","Lincoln","Mateo","Ryan","Jaxon","Nathan","Aaron","Isaiah","Thomas","Charles","Caleb"]`.
+Each user is created with a username following the pattern of lower anme of user followed by a `1` with the password `123456`.
+
+E.g. username `logan1`, password `123456`.
+
+If you need to initialize the database, type the following command from within your virtual environment.
+```
+flask init-db
+```
+
+## Create Admin User
+An admin user can be created by typing the following command inside a terminal or command prompt inside your virtual environment.
+This will also overwrite any existing admin user.
+Without setting the environment variable `ADMIN_PWD` the admin user will be created with the default password `123456`.
+```
+set ADMIN_PWD=<admin-password>
+flask create-admin
+```
 
 ### Start the Web Application
 Run the flask web application on your localhost by either using the **Windows** command prompt or the terminal on **Linux/Mac**.
@@ -171,25 +193,12 @@ Afterwards run the following command in a command prompt or terminal from within
 pip freeze > requirements.txt
 ```
 
-
-### Database Initialization
-We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
-This will make the following list of users available `users = ["Initial","Liam","William","James","Logan","Benjamin","Mason","Elijah","Oliver","Jacob","Lucas","Michael","Alexander","Ethan","Daniel","Matthew","Aiden","Henry","Joseph","Jackson","Samuel","Sebastian","David","Carter","Wyatt","Jayden","John","Owen","Dylan","Luke","Gabriel","Anthony","Isaac","Grayson","Jack","Julian","Levi","Christopher","Joshua","Andrew","Lincoln","Mateo","Ryan","Jaxon","Nathan","Aaron","Isaiah","Thomas","Charles","Caleb"]`.
-Each user is created with a username following the pattern of lower anme of user followed by a `1` with the password `123456`.
-
-E.g. username `logan1`, password `123456`.
-
-If you need to initialize the database, type the following command from within your virtual environment.
-```
-flask initdb
-```
-
 ### Docker
 A dockerfile is available which can be used to quickly create a production container of the app.
 For demonstration purposes we also initialize and fill the database inside the container with sample data.
 In order to manually start the application in production mode you need to set the environment variable `FLASK_ENV=production` and pass `--host=0.0.0.0` as command args to the flask `run` command.
 This will be automatically done by the docker container which can be build and run by typing the following commands in a command prompt or terminal.
 ```
-docker build -t ideahub:latest .
+docker build --build-arg ADMIN_PWD=<admin-password> -t ideahub:latest .
 docker run --name ideahub -p 5000:5000 ideahub:latest
 ```

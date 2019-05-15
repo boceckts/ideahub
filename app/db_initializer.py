@@ -3,12 +3,30 @@ import random
 from app import app, db
 from app.models import User, Idea, Vote
 from app.models.event import EventType, Event
+from app.models.user import UserRole
 
 PWD = '123456'
 
 
-@app.cli.command()
-def initdb():
+@app.cli.command('create-admin')
+def create_admin():
+    existing_admin = User.query.filter(User.username == 'admin').first()
+    if existing_admin is not None:
+        print('Admin user already present, will override.')
+        User.query.filter(User.username == 'admin').delete()
+        db.session.commit()
+    admin = User()
+    admin.username = 'admin'
+    admin.email = 'admin@ideahub.com'
+    admin.role = UserRole.admin
+    admin.set_password(app.config['ADMIN_PWD'])
+    db.session.add(admin)
+    db.session.commit()
+    print('Admin created with password ' + app.config['ADMIN_PWD'])
+
+
+@app.cli.command('init-db')
+def init_db():
     if db.session.query(User).filter(User.username == 'initial1').first() is not None:
         print('database initialization canceled, database is already initialized.')
     else:

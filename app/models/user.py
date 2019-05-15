@@ -1,4 +1,5 @@
 import base64
+import enum
 import os
 from datetime import datetime, timedelta
 
@@ -12,8 +13,14 @@ from app import db, login
 from app.models import Vote, Idea
 
 
+class UserRole(enum.Enum):
+    user = 1
+    admin = 2
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.Enum(UserRole), default=UserRole.user)
     username = db.Column(db.String(64), index=True, unique=True)
     name = db.Column(db.String(64), index=True)
     surname = db.Column(db.String(64), index=True)
