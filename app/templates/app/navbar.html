@@ -6,11 +6,23 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            {% if current_user.role|string == 'UserRole.admin' %}
+            <a class="navbar-brand" href="{{ url_for('admin') }}">IdeaHub</a>
+            {% else %}
             <a class="navbar-brand" href="{{ url_for('home') }}">IdeaHub</a>
+            {% endif %}
         </div>
         <div class="collapse navbar-collapse" id="navBarContent">
             {% if not current_user.is_anonymous %}
                 <ul class="nav navbar-nav">
+                  {% if current_user.role|string == 'UserRole.admin' %}
+                  <li class="{{ "active" if "explore" in title|lower }}">
+                    <a href="{{ url_for('admin_users') }}">Users</a>
+                  </li>
+                  <li class="{{ "active" if "explore" in title|lower }}">
+                    <a href="{{ url_for('admin_ideas') }}">Ideas</a>
+                  </li>
+                  {% else %}
                   <li class="{{ "active" if "home" in title|lower }}">
                     <a href="{{ url_for('home') }}">Home</a>
                   </li>
@@ -27,17 +39,24 @@
                     <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
                   </li>
                   <a class="btn btn-success navbar-btn navbar-left" href="{{ url_for('create_idea') }}">New Idea</a>
+                  {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                   <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
+                    <ul class="dropdown-menu">
+                      {% if current_user.role|string == 'UserRole.admin' %}
+                      <li>
+                        <a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                      </li>
+                      {% else %}
                       <li>
                         <a href="{{ url_for('profile') }}"><span class="glyphicon glyphicon-user"></span> My Profile</a>
                       </li>
                       <li>
                         <a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                       </li>
+                      {% endif %}
                     </ul>
                   </li>
                 </ul>
