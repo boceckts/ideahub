@@ -12,6 +12,9 @@
             {% if not current_user.is_anonymous %}
                 <ul class="nav navbar-nav">
                   <li class="{{ "active" if "explore" in title|lower }}">
+                    <a href="{{ url_for('admin_users') }}">Users</a>
+                  </li>
+                  <li class="{{ "active" if "explore" in title|lower }}">
                     <a href="{{ url_for('admin_ideas') }}">Ideas</a>
                   </li>
                 </ul>

@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block app_content %}
+  <script>
+      function deleteUserConfirmation() {
+          return (confirm('Are you sure you want to delete this user?'));
+      }
+  </script>
+  <table class='table table-hover' style='table-layout: fixed'>
+    <thead>
+      <tr>
+        <th class="col-xs-1" style='overflow: hidden'>#</th>
+        <th class="col-xs-4" style='overflow: hidden'>Username</th>
+        <th class="col-xs-2" style='overflow: hidden'>Name</th>
+        <th class="col-xs-2" style='overflow: hidden'>Surname</th>
+        <th class="col-xs-1" style='overflow: hidden'>Number of Ideas</th>
+        <th class="col-xs-1" style='overflow: hidden'>Number of Votes</th>
+        <th class="col-xs-1" style='overflow: hidden'>Delete User</th>
+      </tr>
+    </thead>
+    {% for i in range(users|count) %}
+      <tr>
+        <td style='overflow: hidden'>{{ i + 1 }}</td>
+        <td style='overflow: hidden'>
+          {{ users[i].username }}
+        </td>
+        <td style='overflow: hidden'>
+          {{ users[i].name }}
+        </td>
+        <td style='overflow: hidden'>
+          {{ users[i].surname }}
+        </td>
+        <td style='overflow: hidden'>
+          {{ users[i].idea_count }}
+        </td>
+        <td style='overflow: hidden'>
+          {{ users[i].votes_count }}
+        </td>
+        <td style='overflow: hidden'>
+          <form title='Delete User' class="btn" action="{{ url_for('delete_profile', user_id=users[i].id) }}" onsubmit='return deleteUserConfirmation()'>
+            <button type="submit" class="btn btn-danger">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

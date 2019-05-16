@@ -13,7 +13,7 @@ from app.services.idea_service import get_idea, idea_exists, delete_idea_by_id, 
     get_top_ten_ideas_by_score, get_top_ten_ideas_by_upvotes, get_top_ten_ideas_by_downvotes, \
     get_top_ten_ideas_by_total_votes, idea_title_exists, get_idea_by_title
 from app.services.user_service import get_user_by_username, edit_user_by_form, \
-    delete_user_by_id, save_user_by_form
+    delete_user_by_id, save_user_by_form, get_all_users
 from app.services.vote_service import save_vote, vote_exists, get_vote, get_votes, edit_vote, delete_vote_by_id
 
 
@@ -144,14 +144,24 @@ def edit_profile():
     return render_template('user/edit-user.html', title='Edit Profile', form=form)
 
 
-@app.route('/user/profile/delete', methods=['GET'])
-def delete_profile():
+@app.route('/user/profile/<int:user_id>/delete', methods=['GET'])
+def delete_profile(user_id):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    delete_user_by_id(current_user.id)
-    logout_user()
-    flash('Your profile has been deleted!', 'info')
-    return redirect(url_for('index'))
+    if str(current_user.role) == 'UserRole.admin':
+        if user_id != current_user.id:
+            delete_user_by_id(user_id)
+            flash('The profile has been deleted!', 'info')
+            return redirect(url_for('admin_users'))
+        else:
+            abort(403)
+    elif current_user.id == user_id:
+        delete_user_by_id(current_user.id)
+        logout_user()
+        flash('Your profile has been deleted!', 'info')
+        return redirect(url_for('index'))
+    else:
+        abort(403)
 
 
 @app.route('/ideas/explore', methods=['GET', 'POST'])
@@ -253,6 +263,15 @@ def admin():
     if str(current_user.role) != 'UserRole.admin':
         abort(403)
     return render_template('admin/admin.html', title='Admin')
+
+@app.route('/admin/users', methods=['GET', 'POST'])
+def admin_users():
+    print()
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) != 'UserRole.admin':
+        abort(403)
+    return render_template('admin/users.html', title='Admin - View Users', users=get_all_users())
 
 @app.route('/admin/ideas', methods=['GET', 'POST'])
 def admin_ideas():
