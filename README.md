@@ -17,6 +17,7 @@ ToC:
     5. [Start the Web Application](#start-the-web-application)
     6. [Run Tests](#run-tests)
         1. [Test Coverage](#test-coverage)
+        2. [Manual Tests](#manual-tests)
     7. [Update Python Requirements](#update-python-requirements)
     8. [Docker](#docker)
 
@@ -33,10 +34,13 @@ Users not logged in can see all ideas but can not vote.
 
 
 ## Architecture
-The following diagram visualizes the architecture of the ideahub application.
+The following diagram visualizes the architecture of our application.
 We followed the principle that all the database communication should only be done by using the respective services.
+The database initializer is an exception to this rule as it includes commands that are exposed to the flask cli.
 View and API should also not interfere or call each other.
 While the view uses the internal model directly our API uses models from its own namespaces to easily marshall and un-marshall response and request objects.
+The endpoints of our api use a security module which is responsible to determine whether or not users are allowed to access a particular resource.
+The view uses forms and templates to create the user interface.
 
 ![IdeaHub](ideahub-architecture.jpg)
 
@@ -164,7 +168,7 @@ The web application should now be up and running at http://127.0.0.1:5000/.
 The documentation of the REST API of the application will be available on http://127.0.0.1:5000/api/v1/docs.
 
 ### Run Tests
-The project includes a `test` directory where any tests are located.
+The project includes a `test` directory where any automated tests are located.
 The following test packages are present
 1. `unittests` - all unittests
 2. `unittests.modeltests` - unittests for our models
@@ -192,6 +196,9 @@ coverage html
 ```
 Alternatively you can also view the report right in the terminal by using the command `coverage report -m`.
 
+
+#### Manual Tests
+In addition to the automated test, we created a postman collection `IdeaHub.postman_collection.json` in order to manually testing scenarios and use cases.
 
 ### Update Python Requirements
 If you need to install new python packages or update existing ones, do so within your virtual environment.
