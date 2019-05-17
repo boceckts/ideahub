@@ -1,7 +1,18 @@
-{% extends "admin/base.html" %}
+{% extends "app/base.html" %}
 
 {% block app_content %}
-<div>
-  WELCOME ADMIN
-</div>
+    <div class="h1">WELCOME ADMIN</div>
+    <div class="alert alert-danger">
+        <div>This is the admin view, please use with caution.</div>
+        <div>Click on the User tab to see all registered users with role 'user'.
+            You can delete individual users by clicking the delete button.
+            This will also delete all ideas that the user has created and all votes that the user has given.
+        </div>
+        <div>Click on the Ideas tab to see all ideas that have been created by all users.
+            You can delete individual ideas by clicking the delete button or show all votes of an idea by clicking the
+            votes
+            button.
+            Deleting an idea will also delete all associated votes.
+        </div>
+    </div>
 {% endblock %}

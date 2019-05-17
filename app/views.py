@@ -78,7 +78,7 @@ def home():
     if str(current_user.role) == 'UserRole.admin':
         return redirect(url_for('admin'))
     else:
-        return render_template("home.html", title='Home')
+        return render_template("user/home.html", title='Home')
 
 
 @app.route('/ideas/explore', methods=['GET', 'POST'])
@@ -122,7 +122,6 @@ def leaderboard():
         'total_votes': get_top_ten_ideas_by_total_votes(),
     }
     return render_template('leaderboard/leaderboard.html', title='Leaderboard', leaderboards=leaderboards)
-
 
 
 @app.route('/vote', methods=['POST'])
@@ -272,6 +271,8 @@ def redirect_back():
 '''
 Admin Views
 '''
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not current_user.is_authenticated:
@@ -280,15 +281,16 @@ def admin():
         abort(403)
     return render_template('admin/admin.html', title='Admin')
 
+
 @app.route('/admin/users', methods=['GET', 'POST'])
 def admin_users():
-    print()
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     if str(current_user.role) != 'UserRole.admin':
         abort(403)
     users = [user for user in get_all_users() if str(user.role) != 'UserRole.admin']
     return render_template('admin/users.html', title='Admin - View Users', users=users)
+
 
 @app.route('/admin/ideas', methods=['GET', 'POST'])
 def admin_ideas():
@@ -298,6 +300,7 @@ def admin_ideas():
         abort(403)
     return render_template('admin/ideas.html', title='Admin - View Ideas', ideas=get_all_ideas())
 
+
 @app.route('/admin/<int:idea_id>/votes', methods=['GET', 'POST'])
 def admin_votes(idea_id):
     if not current_user.is_authenticated:
@@ -305,6 +308,7 @@ def admin_votes(idea_id):
     if str(current_user.role) != 'UserRole.admin':
         abort(403)
     return render_template('admin/votes.html', title='Admin - View Votes', votes=get_votes(idea_id))
+
 
 @app.route('/admin/<int:idea_id>/<int:vote_id>/delete', methods=['GET', 'POST'])
 def delete_vote(idea_id, vote_id):
