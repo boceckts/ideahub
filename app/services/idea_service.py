@@ -142,3 +142,8 @@ def get_top_ten_ideas_by_downvotes():
 
 def get_top_ten_ideas_by_total_votes():
     return db.session.query(Idea).order_by(Idea.votes_count.desc()).all()[:10]
+
+
+def delete_all_ideas():
+    for user in get_all_ideas():
+        delete_idea_by_id(user.id)

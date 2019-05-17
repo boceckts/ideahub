@@ -3,6 +3,7 @@ from flask_restplus import Resource, marshal
 
 from app.api.namespaces.user_namespaces import user_ns, user, modify_user
 from app.api.security.authentication import token_auth
+from app.api.security.authorization import is_admin
 from app.services.user_service import edit_user_by_json, email_exists, \
     delete_user_by_id
 
@@ -32,8 +33,11 @@ class UserResource(Resource):
         return '', 204
 
     @user_ns.response(204, 'User was successfully deleted')
+    @user_ns.response(403, 'Forbidden')
     @token_auth.login_required
     def delete(self):
         """Delete the current user"""
+        if is_admin():
+            user_ns.abort(403, 'Admin user can not be deleted')
         delete_user_by_id(g.current_user)
         return '', 204

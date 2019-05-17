@@ -52,3 +52,8 @@ def delete_votes_for_user(user_id):
 def delete_votes_for_idea(idea_id):
     db.session.query(Vote).filter_by(idea_id=idea_id).delete(synchronize_session='fetch')
     db.session.commit()
+
+
+def delete_all_votes():
+    db.session.query(Vote).delete(synchronize_session='fetch')
+    db.session.commit()
