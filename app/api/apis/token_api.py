@@ -7,7 +7,7 @@ from app.api.security.authentication import basic_auth, token_auth
 
 
 @token_ns.route('', strict_slashes=False)
-@token_ns.response(401, 'Unauthorized')
+@token_ns.response(401, 'Unauthenticated')
 @token_ns.response(500, 'Internal Server Error')
 class TokensResource(Resource):
 

@@ -10,7 +10,7 @@ from app.utils import collection_as_dict
 
 
 @user_ns.route('/ideas', strict_slashes=False, endpoint='user_ideas_ep')
-@user_ns.response(401, 'Unauthorized')
+@user_ns.response(401, 'Unauthenticated')
 @user_ns.response(403, 'Forbidden')
 @user_ns.response(500, 'Internal Server Error')
 class UserIdeasResource(Resource):

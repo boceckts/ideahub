@@ -9,7 +9,7 @@ from app.services.user_service import edit_user_by_json, email_exists, \
 
 
 @user_ns.route('', strict_slashes=False, endpoint='user_ep')
-@user_ns.response(401, 'Unauthorized')
+@user_ns.response(401, 'Unauthenticated')
 @user_ns.response(500, 'Internal Server Error')
 class UserResource(Resource):
 

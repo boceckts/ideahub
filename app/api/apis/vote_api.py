@@ -12,7 +12,7 @@ from app.utils import collection_as_dict
 
 
 @vote_ns.route('', strict_slashes=False)
-@vote_ns.response(401, 'Unauthorized')
+@vote_ns.response(401, 'Unauthenticated')
 @vote_ns.response(500, 'Internal Server Error')
 class VotesResource(Resource):
 
@@ -55,7 +55,7 @@ class VotesResource(Resource):
 
 
 @vote_ns.route('/<int:vote_id>', strict_slashes=False)
-@vote_ns.response(401, 'Unauthorized')
+@vote_ns.response(401, 'Unauthenticated')
 @vote_ns.response(403, 'Forbidden')
 @vote_ns.response(404, 'Vote not found')
 @vote_ns.response(500, 'Internal Server Error')

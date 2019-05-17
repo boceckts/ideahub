@@ -12,7 +12,7 @@ from app.utils import collection_as_dict
 
 
 @idea_ns.route('', strict_slashes=False)
-@idea_ns.response(401, 'Unauthorized')
+@idea_ns.response(401, 'Unauthenticated')
 @idea_ns.response(500, 'Internal Server Error')
 class IdeasResource(Resource):
 
@@ -49,7 +49,7 @@ class IdeasResource(Resource):
 
 
 @idea_ns.route('/<int:idea_id>', strict_slashes=False)
-@idea_ns.response(401, 'Unauthorized')
+@idea_ns.response(401, 'Unauthenticated')
 @idea_ns.response(403, 'Forbidden')
 @idea_ns.response(404, 'Idea not found')
 @idea_ns.response(500, 'Internal Server Error')
@@ -95,7 +95,7 @@ class IdeaResource(Resource):
 
 
 @idea_ns.route('/<int:idea_id>/votes', strict_slashes=False, endpoint='idea_votes_ep')
-@idea_ns.response(401, 'Unauthorized')
+@idea_ns.response(401, 'Unauthenticated')
 @idea_ns.response(403, 'Forbidden')
 @idea_ns.response(404, 'Resource not found')
 @idea_ns.response(500, 'Internal Server Error')

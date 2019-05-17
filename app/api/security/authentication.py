@@ -28,4 +28,4 @@ def verify_token(token):
 @basic_auth.error_handler
 @token_auth.error_handler
 def basic_auth_error():
-    return jsonify({'error': 'Unauthorized access'})
+    return jsonify({'error': 'Unauthenticated access not allowed'})

@@ -15,7 +15,7 @@ from app.utils import collection_as_dict
 class UsersResource(Resource):
 
     @users_ns.response(200, 'List all users', [public_user])
-    @users_ns.response(401, 'Unauthorized')
+    @users_ns.response(401, 'Unauthenticated')
     @token_auth.login_required
     def get(self):
         """List all users"""
@@ -47,7 +47,7 @@ class UsersResource(Resource):
 
 
 @users_ns.route('/<int:user_id>', strict_slashes=False)
-@users_ns.response(401, 'Unauthorized')
+@users_ns.response(401, 'Unauthenticated')
 @users_ns.response(403, 'Forbidden')
 @users_ns.response(404, 'User not found')
 @users_ns.response(500, 'Internal Server Error')
