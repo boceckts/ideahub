@@ -11,6 +11,8 @@ def get_all_events_for_user(user_id):
 
 def check_vote_event(vote):
     idea = Idea.query.get(vote.idea_id)
+    if idea is None:
+        return
     if vote.value > 0 and idea.upvotes % 5 == 0:
         save_event(Event(type=EventType.upvotes,
                          user_id=idea.user_id,
