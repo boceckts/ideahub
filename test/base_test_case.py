@@ -4,9 +4,11 @@ import unittest
 from app import app, db
 from app.models import User, Idea, Vote
 from app.models.event import Event, EventType
+from app.models.user import UserRole
 
 
 class BaseTestCase(unittest.TestCase):
+    testAdmin = None
     testUser = None
     testIdea = None
     testVote = None
@@ -19,6 +21,7 @@ class BaseTestCase(unittest.TestCase):
             'sqlite:///' + os.path.join(basedir, 'test.db')
         self.app = app.test_client()
         self.db.create_all()
+        self.setTestAdmin()
         self.setTestUser()
         self.setTestIdea()
         self.setTestVote()
@@ -33,6 +36,7 @@ class BaseTestCase(unittest.TestCase):
         self.db.session.commit()
 
     def addTestModels(self):
+        self.addModel(self.testAdmin)
         self.addModel(self.testUser)
         self.testIdea.user_id = self.testUser.id
         self.addModel(self.testIdea)
@@ -42,6 +46,14 @@ class BaseTestCase(unittest.TestCase):
         self.testEvent.user_id = self.testUser.id
         self.addModel(self.testEvent)
 
+    def setTestAdmin(self):
+        self.testAdmin = User()
+        self.testAdmin.username = 'admin'
+        self.testAdmin.email = 'admin@ideahub.com'
+        self.testAdmin.role = UserRole.admin
+        self.testAdmin.set_password('123456')
+        self.testAdmin.generate_auth_token()
+
     def setTestUser(self):
         self.testUser = User()
         self.testUser.username = 'john'
@@ -50,6 +62,7 @@ class BaseTestCase(unittest.TestCase):
         self.testUser.email = 'john@mail.com'
         self.testUser.tags = 'web development, csse'
         self.testUser.set_password('123456')
+        self.testUser.generate_auth_token()
 
     def setTestIdea(self):
         self.testIdea = Idea()

@@ -15,7 +15,7 @@ class UserModelTest(BaseTestCase):
 
     def test_generate_auth_token(self):
         self.addTestModels()
-        self.assertIsNone(self.testUser.token)
+        self.testUser.revoke_token()
         self.testUser.generate_auth_token(expires_in=1)
         self.assertIsNotNone(self.testUser.token)
         self.assertLess(datetime.utcnow(), self.testUser.token_expiration)
@@ -23,7 +23,6 @@ class UserModelTest(BaseTestCase):
 
     def test_revoke_token(self):
         self.addTestModels()
-        self.assertIsNone(self.testUser.token)
         self.testUser.generate_auth_token()
         self.assertIsNotNone(self.testUser.token)
         self.testUser.revoke_token()

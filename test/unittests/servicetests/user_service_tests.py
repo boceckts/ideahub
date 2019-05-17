@@ -9,6 +9,7 @@ from test.base_test_case import BaseTestCase
 class UserServiceTest(BaseTestCase):
 
     def test_get_all_users_empty(self):
+        User.query.delete()
         self.assertCountEqual([], get_all_users())
 
     def test_get_all_users(self):
@@ -17,7 +18,7 @@ class UserServiceTest(BaseTestCase):
         user.email = 'testy@mail.com'
         self.addModel(user)
         self.addTestModels()
-        self.assertCountEqual([user, self.testUser], get_all_users())
+        self.assertCountEqual([self.testAdmin, user, self.testUser], get_all_users())
 
     def test_get_user_by_id(self):
         self.addTestModels()
@@ -42,11 +43,11 @@ class UserServiceTest(BaseTestCase):
     def test_delete_user_by_id(self):
         self.addTestModels()
         delete_user_by_id(self.testUser.id)
-        self.assertCountEqual([], User.query.all())
+        self.assertCountEqual([self.testAdmin], User.query.all())
 
     def test_save_user(self):
         save_user(self.testUser)
-        self.assertEqual([self.testUser], User.query.all())
+        self.assertEqual([self.testAdmin, self.testUser], User.query.all())
 
 
 if __name__ == '__main__':

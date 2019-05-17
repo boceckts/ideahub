@@ -164,7 +164,14 @@ The web application should now be up and running at http://127.0.0.1:5000/.
 The documentation of the REST API of the application will be available on http://127.0.0.1:5000/api/v1/docs.
 
 ### Run Tests
-The project includes a test directory where any tests are located. In order to run them we use the unittest module of python.
+The project includes a `test` directory where any tests are located.
+The following test packages are present
+1. `unittests` - all unittests
+2. `unittests.modeltests` - unittests for our models
+3. `unittests.servicetests` - unittests for our database services
+4. `integrationtests` - all integration tests
+
+In order to run them we use the unittest command of python.
 Type the following commands within your virtual environment to run
 all tests
 ```
@@ -172,7 +179,7 @@ python -m unittest test -vvv
 ```
 specific unittests
 ```
-python -m unittest test.unittests.<package>[.<module_name>] -vvv
+python -m unittest test.<package>[.<module_name>] -vvv
 ```
 
 
