@@ -13,16 +13,16 @@ class AuthorizationTests(IntegrationTestCase):
                     response = c.get(self.api_base_path + r)
                     self.assertEqual(401, response.status_code, 'show resource {} not secured'.format(r))
                 if r == '/ideas':
-                    response = c.put(self.api_base_path + r + '/1', json=self.editTestIdea)
+                    response = c.put(self.api_base_path + r + '/1', json=self.testEditIdeaData)
                     self.assertEqual(401, response.status_code, 'update resource {} not secured'.format(r))
                 elif r == '/votes':
-                    response = c.put(self.api_base_path + r + '/1', json=self.editTestVote)
+                    response = c.put(self.api_base_path + r + '/1', json=self.testEditVoteData)
                     self.assertEqual(401, response.status_code, 'update resource {} not secured'.format(r))
                 if r == '/ideas':
-                    response = c.post(self.api_base_path + r, json=self.newTestIdea)
+                    response = c.post(self.api_base_path + r, json=self.testNewIdeaData)
                     self.assertEqual(401, response.status_code, 'create resource {} not secured'.format(r))
                 elif r == '/votes':
-                    response = c.post(self.api_base_path + r, json=self.newTestVote)
+                    response = c.post(self.api_base_path + r, json=self.testNewVoteData)
                     self.assertEqual(401, response.status_code, 'create resource {} not secured'.format(r))
                 elif not r == '/users':
                     response = c.post(self.api_base_path + r)
@@ -40,16 +40,16 @@ class AuthorizationTests(IntegrationTestCase):
                     response = c.get(self.api_base_path + r, headers=headers)
                     self.assertEqual(200, response.status_code, 'not allowed to show resource {}'.format(r))
                 if r == '/ideas':
-                    response = c.post(self.api_base_path + r, json=self.newTestIdea, headers=headers)
+                    response = c.post(self.api_base_path + r, json=self.testNewIdeaData, headers=headers)
                     self.assertEqual(201, response.status_code, 'not allowed to create resource {}'.format(r))
                 elif r == '/votes':
-                    response = c.post(self.api_base_path + r, json=self.newTestVote, headers=headers)
+                    response = c.post(self.api_base_path + r, json=self.testNewVoteData, headers=headers)
                     self.assertEqual(201, response.status_code, 'not allowed to create resource {}'.format(r))
                 if r == '/ideas':
-                    response = c.put(self.api_base_path + r + '/1', json=self.editTestIdea, headers=headers)
+                    response = c.put(self.api_base_path + r + '/1', json=self.testEditIdeaData, headers=headers)
                     self.assertEqual(204, response.status_code, 'not allowed to update resource {}'.format(r))
                 elif r == '/votes':
-                    response = c.put(self.api_base_path + r + '/1', json=self.editTestVote, headers=headers)
+                    response = c.put(self.api_base_path + r + '/1', json=self.testEditVoteData, headers=headers)
                     self.assertEqual(204, response.status_code, 'not allowed to update resource {}'.format(r))
 
     def test_unauthorized_access_to_admin_resource(self):

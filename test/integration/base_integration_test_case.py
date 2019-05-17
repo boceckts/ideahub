@@ -2,7 +2,7 @@ from test.base_test_case import BaseTestCase
 
 
 class IntegrationTestCase(BaseTestCase):
-    newTestUser = {
+    testNewUserData = {
         'username': 'NewUser',
         'name': 'Name',
         'surname': 'Surname',
@@ -10,10 +10,7 @@ class IntegrationTestCase(BaseTestCase):
         'tags': 'web development, csse',
         'password': '123456'
     }
-    publicTestUser = {
-        'username': 'NewUser'
-    }
-    editTestUser = {
+    testEditUserData = {
         "name": "ModifiedName",
         "surname": "ModifiedSurname",
         "email": "modified@mail.com",
@@ -32,23 +29,23 @@ class IntegrationTestCase(BaseTestCase):
         "ideas_url": "http://localhost/api/v1/user/ideas",
         "votes_url": "http://localhost/api/v1/user/votes"
     }
-    newTestIdea = {
+    testNewIdeaData = {
         "title": "New Awesome Idea",
         "description": "some description for my fancy idea",
         "category": "web application",
         "tags": "csse, se, agile"
     }
-    editTestIdea = {
+    testEditIdeaData = {
         "title": "New Awesome Modified Idea",
         "description": "some modified description for my fancy idea",
         "category": "engineering",
         "tags": "csse, web, new tag"
     }
-    newTestVote = {
+    testNewVoteData = {
         "value": 1,
         "target": 2
     }
-    editTestVote = {
+    testEditVoteData = {
         "value": -1
     }
 

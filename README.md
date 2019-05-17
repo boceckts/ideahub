@@ -174,6 +174,7 @@ The following test packages are present
 2. `unit.model` - unittests for our models
 3. `unit.service` - unittests for our database services
 4. `integration` - all integration tests
+5. `integration.api` - integration tests for our api endpoints
 
 In order to run them we use the unittest command of python.
 Type the following commands within your virtual environment to run
