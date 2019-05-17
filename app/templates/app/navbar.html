@@ -22,6 +22,9 @@
                   <li class="{{ "active" if "explore" in title|lower }}">
                     <a href="{{ url_for('admin_ideas') }}">Ideas</a>
                   </li>
+                  <li class="{{ "active" if "leader" in title|lower }}">
+                    <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                  </li>
                   {% else %}
                   <li class="{{ "active" if "home" in title|lower }}">
                     <a href="{{ url_for('home') }}">Home</a>

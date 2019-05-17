@@ -75,13 +75,40 @@ def logout():
 def home():
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
-    return render_template("home.html", title='Home')
+    if str(current_user.role) == 'UserRole.admin':
+        return redirect(url_for('admin'))
+    else:
+        return render_template("home.html", title='Home')
+
+
+@app.route('/ideas/explore', methods=['GET', 'POST'])
+def explore_ideas():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
+    form = SearchForm()
+    ideas = get_all_ideas()
+    if request.method == 'POST':
+        ideas = get_ideas_by_search(Search.of_form(form))
+    return render_template('idea/explore-ideas.html', title='Explore Ideas', form=form, ideas=ideas)
+
+
+@app.route('/inspire', methods=['GET'])
+def inspire():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
+    return render_template("inspire.html", title='Inspire Me', idea=get_random_unvoted_idea_for_user(current_user.id))
 
 
 @app.route('/activity', methods=['GET'])
 def activity():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
     return render_template('events.html', title='Activity Feed', events=get_all_events_for_user(current_user.id),
                            type=EventType)
 
@@ -96,12 +123,6 @@ def leaderboard():
     }
     return render_template('leaderboard/leaderboard.html', title='Leaderboard', leaderboards=leaderboards)
 
-
-@app.route('/inspire', methods=['GET'])
-def inspire():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    return render_template("inspire.html", title='Inspire Me', idea=get_random_unvoted_idea_for_user(current_user.id))
 
 
 @app.route('/vote', methods=['POST'])
@@ -125,6 +146,8 @@ def vote():
 def profile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
     return render_template("user/show-user.html", title='Profile',
                            ideas=get_all_ideas_for_user(current_user.id))
 
@@ -133,6 +156,8 @@ def profile():
 def edit_profile():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
     form = EditProfileForm(name=current_user.name,
                            surname=current_user.surname,
                            tags=current_user.tags)
@@ -164,21 +189,12 @@ def delete_profile(user_id):
         abort(403)
 
 
-@app.route('/ideas/explore', methods=['GET', 'POST'])
-def explore_ideas():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    form = SearchForm()
-    ideas = get_all_ideas()
-    if request.method == 'POST':
-        ideas = get_ideas_by_search(Search.of_form(form))
-    return render_template('idea/explore-ideas.html', title='Explore Ideas', form=form, ideas=ideas)
-
-
 @app.route('/ideas/new', methods=['GET', 'POST'])
 def create_idea():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    if str(current_user.role) == 'UserRole.admin':
+        abort(403)
     form = NewIdeaForm()
     if form.validate_on_submit():
         save_idea_by_form(form, current_user.id)
@@ -271,7 +287,8 @@ def admin_users():
         return redirect(url_for('login'))
     if str(current_user.role) != 'UserRole.admin':
         abort(403)
-    return render_template('admin/users.html', title='Admin - View Users', users=get_all_users())
+    users = [user for user in get_all_users() if str(user.role) != 'UserRole.admin']
+    return render_template('admin/users.html', title='Admin - View Users', users=users)
 
 @app.route('/admin/ideas', methods=['GET', 'POST'])
 def admin_ideas():

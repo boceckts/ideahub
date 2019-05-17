@@ -46,29 +46,35 @@
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div class="col-xs-10">
-                        {{ idea.description }}
-                    </div>
-                    <div class="col-xs-2">
+                    {% if current_user.role|string == 'UserRole.admin' %}
+                      <div class="col-xs-12">
+                          {{ idea.description }}
+                      </div>
+                    {% else %}
+                      <div class="col-xs-10">
+                          {{ idea.description }}
+                      </div>
+                      <div class="col-xs-2">
 
-                        <div class="text-center">
-                            <button title='Upvote' {{ "disabled" if upvote }} class="btn btn-success"
-                                                               onclick="setVoteValue(1)"><span
-                                    class="glyphicon glyphicon-chevron-up"></span></button>
-                        </div>
-                        <div class="text-center" style="font-size: 20px">
-                            {% if idea.score is none %}
-                                0
-                            {% else %}
-                                {{ idea.score }}
-                            {% endif %}
-                        </div>
-                        <div class="text-center">
-                            <button title='Downvote' {{ "disabled" if downvote }} class="btn btn-danger"
-                                                                 onclick="setVoteValue(-1)"><span
-                                    class="glyphicon glyphicon-chevron-down"></span></button>
-                        </div>
-                    </div>
+                          <div class="text-center">
+                              <button title='Upvote' {{ "disabled" if upvote }} class="btn btn-success"
+                                                                 onclick="setVoteValue(1)"><span
+                                      class="glyphicon glyphicon-chevron-up"></span></button>
+                          </div>
+                          <div class="text-center" style="font-size: 20px">
+                              {% if idea.score is none %}
+                                  0
+                              {% else %}
+                                  {{ idea.score }}
+                              {% endif %}
+                          </div>
+                          <div class="text-center">
+                              <button title='Downvote' {{ "disabled" if downvote }} class="btn btn-danger"
+                                                                   onclick="setVoteValue(-1)"><span
+                                      class="glyphicon glyphicon-chevron-down"></span></button>
+                          </div>
+                      </div>
+                    {% endif %}
                 </div>
                 <div class="panel-footer">
                     <div class="label label-default" style="margin-right: 5px">
@@ -104,5 +110,12 @@
                 </div>
             </div>
         </div>
+    {% elif current_user.role|string == 'UserRole.admin' %}
+      <form title='Delete Idea' class="btn" action="{{ url_for('delete_idea', idea_id=idea.id) }}"
+            onsubmit='return deleteIdeaConfirmation()'>
+          <button type="submit" class="btn btn-danger"><span
+                  class="glyphicon glyphicon-trash"></span>
+          </button>
+      </form>
     {% endif %}
     </div>
