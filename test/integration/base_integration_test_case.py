@@ -1,17 +1,17 @@
-from test import BaseTestCase
+from test.base_test_case import BaseTestCase
 
 
-class IntegrationBaseTestCase(BaseTestCase):
+class IntegrationTestCase(BaseTestCase):
     newTestUser = {
-        'username': 'john',
-        'name': 'John',
-        'surname': 'Doe',
-        'email': 'john@mail.com',
+        'username': 'NewUser',
+        'name': 'Name',
+        'surname': 'Surname',
+        'email': 'name@mail.com',
         'tags': 'web development, csse',
         'password': '123456'
     }
     publicTestUser = {
-        'username': 'john'
+        'username': 'NewUser'
     }
     editTestUser = {
         "name": "ModifiedName",
@@ -20,14 +20,26 @@ class IntegrationBaseTestCase(BaseTestCase):
         "password": "654321",
         "tags": "new tag, second tag"
     }
+    testUserData = {
+        "name": "Name",
+        "surname": "Surname",
+        "email": "name@mail.com",
+        "tags": "web development, csse",
+        "ideas_count": 0,
+        "votes_count": 0,
+        "id": 3,
+        "username": "NewUser",
+        "ideas_url": "http://localhost/api/v1/user/ideas",
+        "votes_url": "http://localhost/api/v1/user/votes"
+    }
     newTestIdea = {
-        "title": "My Awesome Idea",
+        "title": "New Awesome Idea",
         "description": "some description for my fancy idea",
         "category": "web application",
         "tags": "csse, se, agile"
     }
     editTestIdea = {
-        "title": "My Awesome Modified Idea",
+        "title": "New Awesome Modified Idea",
         "description": "some modified description for my fancy idea",
         "category": "engineering",
         "tags": "csse, web, new tag"
@@ -41,7 +53,3 @@ class IntegrationBaseTestCase(BaseTestCase):
     }
 
     api_base_path = '/api/v1'
-
-    @staticmethod
-    def attributes_in(object_dict, wrapper_object_dict):
-        return set(object_dict.items()).issubset(set(wrapper_object_dict.items()))

@@ -1,9 +1,9 @@
 import unittest
 
-from test.integrationtests.base_integration_test_case import IntegrationBaseTestCase
+from test.integration.base_integration_test_case import IntegrationTestCase
 
 
-class AuthorizationTests(IntegrationBaseTestCase):
+class AuthorizationTests(IntegrationTestCase):
 
     def test_unauthenticated_access_to_resources(self):
         base_resources = ['/users', '/ideas', '/votes', '/token']

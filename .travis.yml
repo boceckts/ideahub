@@ -20,7 +20,7 @@ install:
 
 # command to run tests
 script:
-  - coverage run --source=app -m unittest discover -s test/unittests/
+  - coverage run --source=app -m unittest discover -s test -p "*_tests.py" -v
 
 # Push the results to codecov
 after_success:

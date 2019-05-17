@@ -170,20 +170,20 @@ The documentation of the REST API of the application will be available on http:/
 ### Run Tests
 The project includes a `test` directory where any automated tests are located.
 The following test packages are present
-1. `unittests` - all unittests
-2. `unittests.modeltests` - unittests for our models
-3. `unittests.servicetests` - unittests for our database services
-4. `integrationtests` - all integration tests
+1. `unit` - all unittests
+2. `unit.model` - unittests for our models
+3. `unit.service` - unittests for our database services
+4. `integration` - all integration tests
 
 In order to run them we use the unittest command of python.
 Type the following commands within your virtual environment to run
 all tests
 ```
-python -m unittest test -vvv
+python -m unittest discover -s test -p "*_tests.py" -v
 ```
 specific unittests
 ```
-python -m unittest test.<package>[.<module_name>] -vvv
+python -m unittest discover -s test.<package>[.<module_name>] -p "*_tests.py" -v
 ```
 
 
@@ -191,7 +191,7 @@ python -m unittest test.<package>[.<module_name>] -vvv
 In order to see the test coverage of the project we can install and use the package `coverage` by typing `pip install coverage` into a terminal within your virtual environment.
 Use the following commands to generate a test coverage report which can be viewed by opening the [index](htmlcov/index.html) file in a browser.
 ```
-coverage run --source=app -m unittest discover -s test/
+coverage run --source=app -m unittest discover -s test -p "*_tests.py" -v
 coverage html
 ```
 Alternatively you can also view the report right in the terminal by using the command `coverage report -m`.
