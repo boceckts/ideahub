@@ -6,9 +6,11 @@ Practical project for the agile web development lecture [CITS5505](http://teachi
 
 ToC:
 1. [Main Idea](#main-Idea)
-2. [Concept](#concept)
-3. [Architecture](#architecture)
-4. [Development](#development)
+2. [Features](#features)
+3. [Concept](#concept)
+4. [Used Libraries](#used-libraries)
+5. [Architecture](#architecture)
+6. [Development](#development)
     1. [Clone The Project](#clone-the-project)
     2. [Install Virtual Environment](#install-virtual-environment)
     3. [Initialize and Migrate new Database Schema](#initialize-and-migrate-new-database-schema)
@@ -23,15 +25,55 @@ ToC:
 
 
 ## Main Idea:
-Ideas can be submitted by any registered user and other logged in users can then voted on them
+A Platform where users can submit, manage, share, explore and rank Ideas.
+
+## Features
+- Submit and manage your ideas
+- Explore ideas from other users
+- Get inspired by automatically being presented with ideas you might be interested in
+- Vote on any idea
+- See rankings of the best, worst, hottest and most trendy ideas
+- Keep track of how popular your ideas are
+- Developer REST API
 
 ## Concept
-Users login and will be presented by a dashboard showing them their submitted ideas and their scores.
-They have the option to submit new ideas, edit the idea to a new revision or delete their idea.
-Users can also change their view to a stack of submitted ideas and vote on them.
-Ideas could be revealed depending on tags or categories or at random.
-Users not logged in can see all ideas but can not vote.
+Users are presented with a promoting page first and are asked to login or sign up.
+Without logging in, only the **Leaderboard**, the promoting, **Sign Up** and **Login** pages should be present.
+Users can sign up or login to access the web application.
+The user's **Home** page includes a dashboard of the user's activity and suggests the user what he might want to do next.
+The user can discover any idea by using the **Explore** page and setting some filter criteria.
+Clicking on any idea title opens up the **Idea** view where the user can see the the details of the selected idea and the user can now also vote on the idea.
+The top bar of the idea shows the score (upvotes - downvotes) of the idea, the total vote count, upvotes and downvotes.
+If the idea has been created by the user this view shows additional controls to edit or delete the idea.
+The url of the **Idea** can also be used to easily share an idea with others.
+The **Inspire Me** page recommends an idea to the user by matching the users interests (from the user profile) with the tags of an idea.
+The **Activity** page displays a news feed of what happens to your ideas and the ideas you voted on.
+Events are generated whenever an idea reaches a certain amaount of upvotes or total votes and whenever and idea that you voted on has been changed or deleted.
+The **Leaderboard** page shows the top 10 ideas in their respective ranking category.
+The score is calculated by subtracting the downvotes from the upvotes of an idea.
+An idea can be viewed in more detail by clicking on its title.
+The **My Profile** page lists all the ideas that the user created and provides a way to change the user's details and their interests or to delete a the profile.
+In order to create a new idea we added a **Create Idea** button to the navigation bar that is always visible when logged in.
+Additionally, a admin view can be accessed when logging in as an admin.
+It includes a list of **Users** and a list of **Ideas** where the admin can delete individual entries.
+Clicking on the show votes button of an idea entry lists all the votes of an idea where the admin can also delete individual votes of that particular idea.
+Additionally, a REST API should support all the features and includes a documentation that is automatically being generated and hosted on `/api/v1/docs`.
 
+## Used Libraries
+This project solely uses open source libraries and frameworks wih a [3-Clause BSD](https://opensource.org/licenses/BSD-3-Clause) or [MIT](https://opensource.org/licenses/MIT) License.
+The project is based on python and flask and uses the following flask libraries and any of their dependencies.
+- [Flask](http://flask.pocoo.org/)
+- [Flask-Bootstrap](https://pythonhosted.org/Flask-Bootstrap/)
+- [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/en/latest/)
+- [Flask-Login](https://flask-login.readthedocs.io/en/latest/)
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
+- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/)
+- [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/)
+- [flask-restplus](https://flask-restplus.readthedocs.io/en/stable/)
+- [flask_moment](https://github.com/miguelgrinberg/flask-moment/)
+
+Additionally we use the javascript library [chart.js](https://www.chartjs.org/).
+Some parts of our code are based on the snippets that these libraries provide in their official developer reference.
 
 ## Architecture
 The following diagram visualizes the architecture of our application.
