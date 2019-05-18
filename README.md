@@ -4,6 +4,10 @@
 
 2019 [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes) Agile Web Development Practical Project
 
+#### Authors:
+- [Tobias Boceck](https://github.com/boceckts)
+- [Noah Lester](https://github.com/njlester)
+
 ToC:
 1. [Main Idea](#main-Idea)
 2. [Features](#features)
