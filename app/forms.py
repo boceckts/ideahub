@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, Regexp
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 
 from app.services.idea_service import idea_title_exists
 from app.services.user_service import username_exists, email_exists
@@ -46,8 +46,7 @@ class IdeaForm(FlaskForm):
         ('Sports', 'Sports'), ('Social', 'Social'),
         ('Lifestyle', 'Lifestyle'), ('Other', 'Other')],
                            validators=[DataRequired(), Length(min=1, max=64)])
-    tags = StringField('Tags', render_kw={'placeholder': 'Tags (comma separated)'}, validators=[
-        Regexp(r'^$|^\w$|^\w[\w| ]*(,[\w| ]*)*\w$', message='Tags have to be entered as a comma (,) separated list.')])
+    tags = StringField('Tags', render_kw={'placeholder': 'Tags (comma separated)'})
 
     def validate_title(self, title):
         if idea_title_exists(title.data):
@@ -70,9 +69,7 @@ class EditProfileForm(FlaskForm):
     password = PasswordField('New Password', render_kw={'placeholder': 'Password'})
     password2 = PasswordField('Repeat Password', render_kw={'placeholder': 'Password'},
                               validators=[EqualTo('password')])
-    tags = StringField('Interests', render_kw={'placeholder': 'Interests (comma separated)'}, validators=[
-        Regexp(r'^$|^\w$|^\w[\w| ]*(,[\w| ]*)*\w$',
-               message='Interests have to be entered as a comma (,) separated list of tags.')])
+    tags = StringField('Interests', render_kw={'placeholder': 'Interests (comma separated)'})
     submit = SubmitField('Save')
 
 
