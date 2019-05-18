@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/boceckts/ideahub.svg?token=peqtbSMtxkonhsy4FdNH&branch=master)](https://travis-ci.com/boceckts/ideahub)
 [![codecov](https://codecov.io/gh/boceckts/ideahub/branch/master/graph/badge.svg?token=2iHhFVNnIr)](https://codecov.io/gh/boceckts/ideahub)
 
-Practical project for the agile web development lecture [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes)
+Practical project for the 2019 Agile Web Development Project [CITS5505](http://teaching.csse.uwa.edu.au/units/CITS3403/index.php?fname=projects&project=yes)
 
 ToC:
 1. [Main Idea](#main-Idea)
@@ -87,9 +87,8 @@ The view uses forms and templates to create the user interface.
 ![IdeaHub](ideahub-architecture.jpg)
 
 ## Development
-In order to develop on this project you need to set up your local development environment.
-The following steps need to performed in your terminal.
-Python 3.x is required to be installed before proceeding with the next steps.
+In order to contribute to this project you need to set up your local development environment.
+The following steps need to performed in your terminal and require Python 3.x to be installed.
 
 Install the python virtual environment packages by opening a **terminal** **(Linux/Mac)** or **command prompt** **(Windows)** and typing the following commands.
 ```
@@ -124,7 +123,7 @@ Inside the project folder create a virtual environment for the flask project and
     ```
 
 2. Activate your virtual environment
-    
+
     on **Windows**
     ```
     flask\Scripts\activate
@@ -171,7 +170,7 @@ from within your virtual environment run the following scripts to init, migrate 
 ### Database Initialization
 We have added a database initialization command to flask that allows us to initialize the database with example data for demonstration and testing purposes.
 This will make the following list of users available `users = ["Initial","Liam","William","James","Logan","Benjamin","Mason","Elijah","Oliver","Jacob","Lucas","Michael","Alexander","Ethan","Daniel","Matthew","Aiden","Henry","Joseph","Jackson","Samuel","Sebastian","David","Carter","Wyatt","Jayden","John","Owen","Dylan","Luke","Gabriel","Anthony","Isaac","Grayson","Jack","Julian","Levi","Christopher","Joshua","Andrew","Lincoln","Mateo","Ryan","Jaxon","Nathan","Aaron","Isaiah","Thomas","Charles","Caleb"]`.
-Each user is created with a username following the pattern of lower anme of user followed by a `1` with the password `123456`.
+Each user is created with a username consisting of their name in lower case followed by a `1` with the password `123456`.
 
 E.g. username `logan1`, password `123456`.
 
@@ -206,7 +205,7 @@ export FLASK_ENV=development
 flask run
 ```
 
-The web application should now be up and running at http://127.0.0.1:5000/.
+The web application should now be up and running at http://127.0.0.1:5000/ (or http://localhost:5000/).
 The documentation of the REST API of the application will be available on http://127.0.0.1:5000/api/v1/docs.
 
 ### Run Tests
@@ -238,6 +237,13 @@ coverage run --source=app -m unittest discover -s test -p "*_tests.py" -v
 coverage html
 ```
 Alternatively you can also view the report right in the terminal by using the command `coverage report -m`.
+
+#### Automated System Tests
+Selenium was used to automate the system tests using Google Chrome. It can be run using
+```
+python selenium_testing.py
+```
+. The file 'chromedriver.exe' is required to be in the same folder as the python script.
 
 
 #### Manual Tests
