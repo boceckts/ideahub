@@ -40,24 +40,24 @@ A platform where users can submit, manage, share, explore and vote on ideas.
 Users are presented with a promoting page first and are asked to login or sign up.
 Without logging in, only the **Leaderboard**, the promoting, **Sign Up** and **Login** pages should be present.
 Users can sign up or login to access the web application.
-\nThe user's **Home** page includes a dashboard of the user's activity and suggests the user what he might want to do next.
-\nThe user can discover any idea by using the **Explore** page and setting some filter criteria.
-\nClicking on any idea title opens up the **Idea** view where the user can see the details of the selected idea and the user can now also vote on the idea.
-\nThe top bar of the idea shows the score (upvotes - downvotes) of the idea, the total vote count, upvotes and downvotes.
+<br>The user's **Home** page includes a dashboard of the user's activity and suggests the user what he might want to do next.
+<br>The user can discover any idea by using the **Explore** page and setting some filter criteria.
+<br>Clicking on any idea title opens up the **Idea** view where the user can see the details of the selected idea and the user can now also vote on the idea.
+<br>The top bar of the idea shows the score (upvotes - downvotes) of the idea, the total vote count, upvotes and downvotes.
 If the idea has been created by the user this view shows additional controls to edit or delete the idea.
-\nThe URL of the **Idea** can also be used to easily share an idea with others.
-\nThe **Inspire Me** page recommends an idea to the user by matching the users interests (from the user profile) with the tags of an idea.
-\nThe **Activity** page displays a news feed of what happens to your ideas and the ideas you voted on.
+<br>The URL of the **Idea** can also be used to easily share an idea with others.
+<br>The **Inspire Me** page recommends an idea to the user by matching the users interests (from the user profile) with the tags of an idea.
+<br>The **Activity** page displays a news feed of what happens to your ideas and the ideas you voted on.
 Events are generated whenever an idea reaches a certain amount of upvotes or total votes and whenever and idea that you voted on has been changed or deleted.
-\nThe **Leaderboard** page shows the top 10 ideas in their respective ranking category.
+<br>The **Leaderboard** page shows the top 10 ideas in their respective ranking category.
 The score is calculated by subtracting the downvotes from the upvotes of an idea.
 An idea can be viewed in more detail by clicking on its title.
-\nThe **My Profile** page lists all the ideas that the user created and provides a way to change the user's details and their interests or to delete a the profile.
-\nIn order to create a new idea we added a **Create Idea** button to the navigation bar that is always visible when logged in.
-\nAdditionally, a admin view can be accessed when logging in as an admin.
+<br>The **My Profile** page lists all the ideas that the user created and provides a way to change the user's details and their interests or to delete a the profile.
+<br>In order to create a new idea we added a **Create Idea** button to the navigation bar that is always visible when logged in.
+<br>Additionally, a admin view can be accessed when logging in as an admin.
 It includes a list of **Users** and a list of **Ideas** where the admin can delete individual entries.
 Clicking on the show votes button of an idea entry lists all the votes of an idea where the admin can also delete individual votes of that particular idea.
-\nAdditionally, a REST API should support all the features and includes a documentation that is automatically being generated and hosted on `/api/v1/docs`.
+<br>Additionally, a REST API should support all the features and includes a documentation that is automatically being generated and hosted on `/api/v1/docs`.
 
 ## Used Libraries
 This project solely uses open source libraries and frameworks wih a [3-Clause BSD](https://opensource.org/licenses/BSD-3-Clause) or [MIT](https://opensource.org/licenses/MIT) License.
