@@ -7,3 +7,5 @@ Flask-Migrate==2.4.0
 Flask-WTF==0.14.2
 flask-restplus==0.12.1
 flask_moment==0.7.0
+email_validator==1.1.1
+werkzeug==0.16.0
